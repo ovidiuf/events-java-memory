@@ -17,7 +17,7 @@
         -->
 
         <novaordis.utilities.version>4.7.1</novaordis.utilities.version>
-        <events.api.version>1.1.1-SNAPSHOT-1</events.api.version>
+        <events.api.version>1.1.1-SNAPSHOT-2</events.api.version>
         <slf4j.version>1.7.6</slf4j.version>
         <junit.version>4.11</junit.version>
 

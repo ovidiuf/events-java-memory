@@ -16,93 +16,47 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.parser.ParsingException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class G1EventTypeTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(t, lineNumber, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
-
-    private Time time;
-    private Long lineNumber;
-    private String content;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-        return time;
+    // fromExternalValue() ---------------------------------------------------------------------------------------------
+
+    @Test
+    public void fromExternalValue_NoSuchType() {
+
+        G1EventType et = G1EventType.fromExternalValue("I am sure there's no such external value");
+
+        assertNull(et);
     }
 
-    public void setTime(Time time) {
+    @Test
+    public void fromExternalValue_EVACUATION() {
 
-        this.time = time;
-    }
+        String ev = G1EventType.EVACUATION.toExternalValue();
 
-    /**
-     * @return the line number of the first line of the event.
-     */
-    public Long getLineNumber() {
+        G1EventType et = G1EventType.fromExternalValue(ev);
 
-        return lineNumber;
-    }
-
-    public String getContent() {
-
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        if (time == null) {
-
-            return "UNINITIALIZED";
-        }
-
-        return "" + time;
+        assertEquals(G1EventType.EVACUATION, et);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

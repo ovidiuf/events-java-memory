@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.parser;
+package io.novaordis.events.api.gc;
 
-import io.novaordis.events.api.event.Event;
-import sun.security.pkcs.*;
-
-import java.util.List;
+import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.parser.ParsingException;
+import io.novaordis.events.gc.g1.Time;
+import io.novaordis.utilities.time.Timestamp;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 2/15/17
  */
-public abstract class MultiLineParserBase implements MultiLineParser {
-
+public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,42 +34,51 @@ public abstract class MultiLineParserBase implements MultiLineParser {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private long lineNumber;
+    private Time time;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    protected MultiLineParserBase() {
+    public GCEventBase(Time time, String rawContent) throws ParsingException {
 
-        this.lineNumber = 0;
+        this.time = time;
+        parseContent(rawContent);
     }
 
-    // MultiLineParser implementation ----------------------------------------------------------------------------------
+    // GenericTimedEvent overrides -------------------------------------------------------------------------------------
+
+    /**
+     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp.
+     */
+    @Override
+    public Timestamp getTimestamp() {
+
+        if (time == null) {
+
+            return null;
+        }
+
+        return time.getTimestamp();
+    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Current line number.
-     */
-    public long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    /**
-     * The number of lines parsed so far.
-     */
-    public long getParsedLineCount() {
-
-        return lineNumber;
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
+
+    /**
+     * @param rawContent may be null, so the situation must be handled without throwing an exception.
+     */
+    protected abstract void parseContent(String rawContent) throws ParsingException;
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected void incrementLineNumber() {
+    protected void setType(GCEventType type) {
 
-        lineNumber ++;
+        //
+        // we maintain the type as a String property
+        //
+
+        setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
+
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

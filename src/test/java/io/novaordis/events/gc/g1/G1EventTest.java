@@ -16,21 +16,27 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.utilities.time.Timestamp;
+import io.novaordis.events.api.gc.GCEventTest;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEventTest {
+public class G1EventTest extends GCEventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(G1EventTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -42,10 +48,48 @@ public class RawGCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    // toGCEvent() -----------------------------------------------------------------------------------------------------
+    // setType()/getType() ---------------------------------------------------------------------------------------------
 
     @Test
-    public void toGCEvent() throws Exception {
+    public void setType_getType() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Event e = new G1Event(t);
+
+        G1EventType et = e.getType();
+        assertNull(et);
+
+        e.setType(G1EventType.EVACUATION);
+
+        G1EventType et2 = e.getType();
+        assertEquals(G1EventType.EVACUATION, et2);
+    }
+
+    @Test
+    public void getType_InvalidStoredValue() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Event e = new G1Event(t);
+
+        e.setProperty(new StringProperty(GCEvent.EVENT_TYPE, "I am sure there is no such GC event type"));
+
+        try {
+
+            e.getType();
+            fail("should have thrown exception");
+        }
+        catch(IllegalStateException ise) {
+
+            String msg = ise.getMessage();
+            log.info(msg);
+            assertEquals("\"I am sure there is no such GC event type\" is not a valid GC event type", msg);
+        }
+    }
+
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void constructor_EVACUATION() throws Exception {
 
         String rawContent =
                 "[GC pause (G1 Evacuation Pause) (young), 0.7919126 secs]\n" +
@@ -75,39 +119,28 @@ public class RawGCEventTest {
                 "      [Free CSet: 0.3 ms]\n" +
                 "   [Eden: 256.0M(256.0M)->0.0B(230.0M) Survivors: 0.0B->26.0M Heap: 256.0M(5120.0M)->24.2M(5120.0M)]\n" +
                 " [Times: user=0.64 sys=0.06, real=0.79 secs] \n";
+        ;
 
-        Timestamp ts = new TimestampImpl(123L);
-        Time t = new Time(ts, 0L);
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Event e = new G1Event(t, 888L, rawContent);
 
-        RawGCEvent re = new RawGCEvent(t, 779L);
+        assertEquals(888L, e.getLineNumber().longValue());
 
-        re.append(rawContent);
+        G1EventType et = e.getType();
 
-        GCEvent e = RawGCEvent.toGCEvent(re);
+        assertEquals(G1EventType.EVACUATION, et);
 
-        Timestamp ts2 = e.getTimestamp();
-        assertEquals(ts, ts2);
 
-        assertEquals(779L, e.getLineNumber().longValue());
-    }
-
-    // append() --------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void append() throws Exception {
-
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
-
-        assertNull(e.getContent());
-
-        e.append("A");
-
-        assertEquals("A", e.getContent());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected G1Event getEventToTest() {
+        throw new RuntimeException("getEventToTest() NOT YET IMPLEMENTED");
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

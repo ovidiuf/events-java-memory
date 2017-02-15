@@ -17,6 +17,7 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.parser.MultiLineParserBase;
 import io.novaordis.events.api.parser.ParsingException;
 import io.novaordis.utilities.time.Timestamp;
@@ -81,7 +82,7 @@ public class G1Parser extends MultiLineParserBase {
 
         String dateStamp = m.group();
 
-        Timestamp timestamp = null;
+        Timestamp timestamp;
 
         //
         // parse it immediately, we know we matched the DateStamps pattern
@@ -130,6 +131,24 @@ public class G1Parser extends MultiLineParserBase {
         return new GCEventStartMarker(t, from + m.start(), contentStart);
     }
 
+    public static List<Event> toEventList(List<RawGCEvent> rawGCEvents) throws ParsingException {
+
+        if (rawGCEvents.isEmpty()) {
+
+            return Collections.emptyList();
+        }
+
+        List<Event> result = new ArrayList<>();
+
+        for(RawGCEvent re: rawGCEvents) {
+
+            GCEvent e = RawGCEvent.toGCEvent(re);
+            result.add(e);
+        }
+
+        return result;
+    }
+
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private List<RawGCEvent> completedEvents;
@@ -147,38 +166,18 @@ public class G1Parser extends MultiLineParserBase {
 
     // MultiLineParser implementation ----------------------------------------------------------------------------------
 
-    private long eventCountToRemove = 0;
-
     @Override
     public List<Event> parse(String line) throws ParsingException {
 
         List<RawGCEvent> rawGCEvents = processLine(line);
-
-        if (rawGCEvents.isEmpty()) {
-
-            return Collections.emptyList();
-        }
-
-        eventCountToRemove += rawGCEvents.size();
-
-        return Collections.emptyList();
+        return toEventList(rawGCEvents);
     }
 
     @Override
     public List<Event> close() throws ParsingException {
 
-        List<RawGCEvent> rawGCEvents = closeRaw();
-
-        if (rawGCEvents.isEmpty()) {
-
-            return Collections.emptyList();
-        }
-
-        eventCountToRemove += rawGCEvents.size();
-
-        System.out.println("event count: " + eventCountToRemove);
-
-        return Collections.emptyList();
+        List<RawGCEvent> rawGCEvents = closeInternal();
+        return toEventList(rawGCEvents);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -210,7 +209,7 @@ public class G1Parser extends MultiLineParserBase {
                     completedEvents.add(currentEvent);
                 }
                 currentMarker = newMarker;
-                currentEvent = new RawGCEvent(currentMarker.getTime());
+                currentEvent = new RawGCEvent(currentMarker.getTime(), getLineNumber());
 
             }
             else {
@@ -232,7 +231,7 @@ public class G1Parser extends MultiLineParserBase {
         return result;
     }
 
-    List<RawGCEvent> closeRaw() {
+    List<RawGCEvent> closeInternal() {
 
         if (currentEvent != null) {
 

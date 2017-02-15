@@ -13,6 +13,20 @@ function build-classpath() {
     ${found} || { echo "no *.jar file found in $(dirname $0)/../target" 1>&2; exit 1; }
 }
 
+function get-events-api-version() {
+
+    local pom_file=$(dirname $0)/../pom.xml
+
+    [ -f ${pom_file} ] || { echo "POM file ${pom_file} not found" 1>&2; exit 1; }
+
+    local version
+    version=$(grep "<events\.api\.version>" ${pom_file}) || exit 1
+
+    version=${version#*>}
+    version=${version%?/events*}
+    echo ${version}
+}
+
 function main() {
 
     local args;
@@ -32,9 +46,15 @@ function main() {
     local cp
     cp=$(build-classpath) || exit 1
 
+    local events_api_version
+    events_api_version=$(get-events-api-version) || exit 1
+
     cp="${cp}:\
 ${M2}/io/novaordis/utilities/novaordis-utilities/4.7.1/novaordis-utilities-4.7.1.jar:\
-${M2}/io/novaordis/events/api/events-api/1.1.1-SNAPSHOT-1/events-api-1.1.1-SNAPSHOT-1.jar"
+${M2}/io/novaordis/events/api/events-api/${events_api_version}/events-api-${events_api_version}.jar:\
+${M2}/org/slf4j/slf4j-api/1.7.6/slf4j-api-1.7.6.jar:\
+${M2}/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar:\
+${M2}/log4j/log4j/1.2.17/log4j-1.2.17.jar"
 
     java ${debug_args} -cp ${cp} io.novaordis.events.gc.g1.Main ${args}
 

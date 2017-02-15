@@ -259,7 +259,7 @@ public class G1ParserTest extends MultiLineParserTest {
 
         assertEquals(3, p.getParsedLineCount());
 
-        List<RawGCEvent> events4 = p.closeRaw();
+        List<RawGCEvent> events4 = p.closeInternal();
         assertEquals(1, events4.size());
 
         re = events4.get(0);
