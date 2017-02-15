@@ -20,6 +20,8 @@ import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.parser.MultiLineParserTest;
 import io.novaordis.utilities.time.Timestamp;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -36,6 +38,8 @@ import static org.junit.Assert.assertTrue;
 public class G1ParserTest extends MultiLineParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(G1ParserTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -86,6 +90,35 @@ public class G1ParserTest extends MultiLineParserTest {
         assertNotNull(m);
         assertEquals(0, m.getEventStart());
         assertEquals(41, m.getContentStart());
+
+        Time time = m.getTime();
+
+        assertEquals(15105L, time.getOffset().longValue());
+
+        long expected =
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2017-02-14T03:40:45.192+0600").getTime();
+
+        assertEquals(expected, time.getTimestamp().getTime());
+    }
+
+    @Test
+    public void identifyGCEventStartMarker_CurrentNotNull() throws Exception {
+
+        String line = "blah blah X blah 2017-02-14T03:40:45.192+0600: 15.105: something";
+
+        int contentStart = 10;
+        GCEventStartMarker current = new GCEventStartMarker(new Time(null, 0L), 0, contentStart);
+
+        GCEventStartMarker m = G1Parser.identifyGCEventStartMarker(line, current);
+
+        assertNotNull(m);
+
+        String content = line.substring(m.getContentStart());
+        log.info(content);
+
+        assertNotNull(m);
+        assertEquals(17, m.getEventStart());
+        assertEquals(55, m.getContentStart());
 
         Time time = m.getTime();
 
@@ -189,6 +222,52 @@ public class G1ParserTest extends MultiLineParserTest {
         assertEquals("A\nB\n", e.getContent());
 
         assertEquals(3, p.getParsedLineCount());
+    }
+
+    @Test
+    public void processLine_MultipleEventsOnTheSameLine() throws Exception {
+
+        String line1 = "2017-02-14T03:41:17.807-0600: 47.719: [GC remark 2017-02-14T03:41:17.807-0600: 47.719: [Finalize Marking, 0.0387735 secs] 2017-02-14T03:41:17.846-0600: 47.758: [GC ref-proc, 0.0002593 secs] 2017-02-14T03:41:17.846-0600: 47.758: [Unloading, 0.0041996 secs], 0.0439774 secs]";
+        String line2 = "[Times: user=0.05 sys=0.00, real=0.04 secs]";
+        String line3 = "2017-02-14T03:41:18.115-0600: 48.027: [GC cleanup 322M->151M(5120M), 0.3210928 secs]";
+
+        G1Parser p = new G1Parser();
+
+        List<RawGCEvent> events = p.processLine(line1);
+        assertEquals(3, events.size());
+        RawGCEvent re = events.get(0);
+        assertEquals(47719L, re.getTime().getOffset().longValue());
+        assertEquals("[GC remark ", re.getContent());
+        RawGCEvent re2 = events.get(1);
+        assertEquals(47719L, re2.getTime().getOffset().longValue());
+        assertEquals("[Finalize Marking, 0.0387735 secs] ", re2.getContent());
+        RawGCEvent re3 = events.get(2);
+        assertEquals(47758L, re3.getTime().getOffset().longValue());
+        assertEquals("[GC ref-proc, 0.0002593 secs] ", re3.getContent());
+
+        List<RawGCEvent> events2 = p.processLine(line2);
+        assertTrue(events2.isEmpty());
+
+        List<RawGCEvent> events3 = p.processLine(line3);
+        assertEquals(1, events3.size());
+
+        re = events3.get(0);
+        assertEquals(47758L, re.getTime().getOffset().longValue());
+        assertEquals(
+                "[Unloading, 0.0041996 secs], 0.0439774 secs]\n" +
+                "[Times: user=0.05 sys=0.00, real=0.04 secs]\n", re.getContent());
+
+        assertEquals(3, p.getParsedLineCount());
+
+        List<RawGCEvent> events4 = p.closeRaw();
+        assertEquals(1, events4.size());
+
+        re = events4.get(0);
+        assertEquals(48027L, re.getTime().getOffset().longValue());
+        assertEquals("[GC cleanup 322M->151M(5120M), 0.3210928 secs]\n", re.getContent());
+
+        assertNull(p.getCurrentEvent());
+        assertTrue(p.getCompletedEvents().isEmpty());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

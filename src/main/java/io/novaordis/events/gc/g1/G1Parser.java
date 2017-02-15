@@ -96,9 +96,9 @@ public class G1Parser extends MultiLineParserBase {
             throw new ParsingException("failed to parse date stamp \"" + dateStamp + "\" into a date", e);
         }
 
-        String rest = line.substring(dateStamp.length());
+        String rest = interestingSection.substring(m.start() + dateStamp.length());
 
-        int contentStart = m.end();
+        int contentStart = from + m.end();
 
         //
         // look for offset information
@@ -127,7 +127,7 @@ public class G1Parser extends MultiLineParserBase {
             contentStart++;
         }
 
-        return new GCEventStartMarker(t, from, contentStart);
+        return new GCEventStartMarker(t, from + m.start(), contentStart);
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -147,6 +147,8 @@ public class G1Parser extends MultiLineParserBase {
 
     // MultiLineParser implementation ----------------------------------------------------------------------------------
 
+    private long eventCountToRemove = 0;
+
     @Override
     public List<Event> parse(String line) throws ParsingException {
 
@@ -157,15 +159,24 @@ public class G1Parser extends MultiLineParserBase {
             return Collections.emptyList();
         }
 
-        throw new RuntimeException("NYE");
+        eventCountToRemove += rawGCEvents.size();
+
+        return Collections.emptyList();
     }
 
     @Override
     public List<Event> close() throws ParsingException {
 
-        if (currentEvent != null || !completedEvents.isEmpty()) {
-            throw new RuntimeException("NYE");
+        List<RawGCEvent> rawGCEvents = closeRaw();
+
+        if (rawGCEvents.isEmpty()) {
+
+            return Collections.emptyList();
         }
+
+        eventCountToRemove += rawGCEvents.size();
+
+        System.out.println("event count: " + eventCountToRemove);
 
         return Collections.emptyList();
     }
@@ -219,6 +230,35 @@ public class G1Parser extends MultiLineParserBase {
         List<RawGCEvent> result = completedEvents;
         completedEvents = new ArrayList<>();
         return result;
+    }
+
+    List<RawGCEvent> closeRaw() {
+
+        if (currentEvent != null) {
+
+            completedEvents.add(currentEvent);
+            currentEvent = null;
+        }
+
+        List<RawGCEvent> result = completedEvents;
+        completedEvents = new ArrayList<>();
+        return result;
+    }
+
+    /**
+     * For testing only.
+     */
+    RawGCEvent getCurrentEvent() {
+
+        return currentEvent;
+    }
+
+    /**
+     * For testing only.
+     */
+    List<RawGCEvent> getCompletedEvents() {
+
+        return completedEvents;
     }
 
     // Private ---------------------------------------------------------------------------------------------------------
