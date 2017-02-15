@@ -15,10 +15,28 @@ function build-classpath() {
 
 function main() {
 
+    local args;
+    loca debug_args;
+
+    while [ -n "$1" ]; do
+
+        if [ "$1" = "-d" ]; then
+            debug_args="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005";
+        else
+            args="${args} $1"
+        fi
+
+        shift
+    done
+
     local cp
     cp=$(build-classpath) || exit 1
 
-    java -cp ${cp} io.novaordis.events.api.Main $@
+    cp="${cp}:\
+${M2}/io/novaordis/utilities/novaordis-utilities/4.7.1/novaordis-utilities-4.7.1.jar:\
+${M2}/io/novaordis/events/api/events-api/1.1.1-SNAPSHOT-1/events-api-1.1.1-SNAPSHOT-1.jar"
+
+    java ${debug_args} -cp ${cp} io.novaordis.events.gc.g1.Main ${args}
 
 }
 

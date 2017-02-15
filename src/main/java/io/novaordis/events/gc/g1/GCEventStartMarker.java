@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Nova Ordis LLC
+ * Copyright (c) 2017 Nova Ordis LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,81 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.g1;
+package io.novaordis.events.gc.g1;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 10/5/16
+ * @since 2/14/17
  */
-public class Main {
+public class GCEventStartMarker {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static void main(String[] args) throws Exception {
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
+
+    private Time time;
+    private int eventStart;
+    private int contentStart;
+
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    /**
+     * @param eventStart, int contentStart the start index.
+     *
+     * @exception IllegalArgumentException if time is null
+     */
+    public GCEventStartMarker(Time time, int eventStart, int contentStart) {
+
+        if (time == null) {
+
+            throw new IllegalArgumentException("null time");
+        }
+
+        this.time = time;
+        this.eventStart = eventStart;
+        this.contentStart = contentStart;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * The index in line of the first character of the event - usually the timestamp.
+     */
+    public int getEventStart() {
+
+        return eventStart;
+
+    }
+
+    /**
+     * The index in line of the first character of the event's content - the part that follows after the timestamp
+     * information.
+     */
+    public int getContentStart() {
+
+        return contentStart;
+
+    }
+
+
+    /**
+     * The event timestamp. May be absolute, if the log was recorded with -XX:+PrintGCDateStamps or relative to the
+     * start of the log
+     */
+    public Time getTime() {
+
+        return time;
+
+    }
+
+    @Override
+    public String toString() {
+
+        return "" + eventStart;
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
