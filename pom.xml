@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <name>main</name>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.novaordis.events.g1</groupId>
+    <artifactId>g1-parser</artifactId>
+    <packaging>jar</packaging>
+
+    <version>1.0.0-SNAPSHOT-1</version>
+
+    <properties>
+
+        <!--
+            Dependencies
+        -->
+
+        <novaordis.utilities.version>4.5</novaordis.utilities.version>
+        <events.api.version>1.1</events.api.version>
+        <slf4j.version>1.7.6</slf4j.version>
+        <junit.version>4.11</junit.version>
+
+
+        <!--
+            End of Dependencies
+        -->
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.novaordis.utilities</groupId>
+            <artifactId>novaordis-utilities</artifactId>
+            <version>${novaordis.utilities.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.novaordis.events.api</groupId>
+            <artifactId>events-api</artifactId>
+            <version>${events.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
+
+</project>
