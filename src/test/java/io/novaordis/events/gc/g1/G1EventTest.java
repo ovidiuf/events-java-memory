@@ -170,6 +170,17 @@ public class G1EventTest extends GCEventTest {
         assertEquals(8L, e.getLongProperty(GCEvent.HEAP_CAPACITY_BEFORE).getLong().longValue());
         assertEquals(9L, e.getLongProperty(GCEvent.HEAP_OCCUPANCY_AFTER).getLong().longValue());
         assertEquals(10L, e.getLongProperty(GCEvent.HEAP_CAPACITY_AFTER).getLong().longValue());
+
+        assertEquals(1L, e.getYoungGenerationOccupancyBefore().longValue());
+        assertEquals(2L, e.getYoungGenerationCapacityBefore().longValue());
+        assertEquals(3L, e.getYoungGenerationOccupancyAfter().longValue());
+        assertEquals(4L, e.getYoungGenerationCapacityAfter().longValue());
+        assertEquals(5L, e.getSurvivorSpaceBefore().longValue());
+        assertEquals(6L, e.getSurvivorSpaceAfter().longValue());
+        assertEquals(7L, e.getHeapOccupancyBefore().longValue());
+        assertEquals(8L, e.getHeapCapacityBefore().longValue());
+        assertEquals(9L, e.getHeapOccupancyAfter().longValue());
+        assertEquals(10L, e.getHeapCapacityAfter().longValue());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -177,8 +188,10 @@ public class G1EventTest extends GCEventTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected G1Event getEventToTest() {
-        throw new RuntimeException("getEventToTest() NOT YET IMPLEMENTED");
+    protected G1Event getEventToTest() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        return new G1Event(1L, t, null);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

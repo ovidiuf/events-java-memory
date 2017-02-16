@@ -16,6 +16,7 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.event.LongProperty;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCEventBase;
@@ -92,11 +93,132 @@ public class G1Event extends GCEventBase {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    private String firstLine;
+    public Long getYoungGenerationOccupancyBefore() {
 
-    public void test() {
+        LongProperty p = getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_BEFORE);
 
-        System.out.println("" + firstLine);
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+    }
+
+    public Long getYoungGenerationCapacityBefore() {
+
+        LongProperty p = getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_BEFORE);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+    }
+
+    public Long getYoungGenerationOccupancyAfter() {
+
+        LongProperty p = getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_AFTER);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getYoungGenerationCapacityAfter() {
+
+        LongProperty p = getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_AFTER);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getSurvivorSpaceBefore() {
+
+        LongProperty p = getLongProperty(GCEvent.SURVIVOR_SPACE_BEFORE);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getSurvivorSpaceAfter() {
+
+        LongProperty p = getLongProperty(GCEvent.SURVIVOR_SPACE_AFTER);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getHeapOccupancyBefore() {
+
+        LongProperty p = getLongProperty(GCEvent.HEAP_OCCUPANCY_BEFORE);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getHeapCapacityBefore() {
+
+        LongProperty p = getLongProperty(GCEvent.HEAP_CAPACITY_BEFORE);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getHeapOccupancyAfter() {
+
+        LongProperty p = getLongProperty(GCEvent.HEAP_OCCUPANCY_AFTER);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
+    }
+
+    public Long getHeapCapacityAfter() {
+
+        LongProperty p = getLongProperty(GCEvent.HEAP_CAPACITY_AFTER);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        return p.getLong();
+
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -198,9 +320,11 @@ public class G1Event extends GCEventBase {
             return;
         }
 
-        Long currentLineNumber = getLineNumber();
-
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
+        Long lineNumber = getLineNumber();
+        String firstLine = null;
+
+        GCEventType type = null;
 
         if (st.hasMoreTokens()) {
 
@@ -211,10 +335,18 @@ public class G1Event extends GCEventBase {
 
             if (firstLine.contains("G1 Evacuation Pause")) {
 
-                setType(G1EventType.EVACUATION);
+                if (firstLine.contains("initial-mark")) {
 
+                    type = G1EventType.EVACUATION_INITIAL_MARK;
+                }
+                else {
+
+                    type = G1EventType.EVACUATION;
+                }
             }
         }
+
+        setType(type);
 
         //
         // parse the rest of the lines and keep track of the line numbers
@@ -224,9 +356,9 @@ public class G1Event extends GCEventBase {
 
             String line = st.nextToken();
 
-            currentLineNumber = currentLineNumber == null ? null : currentLineNumber + 1;
+            lineNumber = lineNumber == null ? null : lineNumber + 1;
 
-            Heap h = HeapSnapshotLine.find(currentLineNumber, line);
+            Heap h = HeapSnapshotLine.find(lineNumber, line);
 
             if (h != null) {
 

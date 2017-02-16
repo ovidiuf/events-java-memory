@@ -72,14 +72,22 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Protected -------------------------------------------------------------------------------------------------------
 
+    /**
+     * @param type null is acceptable, it clears the type
+     */
     protected void setType(GCEventType type) {
 
         //
-        // we maintain the type as a String property
+        // we maintain the type as a String property, null means "clear"
         //
 
-        setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
+        if (type == null) {
 
+            removeStringProperty(EVENT_TYPE);
+        }
+        else {
+            setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
+        }
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

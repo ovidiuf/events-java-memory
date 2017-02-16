@@ -17,12 +17,22 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.gc.GCEventType;
+import io.novaordis.utilities.time.Timestamp;
+import org.ietf.jgss.GSSException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -78,27 +88,7 @@ public class Main {
         List<Event> es = p.close();
         gcEvents.addAll(es);
 
-        System.out.println(p.getParsedLineCount() + " lines parsed");
-        System.out.println(gcEvents.size() + " GC events");
-
-        for(Event e: gcEvents) {
-
-            G1Event g1e = (G1Event)e;
-
-            Long lineNumber = g1e.getLineNumber();
-
-            G1EventType t = g1e.getType();
-
-            if (G1EventType.EVACUATION.equals(t)) {
-
-                System.out.println(lineNumber + ": EVACUATION");
-            }
-            else {
-
-                System.out.print(lineNumber + ": ");
-                g1e.test();
-            }
-        }
+        displayEventTypes(gcEvents);
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -112,6 +102,80 @@ public class Main {
     // Protected -------------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
+
+    private static void displayEventTypes(List<Event> events) {
+
+        Map<GCEventType, AtomicInteger> counterByType = new HashMap<>();
+
+        int noType = 0;
+
+        for(Event e: events) {
+
+            GCEvent gse = (GCEvent)e;
+            GCEventType t = gse.getType();
+
+            if (t == null) {
+
+                noType ++;
+            }
+            else {
+
+                AtomicInteger i = counterByType.get(t);
+
+                if (i == null) {
+                    i = new AtomicInteger(0);
+                    counterByType.put(t, i);
+                }
+
+                i.incrementAndGet();
+            }
+        }
+
+        for(GCEventType t: counterByType.keySet()) {
+
+            System.out.println(t + ": " + counterByType.get(t).get());
+        }
+
+        System.out.println("no type: " + noType);
+    }
+
+    private static final BigDecimal BYTES_IN_MB = new BigDecimal(1024 * 1024);
+
+    private static BigDecimal toMB(Long l) {
+
+        BigDecimal d = new BigDecimal(l);
+        d = d.divide(BYTES_IN_MB, BigDecimal.ROUND_HALF_DOWN);
+        d = d.setScale(1, BigDecimal.ROUND_HALF_DOWN);
+        return d;
+    }
+
+    private static void statistics(List<Event> gcEvents) {
+
+        //        System.out.println(p.getParsedLineCount() + " lines parsed");
+//        System.out.println(gcEvents.size() + " GC events");
+//
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+
+        System.out.println("timestamp, Heap Occupancy Before (MB), Heap Occupancy After (MB), Heap Capacity (MB)");
+
+        for(Event e: gcEvents) {
+
+            G1Event g1e = (G1Event)e;
+
+            Timestamp t = g1e.getTimestamp();
+            long time = t.getTime();
+            time = time + 2 * 1000 * 3600;
+
+            Long hob = g1e.getHeapOccupancyBefore();
+            Long hoa = g1e.getHeapOccupancyAfter();
+            Long hc = g1e.getHeapCapacityAfter();
+
+            if (hc != null) {
+
+                System.out.println(df.format(time) + ", " + toMB(hob) + ", " + toMB(hoa) + ", " + toMB(hc));
+            }
+        }
+    }
 
     // Inner classes ---------------------------------------------------------------------------------------------------
 

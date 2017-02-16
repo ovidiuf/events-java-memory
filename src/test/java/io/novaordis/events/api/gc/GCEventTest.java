@@ -16,6 +16,12 @@
 
 package io.novaordis.events.api.gc;
 
+import io.novaordis.events.gc.g1.G1EventType;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
@@ -34,11 +40,25 @@ public abstract class GCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Test
+    public void setType() throws Exception {
+
+        GCEventBase e = (GCEventBase)getEventToTest();
+
+        e.setType(G1EventType.EVACUATION);
+
+        assertEquals(G1EventType.EVACUATION, e.getType());
+
+        e.setType(null);
+
+        assertNull(e.getType());
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected abstract GCEvent getEventToTest();
+    protected abstract GCEvent getEventToTest() throws Exception ;
 
     // Private ---------------------------------------------------------------------------------------------------------
 
