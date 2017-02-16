@@ -20,6 +20,9 @@ import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.events.gc.g1.G1EventType;
 import io.novaordis.utilities.UserErrorException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
@@ -36,11 +39,14 @@ public class G1ConcurrentCycle {
 
     private G1EventType expected;
 
+    private List<G1Event> events;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public G1ConcurrentCycle() {
 
         this.expected = G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START;
+        this.events = new ArrayList<>();
 
     }
 
@@ -62,6 +68,7 @@ public class G1ConcurrentCycle {
 
         if (t.equals(expected)) {
 
+            events.add(e);
             updateExpected(t);
             return true;
         }
@@ -72,6 +79,19 @@ public class G1ConcurrentCycle {
     public boolean isClosed() {
 
         return closed;
+    }
+
+    public void forciblyClose() {
+
+        this.closed = true;
+    }
+
+    public void displayStatistics() {
+
+        G1Event e = events.get(0);
+        System.out.println("    first event " + e + ", line " + e.getLineNumber());
+        e = events.get(events.size() - 1);
+        System.out.println("    last event  " + e + ", line " + e.getLineNumber());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -116,19 +136,17 @@ public class G1ConcurrentCycle {
         }
         else if (G1EventType.CONCURRENT_CYCLE_CLEANUP.equals(t)) {
 
+            expected = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START;
+        }
+        else if (G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START.equals(t)) {
+
+            expected = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END;
+        }
+        else if (G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END.equals(t)) {
+
             expected = null;
             closed = true;
-//            expected = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START;
         }
-//        else if (G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START.equals(t)) {
-//
-//            expected = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END;
-//        }
-//        else if (G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END.equals(t)) {
-//
-//            expected = null;
-//            closed = true;
-//        }
 
     }
 

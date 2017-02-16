@@ -66,9 +66,18 @@ public class G1EventSequenceAnalyzer {
 
     public void displayStatistics() {
 
-        System.out.println(concurrentCycles.size() + " concurrent cycles");
         System.out.println(youngGenerationCollections.size() + " young generation collections");
         System.out.println(mixedCollections.size() + " mixed collections");
+        System.out.println();
+        System.out.println(concurrentCycles.size() + " concurrent cycles");
+        for(G1ConcurrentCycle c: concurrentCycles) {
+
+            System.out.println();
+            c.displayStatistics();
+        }
+        System.out.println();
+        G1Event e = eventsInNaturalOrder.get(eventsInNaturalOrder.size() - 1);
+        System.out.println("last event " + e + ", line: " + e.getLineNumber());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -103,11 +112,17 @@ public class G1EventSequenceAnalyzer {
             // no concurrent cycle or event not accepted by the concurrent cycle
             //
 
-            if (currentConcurrentCycle == null && e.isInitialMark()) {
+            if (e.isInitialMark()) {
 
                 //
-                // start a new concurrent cycle
+                // start a new concurrent cycle, possibly forcibly closing the previous one
                 //
+
+                if (currentConcurrentCycle != null) {
+
+                    currentConcurrentCycle.forciblyClose();
+                    concurrentCycles.add(currentConcurrentCycle);
+                }
 
                 currentConcurrentCycle = new G1ConcurrentCycle();
             }
