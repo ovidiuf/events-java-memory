@@ -26,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -120,7 +122,6 @@ public class G1EventTest extends GCEventTest {
                         "      [Free CSet: 0.3 ms]\n" +
                         "   [Eden: 256.0M(257.0M)->0.0B(230.0M) Survivors: 0.0B->26.0M Heap: 256.0M(5120.0M)->24.2M(5120.0M)]\n" +
                         " [Times: user=0.64 sys=0.06, real=0.79 secs] \n";
-        ;
 
         Time t = new Time(new TimestampImpl(0L), 0L);
         G1Event e = new G1Event(888L, t, rawContent);
@@ -129,6 +130,7 @@ public class G1EventTest extends GCEventTest {
 
         G1EventType et = e.getType();
         assertEquals(G1EventType.YOUNG_GENERATION_COLLECTION, et);
+        assertFalse(e.isInitialMark());
 
         // heap snapshot
 
@@ -183,7 +185,8 @@ public class G1EventTest extends GCEventTest {
         G1Event e = new G1Event(1L, t, rawContent);
 
         G1EventType et = e.getType();
-        assertEquals(G1EventType.CONCURRENT_CYCLE_INITIAL_MARK, et);
+        assertEquals(G1EventType.YOUNG_GENERATION_COLLECTION, et);
+        assertTrue(e.isInitialMark());
     }
 
     @Test
@@ -224,6 +227,7 @@ public class G1EventTest extends GCEventTest {
 
         G1EventType et = e.getType();
         assertEquals(G1EventType.METADATA_THRESHOLD_INITIATED_COLLECTION, et);
+        assertTrue(e.isInitialMark());
     }
 
     @Test
@@ -265,6 +269,7 @@ public class G1EventTest extends GCEventTest {
 
         G1EventType et = e.getType();
         assertEquals(G1EventType.GCLOCKER_INITIATED_COLLECTION, et);
+        assertFalse(e.isInitialMark());
     }
 
 
@@ -431,7 +436,6 @@ public class G1EventTest extends GCEventTest {
                         "      [Free CSet: 0.7 ms]\n"+
                         "   [Eden: 224.0M(224.0M)->0.0B(224.0M) Survivors: 32.0M->32.0M Heap: 1136.8M(5120.0M)->835.2M(5120.0M)]\n"+
                         " [Times: user=0.28 sys=0.00, real=0.17 secs]";
-        ;
 
         Time t = new Time(new TimestampImpl(0L), 0L);
         G1Event e = new G1Event(1L, t, rawContent);

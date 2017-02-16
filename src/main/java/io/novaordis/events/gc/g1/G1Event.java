@@ -45,6 +45,8 @@ public class G1Event extends GCEventBase {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private boolean initialMark;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public G1Event(Time time) throws ParsingException {
@@ -96,6 +98,17 @@ public class G1Event extends GCEventBase {
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * Some of the G1 collection events, such as a regular young collection, or a metadata threshold initiated
+     * collections can also trigger as concurrent cycle initial marks.
+     *
+     * @return true if this is an "concurrent cycle initial mark" event, false otherwise.
+     */
+    public boolean isInitialMark() {
+
+        return initialMark;
+    }
 
     public Long getYoungGenerationOccupancyBefore() {
 
@@ -225,6 +238,20 @@ public class G1Event extends GCEventBase {
 
     }
 
+    @Override
+    public String toString() {
+
+        String s = "";
+        s += getType();
+
+        if (isInitialMark()) {
+
+            s += " (initial-mark)";
+        }
+
+        return s;
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     void loadHeapSnapshotProperties(Heap h) {
@@ -339,28 +366,24 @@ public class G1Event extends GCEventBase {
 
             if (firstLine.contains("G1 Evacuation Pause")) {
 
-                if (firstLine.contains("initial-mark")) {
-
-                    type = G1EventType.CONCURRENT_CYCLE_INITIAL_MARK;
-                }
-                else if (firstLine.contains("mixed")) {
-
-                    type = G1EventType.MIXED_COLLECTION;
-                }
-                else {
+                if (firstLine.contains("(young)")) {
 
                     type = G1EventType.YOUNG_GENERATION_COLLECTION;
                 }
-            }
-            else if (firstLine.contains("Metadata GC Threshold")){
+                else if (firstLine.contains("(mixed)")) {
 
-                if (firstLine.contains("initial-mark")) {
+                    type = G1EventType.MIXED_COLLECTION;
+                }
+            }
+            else if (firstLine.contains("Metadata GC Threshold")) {
+
+                if (firstLine.contains("(young)")) {
 
                     type = G1EventType.METADATA_THRESHOLD_INITIATED_COLLECTION;
                 }
-                else {
+                else if (firstLine.contains("(mixed)")) {
 
-                    log.warn("line " + lineNumber + ": Metadata GC Threshold without initial-mark");
+                    log.warn("line " + lineNumber + ": mixed Metadata GC Threshold");
                 }
             }
             else if (firstLine.contains("GCLocker Initiated GC")){
@@ -415,6 +438,15 @@ public class G1Event extends GCEventBase {
 
                 log.warn("unknown GS Event type: " + firstLine);
             }
+
+            //
+            // "initial-mark" attribute
+            //
+
+            if (firstLine.contains("initial-mark")) {
+
+                setInitialMark(true);
+            }
         }
 
         setType(type);
@@ -440,6 +472,11 @@ public class G1Event extends GCEventBase {
                 loadHeapSnapshotProperties(h);
             }
         }
+    }
+
+    protected void setInitialMark(boolean b) {
+
+        this.initialMark = b;
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

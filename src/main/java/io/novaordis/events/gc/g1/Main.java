@@ -17,8 +17,7 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.gc.GCEventType;
+import io.novaordis.events.gc.g1.analysis.G1EventSequenceAnalyzer;
 import io.novaordis.utilities.time.Timestamp;
 
 import java.io.BufferedReader;
@@ -28,10 +27,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -87,7 +83,8 @@ public class Main {
         List<Event> es = p.close();
         gcEvents.addAll(es);
 
-        displayEventTypes(gcEvents);
+        G1EventSequenceAnalyzer analyzer = new G1EventSequenceAnalyzer(gcEvents);
+        analyzer.displayStatistics();
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -101,42 +98,6 @@ public class Main {
     // Protected -------------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
-
-    private static void displayEventTypes(List<Event> events) {
-
-        Map<GCEventType, AtomicInteger> counterByType = new HashMap<>();
-
-        int noType = 0;
-
-        for(Event e: events) {
-
-            GCEvent gse = (GCEvent)e;
-            GCEventType t = gse.getType();
-
-            if (t == null) {
-
-                noType ++;
-            }
-            else {
-
-                AtomicInteger i = counterByType.get(t);
-
-                if (i == null) {
-                    i = new AtomicInteger(0);
-                    counterByType.put(t, i);
-                }
-
-                i.incrementAndGet();
-            }
-        }
-
-        for(GCEventType t: counterByType.keySet()) {
-
-            System.out.println(t + ": " + counterByType.get(t).get());
-        }
-
-        System.out.println("no type: " + noType);
-    }
 
     private static final BigDecimal BYTES_IN_MB = new BigDecimal(1024 * 1024);
 

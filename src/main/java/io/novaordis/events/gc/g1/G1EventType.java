@@ -31,11 +31,12 @@ public enum G1EventType implements GCEventType {
     //
     YOUNG_GENERATION_COLLECTION,
 
-    // the beginning of the concurrent cycle
-    // this also performs a young collection
-    // stops application threads
     //
-    CONCURRENT_CYCLE_INITIAL_MARK,
+    // the beginning of the concurrent cycle is a young collection that was marked as such; it stops application threads
+    //
+
+
+
 
     //
     // does not stop the app threads
@@ -74,11 +75,13 @@ public enum G1EventType implements GCEventType {
 
     //
     // does not stop the app threads
+    // sometimes does not occur
     //
     CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START,
 
     //
     // does not stop the app threads
+    // sometimes does not occur
     //
     CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END,
 
