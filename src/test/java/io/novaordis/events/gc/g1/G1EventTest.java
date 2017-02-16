@@ -19,6 +19,7 @@ package io.novaordis.events.gc.g1;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCEventTest;
+import io.novaordis.events.api.gc.model.Heap;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -117,20 +118,58 @@ public class G1EventTest extends GCEventTest {
                 "      [Humongous Register: 0.2 ms]\n" +
                 "      [Humongous Reclaim: 0.0 ms]\n" +
                 "      [Free CSet: 0.3 ms]\n" +
-                "   [Eden: 256.0M(256.0M)->0.0B(230.0M) Survivors: 0.0B->26.0M Heap: 256.0M(5120.0M)->24.2M(5120.0M)]\n" +
+                "   [Eden: 256.0M(257.0M)->0.0B(230.0M) Survivors: 0.0B->26.0M Heap: 256.0M(5120.0M)->24.2M(5120.0M)]\n" +
                 " [Times: user=0.64 sys=0.06, real=0.79 secs] \n";
         ;
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        G1Event e = new G1Event(t, 888L, rawContent);
+        G1Event e = new G1Event(888L, t, rawContent);
 
         assertEquals(888L, e.getLineNumber().longValue());
 
         G1EventType et = e.getType();
-
         assertEquals(G1EventType.EVACUATION, et);
 
+        // heap snapshot
 
+        assertEquals(257L * 1024 * 1024, e.getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_BEFORE).getLong().longValue());
+        assertEquals(256L * 1024 * 1024, e.getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_BEFORE).getLong().longValue());
+        assertEquals(230L * 1024 * 1024, e.getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_AFTER).getLong().longValue());
+        assertEquals(0L, e.getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_AFTER).getLong().longValue());
+
+        assertEquals(0L, e.getLongProperty(GCEvent.SURVIVOR_SPACE_BEFORE).getLong().longValue());
+        assertEquals(26L * 1024 * 1024, e.getLongProperty(GCEvent.SURVIVOR_SPACE_AFTER).getLong().longValue());
+
+        assertEquals(5120L * 1024 * 1024, e.getLongProperty(GCEvent.HEAP_CAPACITY_BEFORE).getLong().longValue());
+        assertEquals(256L * 1024 * 1024, e.getLongProperty(GCEvent.HEAP_OCCUPANCY_BEFORE).getLong().longValue());
+        assertEquals(5120L * 1024 * 1024, e.getLongProperty(GCEvent.HEAP_CAPACITY_AFTER).getLong().longValue());
+        assertEquals(25375539L, e.getLongProperty(GCEvent.HEAP_OCCUPANCY_AFTER).getLong().longValue());
+    }
+
+    // loadHeapSnapshotProperties() ------------------------------------------------------------------------------------
+
+    @Test
+    public void loadHeapSnapshotProperties() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Event e = new G1Event(t);
+
+        Heap h = new Heap();
+
+        h.load(1L, 0, "[Eden: 1.0B(2.0B)->3.0B(4.0B) Survivors: 5.0B->6.0B Heap: 7.0B(8.0B)->9.0B(10.0B)]");
+
+        e.loadHeapSnapshotProperties(h);
+
+        assertEquals(1L, e.getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_BEFORE).getLong().longValue());
+        assertEquals(2L, e.getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_BEFORE).getLong().longValue());
+        assertEquals(3L, e.getLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_AFTER).getLong().longValue());
+        assertEquals(4L, e.getLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_AFTER).getLong().longValue());
+        assertEquals(5L, e.getLongProperty(GCEvent.SURVIVOR_SPACE_BEFORE).getLong().longValue());
+        assertEquals(6L, e.getLongProperty(GCEvent.SURVIVOR_SPACE_AFTER).getLong().longValue());
+        assertEquals(7L, e.getLongProperty(GCEvent.HEAP_OCCUPANCY_BEFORE).getLong().longValue());
+        assertEquals(8L, e.getLongProperty(GCEvent.HEAP_CAPACITY_BEFORE).getLong().longValue());
+        assertEquals(9L, e.getLongProperty(GCEvent.HEAP_OCCUPANCY_AFTER).getLong().longValue());
+        assertEquals(10L, e.getLongProperty(GCEvent.HEAP_CAPACITY_AFTER).getLong().longValue());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

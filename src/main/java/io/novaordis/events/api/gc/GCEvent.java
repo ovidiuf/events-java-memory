@@ -28,6 +28,19 @@ public interface GCEvent extends TimedEvent {
 
     String EVENT_TYPE = "event-type";
 
+    String YOUNG_GENERATION_OCCUPANCY_BEFORE = "young-gen-occupancy-before";
+    String YOUNG_GENERATION_CAPACITY_BEFORE = "young-gen-capacity-before";
+    String YOUNG_GENERATION_OCCUPANCY_AFTER = "young-gen-occupancy-after";
+    String YOUNG_GENERATION_CAPACITY_AFTER = "young-gen-capacity-after";
+
+    String SURVIVOR_SPACE_BEFORE = "survivor-space-before";
+    String SURVIVOR_SPACE_AFTER = "survivor-space-after";
+
+    String HEAP_CAPACITY_BEFORE = "heap-capacity-before";
+    String HEAP_OCCUPANCY_BEFORE = "heap-occupancy-before";
+    String HEAP_CAPACITY_AFTER = "heap-capacity-after";
+    String HEAP_OCCUPANCY_AFTER = "heap-occupancy-after";
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------

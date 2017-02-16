@@ -14,95 +14,91 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.parser.ParsingException;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class YoungGeneration {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-    private Long lineNumber;
-    private String content;
+    private OccupancyAndCapacityBeforeAndAfter m;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
+    /**
+     * Expects a fragment similar to:
+     *
+     * 236.0M(236.0M)->0.0B(236.0M) ...
+     *
+     * @param lineNumber the line number.
+     * @param position the position in line where to start looking for the pattern.
+     */
+    public void load(Long lineNumber, int position, String line) throws ParsingException {
 
-        return time;
-    }
-
-    public void setTime(Time time) {
-
-        this.time = time;
+        this.m = new OccupancyAndCapacityBeforeAndAfter(lineNumber, position, line);
     }
 
     /**
-     * @return the line number of the first line of the event.
+     * @return the capacity of the young generation before the collection event, in bytes. Null means there is no data.
      */
-    public Long getLineNumber() {
+    public Long getCapacityBefore() {
 
-        return lineNumber;
-    }
+        if (m == null) {
 
-    public String getContent() {
-
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        if (time == null) {
-
-            return "UNINITIALIZED";
+            return null;
         }
 
-        return "" + time;
+        return m.getCapacityBefore();
+    }
+
+    /**
+     * @return the occupancy of the young generation before the collection event, in bytes. Null means there is no data.
+     */
+    public Long getOccupancyBefore() {
+
+        if (m == null) {
+
+            return null;
+        }
+
+        return m.getOccupancyBefore();
+    }
+
+    /**
+     * @return the capacity of the young generation after the collection event, in bytes. Null means there is no data.
+     */
+    public Long getCapacityAfter() {
+
+        if (m == null) {
+
+            return null;
+        }
+
+        return m.getCapacityAfter();
+    }
+
+    /**
+     * @return the occupancy of the young generation after the collection event, in bytes. Null means there is no data.
+     */
+    public Long getOccupancyAfter() {
+
+        if (m == null) {
+
+            return null;
+        }
+
+        return m.getOccupancyAfter();
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

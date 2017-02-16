@@ -14,95 +14,72 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.parser.ParsingException;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class BeforeAndAfterTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    private static final Logger log = LoggerFactory.getLogger(OccupancyAndCapacityBeforeAndAfter.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
-
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-    private Long lineNumber;
-    private String content;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-        return time;
-    }
+    @Test
+    public void constructor_NoPatternDetected() throws Exception {
 
-    public void setTime(Time time) {
+        String line = " something";
 
-        this.time = time;
-    }
+        try {
 
-    /**
-     * @return the line number of the first line of the event.
-     */
-    public Long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    public String getContent() {
-
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
+            new BeforeAndAfter(1L, 1, line);
+            fail("should have thrown exception");
         }
-        else {
+        catch(ParsingException e){
 
-            content += s;
+            Long lineNumber = e.getLineNumber();
+            assertEquals(1L, lineNumber.longValue());
+
+            Integer position = e.getPositionInLine();
+            assertEquals(1, position.intValue());
+
+            String msg = e.getMessage();
+            log.info(msg);
+            assertEquals("no before/after pattern found", msg);
         }
     }
 
-    @Override
-    public String toString() {
+    @Test
+    public void constructor() throws Exception {
 
-        if (time == null) {
+        String line = "XXXXXXXXXX2454.0M->1.0BYYYYYY";
 
-            return "UNINITIALIZED";
-        }
+        BeforeAndAfter m = new BeforeAndAfter(1L, 10, line);
 
-        return "" + time;
+        Long n = m.getBefore();
+        assertEquals(2454L * 1024 * 1024, n.longValue());
+
+        n = m.getAfter();
+        assertEquals(1L, n.longValue());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

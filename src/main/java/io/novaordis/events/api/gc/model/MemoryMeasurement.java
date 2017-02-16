@@ -14,95 +14,96 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.measure.MemoryMeasureUnit;
 import io.novaordis.events.api.parser.ParsingException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class MemoryMeasurement {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-    private Long lineNumber;
-    private String content;
+    private MemoryMeasureUnit mmu;
+    private BigDecimal bytes;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
     /**
-     * @param lineNumber the line number of the first line of this event
+     * Expects a pattern similar to:
+     *
+     * 3054.0M
+     *
+     * @param from fragment starts here
+     * @param to fragment ends here (the first character after the fragment)
      */
-    public RawGCEvent(Time time, Long lineNumber) {
+    public MemoryMeasurement(Long lineNumber, int from, int to, String line) throws ParsingException {
 
-        this.time = time;
-        this.lineNumber = lineNumber;
+        String fragment = line.substring(from, to);
+
+        int position = fragment.length() - 1;
+
+        char measureUnit = fragment.charAt(position);
+
+        try {
+
+            this.mmu = MemoryMeasureUnit.parse(measureUnit);
+        }
+        catch(IllegalArgumentException e) {
+
+            throw new ParsingException("'" + measureUnit + "' not a valid memory measure unit", lineNumber, position);
+        }
+
+        String number = fragment.substring(0, position);
+
+        try {
+
+            bytes = new BigDecimal(number);
+        }
+        catch(Exception e) {
+
+            throw new ParsingException(number + " not a valid number", lineNumber, from);
+        }
+
+        Double multiplicand = MemoryMeasureUnit.BYTE.getConversionFactor(mmu);
+        bytes = bytes.multiply(new BigDecimal(multiplicand));
+        bytes = bytes.setScale(0, RoundingMode.HALF_DOWN);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
-
-        return time;
-    }
-
-    public void setTime(Time time) {
-
-        this.time = time;
-    }
-
     /**
-     * @return the line number of the first line of the event.
+     * @return the value in bytes
      */
-    public Long getLineNumber() {
+    public long getBytes() {
 
-        return lineNumber;
+        return bytes.longValue();
     }
 
-    public String getContent() {
+    public MemoryMeasureUnit getMeasureUnit() {
 
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
+        return mmu;
     }
 
     @Override
     public String toString() {
 
-        if (time == null) {
+        if (bytes == null) {
 
             return "UNINITIALIZED";
         }
 
-        return "" + time;
+        return "" + bytes.longValue() + " bytes";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

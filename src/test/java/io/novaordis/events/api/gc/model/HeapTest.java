@@ -14,95 +14,56 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.parser.ParsingException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class HeapTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
-
-    private Time time;
-    private Long lineNumber;
-    private String content;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-        return time;
-    }
+    @Test
+    public void load() throws Exception {
 
-    public void setTime(Time time) {
+        Heap heap = new Heap();
 
-        this.time = time;
-    }
+        String line =
+                " [Eden: 956.0M(957.0M)->0.0B(132.0M) Survivors: 32.0M->124.0M Heap: 1980.0M(5120.0M)->1149.0M(5120.0M)]";
 
-    /**
-     * @return the line number of the first line of the event.
-     */
-    public Long getLineNumber() {
+        heap.load(1L, 1, line);
 
-        return lineNumber;
-    }
+        YoungGeneration y = heap.getYoungGeneration();
 
-    public String getContent() {
+        assertEquals(956L * 1024 * 1024, y.getOccupancyBefore().longValue());
+        assertEquals(957L * 1024 * 1024, y.getCapacityBefore().longValue());
+        assertEquals(0L, y.getOccupancyAfter().longValue());
+        assertEquals(132L * 1024 * 1024, y.getCapacityAfter().longValue());
 
-        return content;
-    }
+        SurvivorSpace s = heap.getSurvivorSpace();
 
-    public void append(String s) {
+        assertEquals(32L * 1024 * 1024, s.getBefore().longValue());
+        assertEquals(124L * 1024 * 1024, s.getAfter().longValue());
 
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        if (time == null) {
-
-            return "UNINITIALIZED";
-        }
-
-        return "" + time;
+        assertEquals(1980L * 1024 * 1024, heap.getOccupancyBefore().longValue());
+        assertEquals(5120L * 1024 * 1024, heap.getCapacityBefore().longValue());
+        assertEquals(1149L * 1024 * 1024, heap.getOccupancyAfter().longValue());
+        assertEquals(5120L * 1024 * 1024, heap.getCapacityAfter().longValue());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

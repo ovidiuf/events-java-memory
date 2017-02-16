@@ -17,9 +17,14 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCEventBase;
 import io.novaordis.events.api.gc.GCEventType;
+import io.novaordis.events.api.gc.model.Heap;
+import io.novaordis.events.api.gc.model.SurvivorSpace;
+import io.novaordis.events.api.gc.model.YoungGeneration;
 import io.novaordis.events.api.parser.ParsingException;
+import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
 
 import java.util.StringTokenizer;
 
@@ -39,13 +44,12 @@ public class G1Event extends GCEventBase {
 
     public G1Event(Time time) throws ParsingException {
 
-        this(time, null, null);
+        this(null, time, null);
     }
 
-    public G1Event(Time time, Long lineNumber, String rawContent) throws ParsingException {
+    public G1Event(Long lineNumber, Time time, String rawContent) throws ParsingException {
 
-        super(time, rawContent);
-        setLineNumber(lineNumber);
+        super(lineNumber, time, rawContent);
     }
 
     /**
@@ -97,13 +101,94 @@ public class G1Event extends GCEventBase {
 
     // Package protected -----------------------------------------------------------------------------------------------
 
+    void loadHeapSnapshotProperties(Heap h) {
+
+        if (h == null) {
+
+            return;
+        }
+
+        YoungGeneration y = h.getYoungGeneration();
+
+        if (y != null) {
+
+            setYoungGenerationOccupancyBefore(y.getOccupancyBefore());
+            setYoungGenerationCapacityBefore(y.getCapacityBefore());
+            setYoungGenerationOccupancyAfter(y.getOccupancyAfter());
+            setYoungGenerationCapacityAfter(y.getCapacityAfter());
+        }
+
+        SurvivorSpace s = h.getSurvivorSpace();
+
+        if (s != null) {
+
+            setSurvivorSpaceBefore(s.getBefore());
+            setSurvivorSpaceAfter(s.getAfter());
+        }
+
+        setHeapOccupancyBefore(h.getOccupancyBefore());
+        setHeapCapacityBefore(h.getCapacityBefore());
+        setHeapOccupancyAfter(h.getOccupancyAfter());
+        setHeapCapacityAfter(h.getCapacityAfter());
+    }
+
+    void setYoungGenerationOccupancyBefore(Long v) {
+
+        setLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_BEFORE, v);
+    }
+
+    void setYoungGenerationCapacityBefore(Long v) {
+
+        setLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_BEFORE, v);
+    }
+
+    void setYoungGenerationOccupancyAfter(Long v) {
+
+        setLongProperty(GCEvent.YOUNG_GENERATION_OCCUPANCY_AFTER, v);
+    }
+
+    void setYoungGenerationCapacityAfter(Long v) {
+
+        setLongProperty(GCEvent.YOUNG_GENERATION_CAPACITY_AFTER, v);
+    }
+
+    void setSurvivorSpaceBefore(Long v) {
+
+        setLongProperty(GCEvent.SURVIVOR_SPACE_BEFORE, v);
+    }
+
+    void setSurvivorSpaceAfter(Long v) {
+
+        setLongProperty(GCEvent.SURVIVOR_SPACE_AFTER, v);
+    }
+
+    void setHeapOccupancyBefore(Long v) {
+
+        setLongProperty(GCEvent.HEAP_OCCUPANCY_BEFORE, v);
+    }
+
+    void setHeapCapacityBefore(Long v) {
+
+        setLongProperty(GCEvent.HEAP_CAPACITY_BEFORE, v);
+    }
+
+    void setHeapOccupancyAfter(Long v) {
+
+        setLongProperty(GCEvent.HEAP_OCCUPANCY_AFTER, v);
+    }
+
+    void setHeapCapacityAfter(Long v) {
+
+        setLongProperty(GCEvent.HEAP_CAPACITY_AFTER, v);
+    }
+
+    // Protected -------------------------------------------------------------------------------------------------------
+
     @Override
     protected void setType(GCEventType type) {
 
         super.setType(type);
     }
-
-    // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
     protected void parseContent(String rawContent) throws ParsingException {
@@ -112,6 +197,8 @@ public class G1Event extends GCEventBase {
 
             return;
         }
+
+        Long currentLineNumber = getLineNumber();
 
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
 
@@ -126,6 +213,28 @@ public class G1Event extends GCEventBase {
 
                 setType(G1EventType.EVACUATION);
 
+            }
+        }
+
+        //
+        // parse the rest of the lines and keep track of the line numbers
+        //
+
+        while(st.hasMoreTokens()) {
+
+            String line = st.nextToken();
+
+            currentLineNumber = currentLineNumber == null ? null : currentLineNumber + 1;
+
+            Heap h = HeapSnapshotLine.find(currentLineNumber, line);
+
+            if (h != null) {
+
+                //
+                // this is a heap snapshot line
+                //
+
+                loadHeapSnapshotProperties(h);
             }
         }
     }

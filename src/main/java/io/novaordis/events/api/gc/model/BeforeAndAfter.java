@@ -14,73 +14,73 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.gc;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.event.GenericTimedEvent;
-import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.gc.g1.Time;
-import io.novaordis.utilities.time.Timestamp;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
+public class BeforeAndAfter {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    public static final Pattern PATTERN = Pattern.compile("(\\d+\\.\\d*[a-zA-Z])->(\\d+\\.\\d*[a-zA-Z])");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
+    private MemoryMeasurement before;
+    private MemoryMeasurement after;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public GCEventBase(Long lineNumber, Time time, String rawContent) throws ParsingException {
-
-        this.time = time;
-        setLineNumber(lineNumber);
-        parseContent(rawContent);
-    }
-
-    // GenericTimedEvent overrides -------------------------------------------------------------------------------------
-
     /**
-     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp.
+     * Expects a pattern similar to:
+     *
+     * 32.0M->124.0M
      */
-    @Override
-    public Timestamp getTimestamp() {
+    public BeforeAndAfter(Long lineNumber, int position, String line) throws ParsingException {
 
-        if (time == null) {
+        String fragment = line.substring(position);
 
-            return null;
+        Matcher m = PATTERN.matcher(fragment);
+
+        if (!m.find()) {
+
+            throw new ParsingException("no before/after pattern found", lineNumber, position);
         }
 
-        return time.getTimestamp();
+        before = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);
+        after = new MemoryMeasurement(lineNumber, position + m.start(2), position + m.end(2), line);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Package protected -----------------------------------------------------------------------------------------------
+    /**
+     * @return the value in bytes. Null means no data.
+     */
+    public Long getBefore() {
+
+        return before.getBytes();
+    }
 
     /**
-     * @param rawContent may be null, so the situation must be handled without throwing an exception.
+     * @return the value in bytes. Null means no data.
      */
-    protected abstract void parseContent(String rawContent) throws ParsingException;
+    public Long getAfter() {
+
+        return after.getBytes();
+    }
+
+    // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected void setType(GCEventType type) {
-
-        //
-        // we maintain the type as a String property
-        //
-
-        setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
-
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

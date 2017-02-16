@@ -14,95 +14,57 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.parser.ParsingException;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEvent {
+public class SurvivorSpace {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-    private Long lineNumber;
-    private String content;
+    private BeforeAndAfter m;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
+    /**
+     * Expects a fragment similar to:
+     *
+     * 236.0M(236.0M)->0.0B(236.0M) ...
+     *
+     * @param lineNumber the line number.
+     * @param position the position in line where to start looking for the pattern.
+     */
+    public void load(Long lineNumber, int position, String line) throws ParsingException {
 
-        return time;
-    }
-
-    public void setTime(Time time) {
-
-        this.time = time;
+        m = new BeforeAndAfter(lineNumber, position, line);
     }
 
     /**
-     * @return the line number of the first line of the event.
+     * @return the amount of memory in the survivor space, before the collection event, in bytes. Null means there is no
+     * data.
      */
-    public Long getLineNumber() {
+    public Long getBefore() {
 
-        return lineNumber;
+        return m.getBefore();
     }
 
-    public String getContent() {
+    /**
+     * @return the amount of memory in the survivor space, after the collection event, in bytes. Null means there is no
+     * data.
+     */
+    public Long getAfter() {
 
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        if (time == null) {
-
-            return "UNINITIALIZED";
-        }
-
-        return "" + time;
+        return m.getAfter();
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

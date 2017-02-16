@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.gc;
+package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.event.GenericTimedEvent;
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.gc.g1.Time;
-import io.novaordis.utilities.time.Timestamp;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
+public class YoungGenerationTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,53 +32,29 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    public GCEventBase(Long lineNumber, Time time, String rawContent) throws ParsingException {
-
-        this.time = time;
-        setLineNumber(lineNumber);
-        parseContent(rawContent);
-    }
-
-    // GenericTimedEvent overrides -------------------------------------------------------------------------------------
-
-    /**
-     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp.
-     */
-    @Override
-    public Timestamp getTimestamp() {
-
-        if (time == null) {
-
-            return null;
-        }
-
-        return time.getTimestamp();
-    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void load() throws Exception {
+
+        YoungGeneration g = new YoungGeneration();
+
+        String line = " 1206.0M(1207.0M)->0.0B(544.0M)          ";
+        g.load(1L, 1, line);
+
+        assertEquals(1206L * 1024 * 1024, g.getOccupancyBefore().longValue());
+        assertEquals(1207L * 1024 * 1024, g.getCapacityBefore().longValue());
+        assertEquals(0L, g.getOccupancyAfter().longValue());
+        assertEquals(544L * 1024 * 1024, g.getCapacityAfter().longValue());
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
-    /**
-     * @param rawContent may be null, so the situation must be handled without throwing an exception.
-     */
-    protected abstract void parseContent(String rawContent) throws ParsingException;
-
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected void setType(GCEventType type) {
-
-        //
-        // we maintain the type as a String property
-        //
-
-        setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
-
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

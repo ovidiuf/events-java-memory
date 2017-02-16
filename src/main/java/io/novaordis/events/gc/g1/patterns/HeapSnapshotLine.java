@@ -14,73 +14,72 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.gc;
+package io.novaordis.events.gc.g1.patterns;
 
-import io.novaordis.events.api.event.GenericTimedEvent;
-import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.gc.model.Heap;
 import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.gc.g1.Time;
-import io.novaordis.utilities.time.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Matches and parses a heap snapshot line:
+ *
+ * [Eden: 256.0M(256.0M)->0.0B(230.0M) Survivors: 0.0B->26.0M Heap: 256.0M(5120.0M)->24.2M(5120.0M)]
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
+public class HeapSnapshotLine {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    private static final Logger log = LoggerFactory.getLogger(HeapSnapshotLine.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
 
-    // Attributes ------------------------------------------------------------------------------------------------------
-
-    private Time time;
-
-    // Constructors ----------------------------------------------------------------------------------------------------
-
-    public GCEventBase(Long lineNumber, Time time, String rawContent) throws ParsingException {
-
-        this.time = time;
-        setLineNumber(lineNumber);
-        parseContent(rawContent);
-    }
-
-    // GenericTimedEvent overrides -------------------------------------------------------------------------------------
-
     /**
-     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp.
+     * @return a Heap snapshot instance if the corresponding pattern was identified in the line and it was parsed
+     * correctly, null otherwise. If the pattern was identified but the parsing failed, we'll warn but not throw
+     * exception.
      */
-    @Override
-    public Timestamp getTimestamp() {
+    public static Heap find(Long lineNumber, String line) {
 
-        if (time == null) {
+        if (line == null) {
 
             return null;
         }
 
-        return time.getTimestamp();
+        int i = line.indexOf("[Eden: ");
+
+        if (i == -1) {
+
+            return null;
+        }
+
+        Heap h = new Heap();
+
+        try {
+
+            h.load(lineNumber, i, line);
+        }
+        catch(ParsingException e) {
+
+            log.warn(e.toLogFormat());
+            return null;
+        }
+
+        return h;
     }
+
+    // Attributes ------------------------------------------------------------------------------------------------------
+
+    // Constructors ----------------------------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 
-    /**
-     * @param rawContent may be null, so the situation must be handled without throwing an exception.
-     */
-    protected abstract void parseContent(String rawContent) throws ParsingException;
-
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected void setType(GCEventType type) {
-
-        //
-        // we maintain the type as a String property
-        //
-
-        setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
-
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

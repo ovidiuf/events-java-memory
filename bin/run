@@ -27,6 +27,21 @@ function get-events-api-version() {
     echo ${version}
 }
 
+function get-novaordis-utilities() {
+
+    local pom_file=$(dirname $0)/../pom.xml
+
+    [ -f ${pom_file} ] || { echo "POM file ${pom_file} not found" 1>&2; exit 1; }
+
+    local version
+    version=$(grep "<novaordis\.utilities\.version>" ${pom_file}) || exit 1
+
+    version=${version#*>}
+    version=${version%?/novaordis*}
+    echo ${version}
+}
+
+
 function main() {
 
     local args;
@@ -49,8 +64,11 @@ function main() {
     local events_api_version
     events_api_version=$(get-events-api-version) || exit 1
 
+    local novaordis_utilities_version
+    novaordis_utilities_version=$(get-novaordis-utilities) || exit 1
+
     cp="${cp}:\
-${M2}/io/novaordis/utilities/novaordis-utilities/4.7.1/novaordis-utilities-4.7.1.jar:\
+${M2}/io/novaordis/utilities/novaordis-utilities/${novaordis_utilities_version}/novaordis-utilities-${novaordis_utilities_version}.jar:\
 ${M2}/io/novaordis/events/api/events-api/${events_api_version}/events-api-${events_api_version}.jar:\
 ${M2}/org/slf4j/slf4j-api/1.7.6/slf4j-api-1.7.6.jar:\
 ${M2}/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar:\
