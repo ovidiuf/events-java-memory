@@ -50,6 +50,7 @@ public class G1EventSequenceAnalyzer {
     public G1EventSequenceAnalyzer(List<Event> eventsInNaturalOrder) throws UserErrorException {
 
         this.eventsInNaturalOrder = new ArrayList<>(eventsInNaturalOrder.size());
+        //noinspection Convert2streamapi
         for(Event e: eventsInNaturalOrder) {
 
             this.eventsInNaturalOrder.add((G1Event)e);
@@ -66,6 +67,8 @@ public class G1EventSequenceAnalyzer {
     public void displayStatistics() {
 
         System.out.println(concurrentCycles.size() + " concurrent cycles");
+        System.out.println(youngGenerationCollections.size() + " young generation collections");
+        System.out.println(mixedCollections.size() + " mixed collections");
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
