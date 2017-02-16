@@ -26,6 +26,8 @@ import io.novaordis.events.api.gc.model.SurvivorSpace;
 import io.novaordis.events.api.gc.model.YoungGeneration;
 import io.novaordis.events.api.parser.ParsingException;
 import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.StringTokenizer;
 
@@ -36,6 +38,8 @@ import java.util.StringTokenizer;
 public class G1Event extends GCEventBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(G1Event.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -337,12 +341,79 @@ public class G1Event extends GCEventBase {
 
                 if (firstLine.contains("initial-mark")) {
 
-                    type = G1EventType.EVACUATION_INITIAL_MARK;
+                    type = G1EventType.CONCURRENT_CYCLE_INITIAL_MARK;
+                }
+                else if (firstLine.contains("mixed")) {
+
+                    type = G1EventType.MIXED_COLLECTION;
                 }
                 else {
 
-                    type = G1EventType.EVACUATION;
+                    type = G1EventType.YOUNG_GENERATION_COLLECTION;
                 }
+            }
+            else if (firstLine.contains("Metadata GC Threshold")){
+
+                if (firstLine.contains("initial-mark")) {
+
+                    type = G1EventType.METADATA_THRESHOLD_INITIATED_COLLECTION;
+                }
+                else {
+
+                    log.warn("line " + lineNumber + ": Metadata GC Threshold without initial-mark");
+                }
+            }
+            else if (firstLine.contains("GCLocker Initiated GC")){
+
+                type = G1EventType.GCLOCKER_INITIATED_COLLECTION;
+            }
+            else if (firstLine.contains("concurrent-root-region-scan-start")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START;
+            }
+            else if (firstLine.contains("concurrent-root-region-scan-end")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END;
+            }
+            else if (firstLine.contains("concurrent-mark-start")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START;
+            }
+            else if (firstLine.contains("concurrent-mark-end")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_END;
+            }
+            else if (firstLine.contains(" remark ")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_REMARK;
+            }
+            else if (firstLine.contains("Finalize Marking")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_FINALIZE_MARKING;
+            }
+            else if (firstLine.contains("ref-proc")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_REF_PROC;
+            }
+            else if (firstLine.contains("Unloading")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_UNLOADING;
+            }
+            else if (firstLine.contains(" cleanup ")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_CLEANUP;
+            }
+            else if (firstLine.contains("concurrent-cleanup-start")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START;
+            }
+            else if (firstLine.contains("concurrent-cleanup-end")) {
+
+                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END;
+            }
+            else {
+
+                log.warn("unknown GS Event type: " + firstLine);
             }
         }
 

@@ -26,8 +26,73 @@ public enum G1EventType implements GCEventType {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    EVACUATION,
-    EVACUATION_INITIAL_MARK;
+    //
+    // stops application threads
+    //
+    YOUNG_GENERATION_COLLECTION,
+
+    // the beginning of the concurrent cycle
+    // this also performs a young collection
+    // stops application threads
+    //
+    CONCURRENT_CYCLE_INITIAL_MARK,
+
+    //
+    // does not stop the app threads
+    // however, young generation collection cannot happen during this phase
+    //
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_START,
+
+    //
+    // does not stop the app threads
+    //
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_END,
+
+    //
+    // does not stop the app threads
+    //
+    CONCURRENT_CYCLE_CONCURRENT_MARK_START,
+
+    //
+    // does not stop the app threads
+    //
+    CONCURRENT_CYCLE_CONCURRENT_MARK_END,
+
+
+    //
+    // stops application threads
+    //
+    CONCURRENT_CYCLE_REMARK,
+    CONCURRENT_CYCLE_FINALIZE_MARKING,
+    CONCURRENT_CYCLE_REF_PROC,
+    CONCURRENT_CYCLE_UNLOADING,
+
+    //
+    // stops application threads
+    //
+    CONCURRENT_CYCLE_CLEANUP,
+
+    //
+    // does not stop the app threads
+    //
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START,
+
+    //
+    // does not stop the app threads
+    //
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END,
+
+    //
+    // stops application threads
+    // occurs after the concurrent cycle is complete
+    //
+    MIXED_COLLECTION,
+
+
+    METADATA_THRESHOLD_INITIATED_COLLECTION,
+
+    GCLOCKER_INITIATED_COLLECTION,
+    ;
 
     // Static ----------------------------------------------------------------------------------------------------------
 

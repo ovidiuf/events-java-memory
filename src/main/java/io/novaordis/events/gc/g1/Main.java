@@ -20,7 +20,6 @@ import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCEventType;
 import io.novaordis.utilities.time.Timestamp;
-import org.ietf.jgss.GSSException;
 
 import java.io.BufferedReader;
 import java.io.File;

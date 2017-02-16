@@ -45,9 +45,9 @@ public abstract class GCEventTest {
 
         GCEventBase e = (GCEventBase)getEventToTest();
 
-        e.setType(G1EventType.EVACUATION);
+        e.setType(G1EventType.YOUNG_GENERATION_COLLECTION);
 
-        assertEquals(G1EventType.EVACUATION, e.getType());
+        assertEquals(G1EventType.YOUNG_GENERATION_COLLECTION, e.getType());
 
         e.setType(null);
 

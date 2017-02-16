@@ -50,13 +50,13 @@ public class G1EventTypeTest {
     }
 
     @Test
-    public void fromExternalValue_EVACUATION() {
+    public void fromExternalValue_YOUNG_GENERATION_COLLECTION() {
 
-        String ev = G1EventType.EVACUATION.toExternalValue();
+        String ev = G1EventType.YOUNG_GENERATION_COLLECTION.toExternalValue();
 
         G1EventType et = G1EventType.fromExternalValue(ev);
 
-        assertEquals(G1EventType.EVACUATION, et);
+        assertEquals(G1EventType.YOUNG_GENERATION_COLLECTION, et);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
