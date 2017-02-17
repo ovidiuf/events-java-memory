@@ -41,6 +41,7 @@ public class G1ConcurrentCycleEventTest extends G1EventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
     public void setType_getType() throws Exception {
 
@@ -55,6 +56,7 @@ public class G1ConcurrentCycleEventTest extends G1EventTest {
         assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START, et2);
     }
 
+    @Override
     @Test
     public void isCollection() throws Exception {
 

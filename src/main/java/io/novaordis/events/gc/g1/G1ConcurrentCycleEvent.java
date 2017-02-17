@@ -45,7 +45,7 @@ public class G1ConcurrentCycleEvent extends G1Event {
     @Override
     public String toString() {
 
-        return "?";
+        return "" + getType().getDisplayLabel();
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

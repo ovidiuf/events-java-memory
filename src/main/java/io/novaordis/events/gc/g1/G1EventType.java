@@ -42,48 +42,70 @@ public enum G1EventType implements GCEventType {
     // does not stop the app threads
     // however, young generation collection cannot happen during this phase
     //
-    CONCURRENT_CYCLE_ROOT_REGION_SCAN_START("concurrent-root-region-scan-start"),
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_START(
+            "concurrent-root-region-scan-start",
+            "concurrent-root-region-scan-start"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_ROOT_REGION_SCAN_END("concurrent-root-region-scan-end"),
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_END(
+            "concurrent-root-region-scan-end",
+            "concurrent-root-region-scan-end"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_CONCURRENT_MARK_START("concurrent-mark-start"),
+    CONCURRENT_CYCLE_CONCURRENT_MARK_START(
+            "concurrent-mark-start",
+            "concurrent-mark-start"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_CONCURRENT_MARK_END("concurrent-mark-end"),
+    CONCURRENT_CYCLE_CONCURRENT_MARK_END(
+            "concurrent-mark-end",
+            "concurrent-mark-end"),
 
 
     //
     // stops application threads
     //
-    CONCURRENT_CYCLE_REMARK(" remark "),
-    CONCURRENT_CYCLE_FINALIZE_MARKING("Finalize Marking"),
-    CONCURRENT_CYCLE_REF_PROC("ref-proc"),
-    CONCURRENT_CYCLE_UNLOADING("Unloading"),
+    CONCURRENT_CYCLE_REMARK(
+            " remark ",
+            "remark"),
+    CONCURRENT_CYCLE_FINALIZE_MARKING(
+            "Finalize Marking",
+            "finalize-marking"),
+    CONCURRENT_CYCLE_REF_PROC(
+            "ref-proc",
+            "ref-proc"),
+    CONCURRENT_CYCLE_UNLOADING(
+            "Unloading",
+            "unloading"),
 
     //
     // stops application threads
     //
-    CONCURRENT_CYCLE_CLEANUP(" cleanup "),
+    CONCURRENT_CYCLE_CLEANUP(
+            " cleanup ",
+            "cleanup"),
 
     //
     // does not stop the app threads
     // sometimes does not occur
     //
-    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START("concurrent-cleanup-start"),
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START(
+            "concurrent-cleanup-start",
+            "concurrent-cleanup-start"),
 
     //
     // does not stop the app threads
     // sometimes does not occur
     //
-    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END("concurrent-cleanup-end"),
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END(
+            "concurrent-cleanup-end",
+            "concurrent-cleanup-end"),
 
     ;
 
@@ -140,17 +162,19 @@ public enum G1EventType implements GCEventType {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private String logMarker;
+    private String displayLabel;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
     G1EventType() {
 
-        this(null);
+        this(null, null);
     }
 
-    G1EventType(String logMarker) {
+    G1EventType(String logMarker, String displayLabel) {
 
         this.logMarker = logMarker;
+        this.displayLabel = displayLabel;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -164,6 +188,16 @@ public enum G1EventType implements GCEventType {
     public String getLogMarker() {
 
         return logMarker;
+    }
+
+    public String getDisplayLabel() {
+
+        if (displayLabel == null) {
+
+            return toString();
+        }
+
+        return displayLabel;
     }
 
 }

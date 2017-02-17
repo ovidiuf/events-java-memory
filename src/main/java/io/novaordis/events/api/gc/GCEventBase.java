@@ -18,7 +18,6 @@ package io.novaordis.events.api.gc;
 
 import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.parser.ParsingException;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
 
@@ -46,8 +45,30 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------
 
+    //
+    // we take over time management
+    //
+
     /**
-     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp.
+     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp, so we need to
+     * manage time state.
+     */
+    @Override
+    public void setTimestamp(Timestamp ts) {
+
+        if (ts == null) {
+
+            time = null;
+        }
+        else {
+
+            time = new Time(ts, 0L);
+        }
+    }
+
+    /**
+     * We delegate timestamp storage to our own "time" instance, instead of superclass' timestamp, so we need to
+     * manage time state.
      */
     @Override
     public Timestamp getTimestamp() {
@@ -58,6 +79,17 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         }
 
         return time.getTimestamp();
+    }
+
+    @Override
+    public Long getTime() {
+
+        if (time == null) {
+
+            return null;
+        }
+
+        return time.getTimestamp().getTime();
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

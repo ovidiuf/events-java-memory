@@ -66,6 +66,22 @@ public enum G1CollectionTrigger {
         return null;
     }
 
+    /**
+     * @return null if the external value is not among the known values.
+     */
+    static G1CollectionTrigger fromExternalValue(String externalValue) {
+
+        for(G1CollectionTrigger et: values()) {
+
+            if (et.toExternalValue().equals(externalValue)) {
+
+                return et;
+            }
+        }
+
+        return null;
+    }
+
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private String logMarker;
@@ -87,6 +103,11 @@ public enum G1CollectionTrigger {
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    public String toExternalValue() {
+
+        return toString();
+    }
 
     public String getLogMarker() {
 

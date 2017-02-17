@@ -67,7 +67,7 @@ public class G1EventFactory {
             // this is a collection
             //
 
-            event = new G1Collection(lineNumber, time);
+            event = new G1Collection(lineNumber, time, trigger);
 
             if (firstLine.contains(G1CollectionScope.MIXED.getLogMarker())) {
 

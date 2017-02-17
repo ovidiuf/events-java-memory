@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -45,6 +47,7 @@ public class G1CollectionTest extends G1EventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
     public void setType_getType() throws Exception {
 
@@ -58,19 +61,118 @@ public class G1CollectionTest extends G1EventTest {
             e.setType(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START);
             fail("should throw exception");
         }
-        catch(IllegalStateException ise) {
+        catch(IllegalArgumentException ise) {
 
             String msg = ise.getMessage();
             log.info(msg);
-            assertEquals("attempting to change the type of a COLLECTION event", msg);
+            assertEquals("cannot set type to anything else but " + G1EventType.COLLECTION, msg);
         }
     }
 
+    @Override
     @Test
     public void isCollection() throws Exception {
 
         G1Collection e = getEventToTest();
         assertTrue(e.isCollection());
+    }
+
+    @Test
+    public void defaultScopeIsYoung() throws Exception {
+
+        G1Collection e = getEventToTest();
+        assertEquals(G1CollectionScope.YOUNG, e.getCollectionScope());
+    }
+
+    @Test
+    public void defaultTypeIsCollection() throws Exception {
+
+        G1Collection e = getEventToTest();
+        assertEquals(G1EventType.COLLECTION, e.getType());
+    }
+
+    @Test
+    public void collectionTriggerManagement() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Collection c = new G1Collection(1L, t, null);
+
+        assertNull(c.getCollectionTrigger());
+
+        c.setCollectionTrigger(G1CollectionTrigger.GCLOCKER);
+        assertEquals(G1CollectionTrigger.GCLOCKER, c.getCollectionTrigger());
+
+        c.setCollectionTrigger(G1CollectionTrigger.EVACUATION);
+        assertEquals(G1CollectionTrigger.EVACUATION, c.getCollectionTrigger());
+    }
+
+    @Test
+    public void invalidStoredCollectionTriggerValue() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+
+        G1Collection c = new G1Collection(1L, t, null);
+
+        c.setStringProperty(G1Collection.COLLECTION_TRIGGER_PROPERTY_NAME, "not-a-valid-g1-collection-trigger");
+
+        try {
+
+            c.getCollectionTrigger();
+            fail("should throw exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            log.info(msg);
+            assertTrue(msg.contains("not-a-valid-g1-collection-trigger"));
+        }
+    }
+
+    @Test
+    public void collectionScopeManagement() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Collection c = new G1Collection(1L, t, null);
+
+        assertEquals(G1CollectionScope.YOUNG, c.getCollectionScope());
+
+        c.setCollectionScope(G1CollectionScope.MIXED);
+        assertEquals(G1CollectionScope.MIXED, c.getCollectionScope());
+    }
+
+    @Test
+    public void invalidStoredCollectionScopeValue() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+
+        G1Collection c = new G1Collection(1L, t, null);
+
+        c.setStringProperty(G1Collection.COLLECTION_SCOPE_PROPERTY_NAME, "not-a-valid-g1-collection-scope");
+
+        try {
+
+            c.getCollectionScope();
+            fail("should throw exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            log.info(msg);
+            assertTrue(msg.contains("not-a-valid-g1-collection-scope"));
+        }
+    }
+
+    @Test
+    public void initialMarkManagement() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        G1Collection c = new G1Collection(1L, t, null);
+
+        assertFalse(c.isInitialMark());
+
+        c.setInitialMark(true);
+
+        assertTrue(c.isInitialMark());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -81,7 +183,7 @@ public class G1CollectionTest extends G1EventTest {
     protected G1Collection getEventToTest() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        return new G1Collection(1L, t);
+        return new G1Collection(1L, t, G1CollectionTrigger.EVACUATION);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------
