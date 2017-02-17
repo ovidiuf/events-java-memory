@@ -142,7 +142,7 @@ public class G1Parser extends MultiLineParserBase {
 
         for(RawGCEvent re: rawGCEvents) {
 
-            GCEvent e = RawGCEvent.toGCEvent(re);
+            GCEvent e = G1EventFactory.build(re);
             result.add(e);
         }
 

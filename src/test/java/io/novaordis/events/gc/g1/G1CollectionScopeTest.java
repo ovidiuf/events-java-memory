@@ -18,14 +18,13 @@ package io.novaordis.events.gc.g1;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public class RawGCEventTest {
+public class G1CollectionScopeTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -37,21 +36,23 @@ public class RawGCEventTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    @Test
+    public void YOUNG() throws Exception {
 
-    // append() --------------------------------------------------------------------------------------------------------
+        G1CollectionScope s = G1CollectionScope.YOUNG;
+
+        assertNotNull(s.getLogMarker());
+    }
 
     @Test
-    public void append() throws Exception {
+    public void MIXED() throws Exception {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
+        G1CollectionScope s = G1CollectionScope.MIXED;
 
-        assertNull(e.getContent());
-
-        e.append("A");
-
-        assertEquals("A", e.getContent());
+        assertNotNull(s.getLogMarker());
     }
+
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 

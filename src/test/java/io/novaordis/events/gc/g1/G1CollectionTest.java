@@ -16,18 +16,24 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public class RawGCEventTest {
+public class G1CollectionTest extends G1EventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(G1CollectionTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -39,23 +45,44 @@ public class RawGCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    // append() --------------------------------------------------------------------------------------------------------
+    @Test
+    public void setType_getType() throws Exception {
+
+        G1Collection e = getEventToTest();
+
+        G1EventType et = e.getType();
+        assertEquals(G1EventType.COLLECTION, et);
+
+        try {
+
+            e.setType(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START);
+            fail("should throw exception");
+        }
+        catch(IllegalStateException ise) {
+
+            String msg = ise.getMessage();
+            log.info(msg);
+            assertEquals("attempting to change the type of a COLLECTION event", msg);
+        }
+    }
 
     @Test
-    public void append() throws Exception {
+    public void isCollection() throws Exception {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
-
-        assertNull(e.getContent());
-
-        e.append("A");
-
-        assertEquals("A", e.getContent());
+        G1Collection e = getEventToTest();
+        assertTrue(e.isCollection());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected G1Collection getEventToTest() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        return new G1Collection(1L, t);
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

@@ -16,16 +16,11 @@
 
 package io.novaordis.events.gc.g1;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public class RawGCEventTest {
+public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -35,22 +30,22 @@ public class RawGCEventTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
+
+        super(lineNumber, time);
+    }
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    @Override
+    public boolean isCollection() {
+        
+        return false;
+    }
 
-    // append() --------------------------------------------------------------------------------------------------------
+    @Override
+    public String toString() {
 
-    @Test
-    public void append() throws Exception {
-
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
-
-        assertNull(e.getContent());
-
-        e.append("A");
-
-        assertEquals("A", e.getContent());
+        return "?";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

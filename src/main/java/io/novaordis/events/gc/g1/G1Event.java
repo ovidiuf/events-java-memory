@@ -24,39 +24,24 @@ import io.novaordis.events.api.gc.GCEventType;
 import io.novaordis.events.api.gc.model.Heap;
 import io.novaordis.events.api.gc.model.SurvivorSpace;
 import io.novaordis.events.api.gc.model.YoungGeneration;
-import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.StringTokenizer;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class G1Event extends GCEventBase {
+public abstract class G1Event extends GCEventBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(G1Event.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private boolean initialMark;
-
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1Event(Time time) throws ParsingException {
+    public G1Event(Long lineNumber, Time time) {
 
-        this(null, time, null);
-    }
-
-    public G1Event(Long lineNumber, Time time, String rawContent) throws ParsingException {
-
-        super(lineNumber, time, rawContent);
+        super(lineNumber, time);
     }
 
     /**
@@ -99,16 +84,7 @@ public class G1Event extends GCEventBase {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Some of the G1 collection events, such as a regular young collection, or a metadata threshold initiated
-     * collections can also trigger as concurrent cycle initial marks.
-     *
-     * @return true if this is an "concurrent cycle initial mark" event, false otherwise.
-     */
-    public boolean isInitialMark() {
-
-        return initialMark;
-    }
+    public abstract boolean isCollection();
 
     public Long getYoungGenerationOccupancyBefore() {
 
@@ -241,15 +217,14 @@ public class G1Event extends GCEventBase {
     @Override
     public String toString() {
 
-        String s = "";
-        s += getType();
+        G1EventType t = getType();
 
-        if (isInitialMark()) {
+        if (t == null) {
 
-            s += " (initial-mark)";
+            return "UNINITIALIZED";
         }
 
-        return s;
+        return t.toString();
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -341,142 +316,6 @@ public class G1Event extends GCEventBase {
     protected void setType(GCEventType type) {
 
         super.setType(type);
-    }
-
-    @Override
-    protected void parseContent(String rawContent) throws ParsingException {
-
-        if (rawContent == null) {
-
-            return;
-        }
-
-        StringTokenizer st = new StringTokenizer(rawContent, "\n");
-        Long lineNumber = getLineNumber();
-        String firstLine = null;
-
-        GCEventType type = null;
-
-        if (st.hasMoreTokens()) {
-
-            firstLine = st.nextToken();
-        }
-
-        if (firstLine != null) {
-
-            if (firstLine.contains("G1 Evacuation Pause")) {
-
-                if (firstLine.contains("(young)")) {
-
-                    type = G1EventType.YOUNG_GENERATION_COLLECTION;
-                }
-                else if (firstLine.contains("(mixed)")) {
-
-                    type = G1EventType.MIXED_COLLECTION;
-                }
-            }
-            else if (firstLine.contains("Metadata GC Threshold")) {
-
-                if (firstLine.contains("(young)")) {
-
-                    type = G1EventType.METADATA_THRESHOLD_INITIATED_COLLECTION;
-                }
-                else if (firstLine.contains("(mixed)")) {
-
-                    log.warn("line " + lineNumber + ": mixed Metadata GC Threshold");
-                }
-            }
-            else if (firstLine.contains("GCLocker Initiated GC")){
-
-                type = G1EventType.GCLOCKER_INITIATED_COLLECTION;
-            }
-            else if (firstLine.contains("concurrent-root-region-scan-start")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START;
-            }
-            else if (firstLine.contains("concurrent-root-region-scan-end")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END;
-            }
-            else if (firstLine.contains("concurrent-mark-start")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START;
-            }
-            else if (firstLine.contains("concurrent-mark-end")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_END;
-            }
-            else if (firstLine.contains(" remark ")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_REMARK;
-            }
-            else if (firstLine.contains("Finalize Marking")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_FINALIZE_MARKING;
-            }
-            else if (firstLine.contains("ref-proc")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_REF_PROC;
-            }
-            else if (firstLine.contains("Unloading")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_UNLOADING;
-            }
-            else if (firstLine.contains(" cleanup ")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_CLEANUP;
-            }
-            else if (firstLine.contains("concurrent-cleanup-start")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START;
-            }
-            else if (firstLine.contains("concurrent-cleanup-end")) {
-
-                type = G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END;
-            }
-            else {
-
-                log.warn("unknown GS Event type: " + firstLine);
-            }
-
-            //
-            // "initial-mark" attribute
-            //
-
-            if (firstLine.contains("initial-mark")) {
-
-                setInitialMark(true);
-            }
-        }
-
-        setType(type);
-
-        //
-        // parse the rest of the lines and keep track of the line numbers
-        //
-
-        while(st.hasMoreTokens()) {
-
-            String line = st.nextToken();
-
-            lineNumber = lineNumber == null ? null : lineNumber + 1;
-
-            Heap h = HeapSnapshotLine.find(lineNumber, line);
-
-            if (h != null) {
-
-                //
-                // this is a heap snapshot line
-                //
-
-                loadHeapSnapshotProperties(h);
-            }
-        }
-    }
-
-    protected void setInitialMark(boolean b) {
-
-        this.initialMark = b;
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

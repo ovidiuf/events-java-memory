@@ -17,6 +17,8 @@
 package io.novaordis.events.gc.g1.analysis;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.gc.g1.G1Collection;
+import io.novaordis.events.gc.g1.G1CollectionScope;
 import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.events.gc.g1.G1EventType;
 import io.novaordis.utilities.UserErrorException;
@@ -112,35 +114,36 @@ public class G1EventSequenceAnalyzer {
             // no concurrent cycle or event not accepted by the concurrent cycle
             //
 
-            if (e.isInitialMark()) {
+            if (e.isCollection()) {
 
-                //
-                // start a new concurrent cycle, possibly forcibly closing the previous one
-                //
+                G1Collection c = (G1Collection)e;
 
-                if (currentConcurrentCycle != null) {
+                if (c.isInitialMark()) {
 
-                    currentConcurrentCycle.forciblyClose();
-                    concurrentCycles.add(currentConcurrentCycle);
+                    //
+                    // start a new concurrent cycle, possibly forcibly closing the previous one
+                    //
+
+                    if (currentConcurrentCycle != null) {
+
+                        currentConcurrentCycle.forciblyClose();
+                        concurrentCycles.add(currentConcurrentCycle);
+                    }
+
+                    currentConcurrentCycle = new G1ConcurrentCycle();
                 }
 
-                currentConcurrentCycle = new G1ConcurrentCycle();
+                if (G1CollectionScope.YOUNG.equals(c.getCollectionScope())) {
+
+                    youngGenerationCollections.add(e);
+                }
+                else {
+
+                    mixedCollections.add(e);
+                }
             }
 
-            if (G1EventType.YOUNG_GENERATION_COLLECTION.equals(t) ||
-                G1EventType.METADATA_THRESHOLD_INITIATED_COLLECTION.equals(t) ||
-                G1EventType.GCLOCKER_INITIATED_COLLECTION.equals(t)) {
-
-                youngGenerationCollections.add(e);
-            }
-            else if (G1EventType.MIXED_COLLECTION.equals(t) ) {
-
-                mixedCollections.add(e);
-            }
-            else {
-
-                log.warn("line " + e.getLineNumber() + ": encountered " + e + " outside a concurrent cycle");
-            }
+            log.warn("line " + e.getLineNumber() + ": encountered " + e + " outside a concurrent cycle");
         }
     }
 

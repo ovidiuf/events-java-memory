@@ -38,11 +38,10 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public GCEventBase(Long lineNumber, Time time, String rawContent) throws ParsingException {
+    public GCEventBase(Long lineNumber, Time time) {
 
         this.time = time;
         setLineNumber(lineNumber);
-        parseContent(rawContent);
     }
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------
@@ -64,11 +63,6 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
-
-    /**
-     * @param rawContent may be null, so the situation must be handled without throwing an exception.
-     */
-    protected abstract void parseContent(String rawContent) throws ParsingException;
 
     // Protected -------------------------------------------------------------------------------------------------------
 

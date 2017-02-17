@@ -29,75 +29,97 @@ public enum G1EventType implements GCEventType {
     //
     // stops application threads
     //
-    YOUNG_GENERATION_COLLECTION,
+    // this kind of event is characterized by its scope (G1CollectionScope) and trigger (see G1CollectionTrigger)
+    //
+
+    COLLECTION,
 
     //
     // the beginning of the concurrent cycle is a young collection that was marked as such; it stops application threads
     //
 
-
-
-
     //
     // does not stop the app threads
     // however, young generation collection cannot happen during this phase
     //
-    CONCURRENT_CYCLE_ROOT_REGION_SCAN_START,
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_START("concurrent-root-region-scan-start"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_ROOT_REGION_SCAN_END,
+    CONCURRENT_CYCLE_ROOT_REGION_SCAN_END("concurrent-root-region-scan-end"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_CONCURRENT_MARK_START,
+    CONCURRENT_CYCLE_CONCURRENT_MARK_START("concurrent-mark-start"),
 
     //
     // does not stop the app threads
     //
-    CONCURRENT_CYCLE_CONCURRENT_MARK_END,
+    CONCURRENT_CYCLE_CONCURRENT_MARK_END("concurrent-mark-end"),
 
 
     //
     // stops application threads
     //
-    CONCURRENT_CYCLE_REMARK,
-    CONCURRENT_CYCLE_FINALIZE_MARKING,
-    CONCURRENT_CYCLE_REF_PROC,
-    CONCURRENT_CYCLE_UNLOADING,
+    CONCURRENT_CYCLE_REMARK(" remark "),
+    CONCURRENT_CYCLE_FINALIZE_MARKING("Finalize Marking"),
+    CONCURRENT_CYCLE_REF_PROC("ref-proc"),
+    CONCURRENT_CYCLE_UNLOADING("Unloading"),
 
     //
     // stops application threads
     //
-    CONCURRENT_CYCLE_CLEANUP,
+    CONCURRENT_CYCLE_CLEANUP(" cleanup "),
 
     //
     // does not stop the app threads
     // sometimes does not occur
     //
-    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START,
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START("concurrent-cleanup-start"),
 
     //
     // does not stop the app threads
     // sometimes does not occur
     //
-    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END,
+    CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END("concurrent-cleanup-end"),
 
-    //
-    // stops application threads
-    // occurs after the concurrent cycle is complete
-    //
-    MIXED_COLLECTION,
-
-
-    METADATA_THRESHOLD_INITIATED_COLLECTION,
-
-    GCLOCKER_INITIATED_COLLECTION,
     ;
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * Attempts to find an event type marker on the line and returns the corresponding enum instance. If more than one
+     * known marker are present, the current implementation returns the one that was declared first in this class.
+     * If no event trigger is identified, the method returns null.
+     */
+    static G1EventType find(String line) {
+
+        if (line == null) {
+
+            return null;
+        }
+
+        for(G1EventType t: values()) {
+
+            String marker = t.getLogMarker();
+
+            if (marker == null) {
+
+                continue;
+            }
+
+            int i = line.indexOf(marker);
+
+            if (i != -1) {
+
+                return t;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * @return null if the external value is not among the known values.
@@ -115,12 +137,33 @@ public enum G1EventType implements GCEventType {
         return null;
     }
 
+    // Attributes ------------------------------------------------------------------------------------------------------
+
+    private String logMarker;
+
+    // Constructors ----------------------------------------------------------------------------------------------------
+
+    G1EventType() {
+
+        this(null);
+    }
+
+    G1EventType(String logMarker) {
+
+        this.logMarker = logMarker;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     @Override
     public String toExternalValue() {
 
         return toString();
+    }
+
+    public String getLogMarker() {
+
+        return logMarker;
     }
 
 }

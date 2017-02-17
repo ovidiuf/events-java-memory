@@ -16,16 +16,18 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public class RawGCEventTest {
+public class G1ConcurrentCycleEventTest extends G1EventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -39,23 +41,37 @@ public class RawGCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    // append() --------------------------------------------------------------------------------------------------------
+    @Test
+    public void setType_getType() throws Exception {
+
+        G1ConcurrentCycleEvent e = getEventToTest();
+
+        G1EventType et = e.getType();
+        assertNull(et);
+
+        e.setType(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START);
+
+        G1EventType et2 = e.getType();
+        assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START, et2);
+    }
 
     @Test
-    public void append() throws Exception {
+    public void isCollection() throws Exception {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
-
-        assertNull(e.getContent());
-
-        e.append("A");
-
-        assertEquals("A", e.getContent());
+        G1ConcurrentCycleEvent e = getEventToTest();
+        assertFalse(e.isCollection());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected G1ConcurrentCycleEvent getEventToTest() throws Exception {
+
+        Time t = new Time(new TimestampImpl(1001L), 0L);
+        return new G1ConcurrentCycleEvent(2002L, t);
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

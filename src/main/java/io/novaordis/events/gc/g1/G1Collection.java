@@ -16,16 +16,11 @@
 
 package io.novaordis.events.gc.g1;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public class RawGCEventTest {
+public class G1Collection extends G1Event {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -35,27 +30,66 @@ public class RawGCEventTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public G1Collection(Long lineNumber, Time time) {
+
+        super(lineNumber, time);
+    }
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    @Override
+    public boolean isCollection() {
 
-    // append() --------------------------------------------------------------------------------------------------------
+        return true;
+    }
 
-    @Test
-    public void append() throws Exception {
+    public G1CollectionTrigger getCollectionTrigger() {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
+        throw new RuntimeException("NYE");
+    }
 
-        assertNull(e.getContent());
+    public G1CollectionScope getCollectionScope() {
 
-        e.append("A");
+        throw new RuntimeException("NYE");
+    }
 
-        assertEquals("A", e.getContent());
+    /**
+     * Some of the G1 collection events, such as a regular young collection, or a metadata threshold initiated
+     * collections can also trigger as concurrent cycle initial marks.
+     *
+     * @return true if this is an "concurrent cycle initial mark" event, false otherwise.
+     */
+    public boolean isInitialMark() {
+
+        throw new RuntimeException("NYE");
+    }
+
+    @Override
+    public String toString() {
+
+        String s = "";
+        s += getType();
+
+        if (isInitialMark()) {
+
+            s += " (initial-mark)";
+        }
+
+        return s;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    void setInitialMark(boolean b) {
+
+        throw new RuntimeException("NYE");
+    }
+
+    void setCollectionScope(G1CollectionScope scope) {
+
+        throw new RuntimeException("NYE");
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

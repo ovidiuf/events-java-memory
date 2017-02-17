@@ -31,15 +31,6 @@ public class RawGCEvent {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static GCEvent toGCEvent(RawGCEvent re) throws ParsingException {
-
-        Time t = re.getTime();
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
-
-        return new G1Event(lineNumber, t, rawContent);
-    }
-
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private Time time;
@@ -106,6 +97,11 @@ public class RawGCEvent {
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
+
+    void setContent(String content) {
+
+        this.content = content;
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

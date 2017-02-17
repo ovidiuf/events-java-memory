@@ -14,34 +14,47 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.gc;
+package io.novaordis.events.gc.g1;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public abstract class GCEventTest {
+public enum G1CollectionScope {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    YOUNG("young"),
+    MIXED("mixed"),
+    ;
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    // Constructors ----------------------------------------------------------------------------------------------------
+    private String logMarker;
+
+    // Constructor -----------------------------------------------------------------------------------------------------
+
+    G1CollectionScope() {
+
+        this(null);
+    }
+
+    /**
+     * @param logMarker The string marker that identifies this scope in the GC logs.
+     *
+     */
+    G1CollectionScope(String logMarker) {
+
+        this.logMarker = logMarker;
+    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    public String getLogMarker() {
 
-    // Package protected -----------------------------------------------------------------------------------------------
-
-    // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract GCEvent getEventToTest() throws Exception ;
-
-    // Private ---------------------------------------------------------------------------------------------------------
-
-    // Inner classes ---------------------------------------------------------------------------------------------------
+        return logMarker;
+    }
 
 }
