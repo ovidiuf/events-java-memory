@@ -17,7 +17,6 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.gc.g1.analysis.G1EventSequenceAnalyzer;
 import io.novaordis.utilities.time.Timestamp;
 
 import java.io.BufferedReader;
@@ -83,8 +82,20 @@ public class Main {
         List<Event> es = p.close();
         gcEvents.addAll(es);
 
-        G1EventSequenceAnalyzer analyzer = new G1EventSequenceAnalyzer(gcEvents);
-        analyzer.displayStatistics();
+        //
+        // build the history
+        //
+
+        G1History history = new G1History();
+
+        for(Event e: gcEvents) {
+
+            history.update((G1Event)e);
+        }
+
+        String s = history.getStatistics();
+        System.out.println(s);
+
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------

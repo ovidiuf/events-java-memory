@@ -16,11 +16,14 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.gc.GCHistoryTest;
+import org.junit.Test;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1ConcurrentCycleEvent extends G1Event {
+public class G1HistoryTest extends GCHistoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -30,32 +33,25 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
-
-        this(lineNumber, time, null);
-    }
-
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
-
-        super(lineNumber, time);
-        setType(type);
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public boolean isCollection() {
-        
-        return false;
-    }
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString() {
+    // concurrent cycle detection --------------------------------------------------------------------------------------
 
-        return "" + getType().getDisplayLabel();
+    @Test
+    public void concurrentCycleDetection() throws Exception {
+
+
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
+
+    @Override
+    protected G1History getGCHistoryToTest() {
+
+        return new G1History();
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

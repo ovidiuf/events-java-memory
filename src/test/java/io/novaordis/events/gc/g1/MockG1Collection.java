@@ -16,11 +16,14 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.gc.MockGCEvent;
+import io.novaordis.utilities.time.TimestampImpl;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1ConcurrentCycleEvent extends G1Event {
+public class MockG1Collection extends G1Collection {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -30,30 +33,12 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
+    public MockG1Collection(long lineNumber, long time, G1CollectionTrigger trigger) {
 
-        this(lineNumber, time, null);
-    }
-
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
-
-        super(lineNumber, time);
-        setType(type);
+        super(lineNumber, new Time(new TimestampImpl(time), null), trigger);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
-
-    @Override
-    public boolean isCollection() {
-        
-        return false;
-    }
-
-    @Override
-    public String toString() {
-
-        return "" + getType().getDisplayLabel();
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

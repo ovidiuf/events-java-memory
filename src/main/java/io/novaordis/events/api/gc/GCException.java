@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1.analysis;
+package io.novaordis.events.api.gc;
+
+import io.novaordis.utilities.LineNumberException;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1EventSequenceAnalyzerTest {
+public class GCException extends LineNumberException {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -30,9 +32,31 @@ public class G1EventSequenceAnalyzerTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    // Public ----------------------------------------------------------------------------------------------------------
+    public GCException(String message) {
+        super(message);
+    }
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    public GCException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public GCException(String message, Long lineNumber) {
+        super(message, lineNumber);
+    }
+
+    public GCException(String message, Throwable cause, Long lineNumber) {
+        super(message, cause, lineNumber);
+    }
+
+    public GCException(String message, Long lineNumber, Integer positionInLine) {
+        super(message, lineNumber, positionInLine);
+    }
+
+    public GCException(String message, Throwable cause, Long lineNumber, Integer positionInLine) {
+        super(message, cause, lineNumber, positionInLine);
+    }
+
+    // Public ----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 

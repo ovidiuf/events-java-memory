@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc;
 
 /**
+ * The interface defining the contract for the logic of analyzing a GC event sequence in search of problems.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1ConcurrentCycleEvent extends G1Event {
+public interface GCHistory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -30,30 +32,16 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
-
-        this(lineNumber, time, null);
-    }
-
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
-
-        super(lineNumber, time);
-        setType(type);
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public boolean isCollection() {
-        
-        return false;
-    }
+    /**
+     * The events must be sent to the history instance in their natural sequence.
+     *
+     * The sub-classes must first call super.update()
+     */
+    void update(GCEvent event) throws GCException;
 
-    @Override
-    public String toString() {
-
-        return "" + getType().getDisplayLabel();
-    }
+    String getStatistics();
 
     // Package protected -----------------------------------------------------------------------------------------------
 

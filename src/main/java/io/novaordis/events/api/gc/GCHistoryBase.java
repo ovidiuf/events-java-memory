@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1ConcurrentCycleEvent extends G1Event {
+public abstract class GCHistoryBase implements GCHistory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -28,34 +28,51 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private GCEvent last;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
+    protected  GCHistoryBase() {
 
-        this(lineNumber, time, null);
+        this.last = null;
     }
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
+    // GCHistory implementation ----------------------------------------------------------------------------------------
 
-        super(lineNumber, time);
-        setType(type);
+    @Override
+    public void update(GCEvent event) throws GCException {
+
+        if (last != null) {
+            
+            //
+            // compare the timestamps and fail if event we're handling is older than the last event
+            //
+
+            long lastTime = last.getTime();
+            long ourTime = event.getTime();
+
+            if (ourTime < lastTime) {
+
+                throw new GCException(event + " is older than the last processed event " + last);
+            }
+        }
+
+        setLast(event);
+
+        //
+        // otherwise a noop
+        //
+
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public boolean isCollection() {
-        
-        return false;
-    }
-
-    @Override
-    public String toString() {
-
-        return "" + getType().getDisplayLabel();
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
+
+    void setLast(GCEvent e) {
+
+        this.last = e;
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

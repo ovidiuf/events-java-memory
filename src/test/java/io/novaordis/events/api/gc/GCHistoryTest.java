@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.api.gc;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1ConcurrentCycleEvent extends G1Event {
+public abstract class GCHistoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(GCHistoryTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -30,34 +38,38 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
-
-        this(lineNumber, time, null);
-    }
-
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
-
-        super(lineNumber, time);
-        setType(type);
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public boolean isCollection() {
-        
-        return false;
-    }
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString() {
+    @Test
+    public void detectEventsThatAreNotSentInSequence() throws Exception {
 
-        return "" + getType().getDisplayLabel();
+        GCHistory h = getGCHistoryToTest();
+
+        MockGCEvent me = new MockGCEvent(100L, 10L);
+
+        h.update(me);
+
+        MockGCEvent me2 = new MockGCEvent(101L, 9L);
+
+        try {
+
+            h.update(me2);
+            fail("should throw Exception");
+        }
+        catch(GCException e) {
+
+            String msg = e.getMessage();
+            log.info(msg);
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    protected abstract GCHistory getGCHistoryToTest();
 
     // Private ---------------------------------------------------------------------------------------------------------
 
