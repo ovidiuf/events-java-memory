@@ -39,6 +39,10 @@ public interface GCParser {
      */
     static GCParser buildInstance(File f) throws Exception {
 
+        //
+        // look for the "CommandLine flags" line if available and give up after the third line if not found
+        //
+
         throw new RuntimeException("NOT YET IMPLEMENTED");
 
     }
