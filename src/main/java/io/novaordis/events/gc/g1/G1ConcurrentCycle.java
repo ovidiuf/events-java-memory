@@ -16,7 +16,7 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.gc.GCException;
+import io.novaordis.events.api.gc.GCParsingException;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -61,16 +61,16 @@ public class G1ConcurrentCycle {
      *
      * @see G1ConcurrentCycle#isFinished()
      *
-     * @exception GCException if the the event is not the expected one, or the cycle was finished.
+     * @exception GCParsingException if the the event is not the expected one, or the cycle was finished.
      *
      */
-    public boolean update(G1Event event) throws GCException {
+    public boolean update(G1Event event) throws GCParsingException {
 
         failIfOlderThanLast(event);
 
         if (isFinished()) {
 
-            throw new GCException(this + " is finished");
+            throw new GCParsingException(this + " is finished");
         }
 
         if (event.isCollection()) {
@@ -90,7 +90,7 @@ public class G1ConcurrentCycle {
 
         if (!event.getType().equals(expected)) {
 
-            throw new GCException(this + " expecting " + expected + " but got " + event.getType());
+            throw new GCParsingException(this + " expecting " + expected + " but got " + event.getType());
         }
 
         setLastEvent(event);
@@ -115,7 +115,7 @@ public class G1ConcurrentCycle {
 
     // Package protected -----------------------------------------------------------------------------------------------
 
-    void failIfOlderThanLast(G1Event event) throws GCException {
+    void failIfOlderThanLast(G1Event event) throws GCParsingException {
 
         if (last == null) {
 
@@ -124,7 +124,7 @@ public class G1ConcurrentCycle {
 
         if (last.getTime() > event.getTime()) {
 
-            throw new GCException(event + " is older than the last processed event " + last);
+            throw new GCParsingException(event + " is older than the last processed event " + last);
         }
     }
 

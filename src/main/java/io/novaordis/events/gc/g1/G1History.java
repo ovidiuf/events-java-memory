@@ -17,7 +17,7 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.gc.GCException;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.gc.GCHistoryBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class G1History extends GCHistoryBase {
     // Overrides -------------------------------------------------------------------------------------------------------
 
     @Override
-    public void update(GCEvent event) throws GCException {
+    public void update(GCEvent event) throws GCParsingException {
 
         super.update(event);
 
@@ -116,7 +116,7 @@ public class G1History extends GCHistoryBase {
             // concurrent cycle event outside a cycle
             //
 
-            throw new GCException(g1e + " outside a concurrent cycle");
+            throw new GCParsingException(g1e + " outside a concurrent cycle");
         }
     }
 

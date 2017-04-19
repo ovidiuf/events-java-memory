@@ -39,7 +39,7 @@ public interface GCHistory {
      *
      * The sub-classes must first call super.update()
      */
-    void update(GCEvent event) throws GCException;
+    void update(GCEvent event) throws GCParsingException;
 
     String getStatistics();
 

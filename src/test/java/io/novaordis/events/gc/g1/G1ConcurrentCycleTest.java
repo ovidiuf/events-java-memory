@@ -16,7 +16,7 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.gc.GCException;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public class G1ConcurrentCycleTest {
             c.failIfOlderThanLast(e2);
             fail("should throw exception");
         }
-        catch(GCException ge) {
+        catch(GCParsingException ge) {
 
             String msg = ge.getMessage();
             log.info(msg);

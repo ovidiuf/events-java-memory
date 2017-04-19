@@ -18,8 +18,8 @@ package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.MultiLineParserBase;
-import io.novaordis.events.api.parser.ParsingException;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
 
@@ -64,7 +64,7 @@ public class G1Parser extends MultiLineParserBase {
      * @return the start marker or null if no marker has been identified.
      */
     public static GCEventStartMarker identifyGCEventStartMarker(String line, GCEventStartMarker current)
-            throws ParsingException {
+            throws GCParsingException {
 
         int from = current == null ? 0 : current.getContentStart();
 
@@ -94,7 +94,7 @@ public class G1Parser extends MultiLineParserBase {
         }
         catch (ParseException e) {
 
-            throw new ParsingException("failed to parse date stamp \"" + dateStamp + "\" into a date", e);
+            throw new GCParsingException("failed to parse date stamp \"" + dateStamp + "\" into a date", e);
         }
 
         String rest = interestingSection.substring(m.start() + dateStamp.length());
@@ -131,7 +131,7 @@ public class G1Parser extends MultiLineParserBase {
         return new GCEventStartMarker(t, from + m.start(), contentStart);
     }
 
-    public static List<Event> toEventList(List<RawGCEvent> rawGCEvents) throws ParsingException {
+    public static List<Event> toEventList(List<RawGCEvent> rawGCEvents) throws GCParsingException {
 
         if (rawGCEvents.isEmpty()) {
 
@@ -167,14 +167,14 @@ public class G1Parser extends MultiLineParserBase {
     // MultiLineParser implementation ----------------------------------------------------------------------------------
 
     @Override
-    public List<Event> parse(String line) throws ParsingException {
+    public List<Event> parse(String line) throws GCParsingException {
 
         List<RawGCEvent> rawGCEvents = processLine(line);
         return toEventList(rawGCEvents);
     }
 
     @Override
-    public List<Event> close() throws ParsingException {
+    public List<Event> close() throws GCParsingException {
 
         List<RawGCEvent> rawGCEvents = closeInternal();
         return toEventList(rawGCEvents);
@@ -186,7 +186,7 @@ public class G1Parser extends MultiLineParserBase {
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    List<RawGCEvent> processLine(String line) throws ParsingException {
+    List<RawGCEvent> processLine(String line) throws GCParsingException {
 
         incrementLineNumber();
 

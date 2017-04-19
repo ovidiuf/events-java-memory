@@ -58,7 +58,7 @@ public abstract class GCHistoryTest {
             h.update(me2);
             fail("should throw Exception");
         }
-        catch(GCException e) {
+        catch(GCParsingException e) {
 
             String msg = e.getMessage();
             log.info(msg);

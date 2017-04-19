@@ -17,6 +17,7 @@
 package io.novaordis.events.api.parser;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCParsingException;
 
 import java.io.File;
 import java.util.List;
@@ -35,9 +36,9 @@ public interface GCParser {
      * Contains heuristics that attempts to guess the collector type and build the corresponding parser based on a
      * quick examination of the content of the file. No parsing is actually done.
      *
-     * @exception Exception on any kind of trouble.
+     * @exception GCParsingException on any kind of trouble.
      */
-    static GCParser buildInstance(File f) throws Exception {
+    static GCParser buildInstance(File f) throws GCParsingException {
 
         //
         // look for the "CommandLine flags" line if available and give up after the third line if not found
@@ -52,14 +53,14 @@ public interface GCParser {
     /**
      * @return may return an empty list but never null.
      */
-    List<Event> parse(String line) throws ParsingException;
+    List<Event> parse(String line) throws GCParsingException;
 
     /**
      * Processes the remaining accumulated state and closes the parser. A parser that was closed cannot be re-used.
      *
      * @return may return an empty list but never null.
      */
-    List<Event> close() throws ParsingException;
+    List<Event> close() throws GCParsingException;
 
 
 }

@@ -16,11 +16,13 @@
 
 package io.novaordis.events.api.gc;
 
+import io.novaordis.events.api.parser.ParsingException;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public abstract class GCHistoryBase implements GCHistory {
+public class GCParsingException extends ParsingException {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -28,51 +30,35 @@ public abstract class GCHistoryBase implements GCHistory {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private GCEvent last;
-
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    protected  GCHistoryBase() {
-
-        this.last = null;
+    public GCParsingException(String message) {
+        super(message);
     }
 
-    // GCHistory implementation ----------------------------------------------------------------------------------------
+    public GCParsingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    @Override
-    public void update(GCEvent event) throws GCParsingException {
+    public GCParsingException(String message, Long lineNumber) {
+        super(message, lineNumber);
+    }
 
-        if (last != null) {
-            
-            //
-            // compare the timestamps and fail if event we're handling is older than the last event
-            //
+    public GCParsingException(String message, Throwable cause, Long lineNumber) {
+        super(message, cause, lineNumber);
+    }
 
-            long lastTime = last.getTime();
-            long ourTime = event.getTime();
+    public GCParsingException(String message, Long lineNumber, Integer positionInLine) {
+        super(message, lineNumber, positionInLine);
+    }
 
-            if (ourTime < lastTime) {
-
-                throw new GCParsingException(event + " is older than the last processed event " + last);
-            }
-        }
-
-        setLast(event);
-
-        //
-        // otherwise a noop
-        //
-
+    public GCParsingException(String message, Throwable cause, Long lineNumber, Integer positionInLine) {
+        super(message, cause, lineNumber, positionInLine);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
-
-    void setLast(GCEvent e) {
-
-        this.last = e;
-    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

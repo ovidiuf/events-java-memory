@@ -16,8 +16,8 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.gc.model.Heap;
-import io.novaordis.events.api.parser.ParsingException;
 import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
 
 import java.util.StringTokenizer;
@@ -34,7 +34,7 @@ public class G1EventFactory {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static G1Event build(RawGCEvent re) throws ParsingException {
+    public static G1Event build(RawGCEvent re) throws GCParsingException {
 
         if (re == null) {
 
@@ -94,7 +94,7 @@ public class G1EventFactory {
             }
             else {
 
-                throw new ParsingException(
+                throw new GCParsingException(
                         "no collection trigger or a concurrent cycle event marker found on the first line of the event",
                         lineNumber, 0);
             }

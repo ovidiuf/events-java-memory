@@ -16,13 +16,15 @@
 
 package io.novaordis.events.api.gc;
 
-import io.novaordis.utilities.LineNumberException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/16/17
+ * @since 4/19/17
  */
-public class GCException extends LineNumberException {
+public class GCParsingExceptionTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -32,31 +34,23 @@ public class GCException extends LineNumberException {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public GCException(String message) {
-        super(message);
-    }
-
-    public GCException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public GCException(String message, Long lineNumber) {
-        super(message, lineNumber);
-    }
-
-    public GCException(String message, Throwable cause, Long lineNumber) {
-        super(message, cause, lineNumber);
-    }
-
-    public GCException(String message, Long lineNumber, Integer positionInLine) {
-        super(message, lineNumber, positionInLine);
-    }
-
-    public GCException(String message, Throwable cause, Long lineNumber, Integer positionInLine) {
-        super(message, cause, lineNumber, positionInLine);
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
+
+    // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void lineNumber() throws Exception {
+
+        try {
+
+            throw new GCParsingException("test", 10L);
+        }
+        catch(GCParsingException e) {
+
+            assertEquals("test", e.getMessage());
+            assertEquals(10L, e.getLineNumber().longValue());
+        }
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
