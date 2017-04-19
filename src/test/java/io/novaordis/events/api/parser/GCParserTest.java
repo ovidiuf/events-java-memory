@@ -16,7 +16,21 @@
 
 package io.novaordis.events.api.parser;
 
+import io.novaordis.events.api.gc.GCParsingException;
+import io.novaordis.events.gc.CollectorType;
+import io.novaordis.events.gc.g1.G1Parser;
+import io.novaordis.events.gc.parallel.ParallelGCParser;
+import io.novaordis.utilities.Files;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -30,19 +44,118 @@ public abstract class GCParserTest {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    protected File scratchDirectory;
+    protected File baseDirectory;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    @Before
+    public void before() throws Exception {
+
+        String projectBaseDirName = System.getProperty("basedir");
+        scratchDirectory = new File(projectBaseDirName, "target/test-scratch");
+        assertTrue(scratchDirectory.isDirectory());
+
+        baseDirectory = new File(System.getProperty("basedir"));
+        assertTrue(baseDirectory.isDirectory());
+    }
+
+    @After
+    public void after() throws Exception {
+
+        //
+        // scratch directory cleanup
+        //
+
+        assertTrue(io.novaordis.utilities.Files.rmdir(scratchDirectory, false));
+
+    }
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
     // buildInstance() -------------------------------------------------------------------------------------------------
 
     @Test
-    public void buildInstance_UnrecognizedCollectorType() throws Exception {
+    public void buildInstance_NullCollectorType() throws Exception {
 
+        try {
 
+            GCParser.buildInstance((CollectorType)null);
+            fail("should throw exception");
+        }
+        catch(IllegalArgumentException e) {
 
+            String msg = e.getMessage();
+            assert(msg.contains("null collector type"));
+        }
+    }
+
+    @Test
+    public void buildInstance_Parallel() throws Exception {
+
+        GCParser p = GCParser.buildInstance(CollectorType.Parallel);
+
+        assertNotNull(p);
+        assertTrue(p instanceof ParallelGCParser);
+    }
+
+    @Test
+    public void buildInstance_G1() throws Exception {
+
+        GCParser p = GCParser.buildInstance(CollectorType.G1);
+
+        assertNotNull(p);
+        assertTrue(p instanceof G1Parser);
+    }
+
+    @Test
+    public void buildInstance_File_Parallel() throws Exception {
+
+        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
+        assertTrue(logFile.isFile());
+
+        GCParser p = GCParser.buildInstance(logFile);
+
+        assertNotNull(p);
+        assertTrue(p instanceof ParallelGCParser);
+    }
+
+    @Test
+    public void buildInstance_File_G1() throws Exception {
+
+        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_74-G1-windows-1.log");
+        assertTrue(logFile.isFile());
+
+        GCParser p = GCParser.buildInstance(logFile);
+
+        assertNotNull(p);
+        assertTrue(p instanceof G1Parser);
+    }
+
+    @Test
+    public void buildInstance_File_UnrecognizedCollectorType() throws Exception {
+
+        String content =
+                "this is some random multi-line text\n" +
+                        "that has nothing to do with a GC log\n" +
+                        "and that is expected\nto cause the CollectorType.find() heuristic\n" +
+                        "to return null";
+
+        File logFile = new File(scratchDirectory, "something.log");
+        assertTrue(Files.write(logFile, content));
+
+        try {
+
+            GCParser.buildInstance(logFile);
+            fail("should throw exception");
+        }
+        catch(GCParsingException e) {
+
+            String msg = e.getMessage();
+            assert(msg.contains("no known collector type can be inferred"));
+        }
 
     }
 

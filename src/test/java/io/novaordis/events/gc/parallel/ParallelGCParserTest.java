@@ -14,85 +14,29 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc;
+package io.novaordis.events.gc.parallel;
 
-import java.io.BufferedReader;
+import io.novaordis.events.api.parser.MultiLineGCParserTest;
+import org.junit.After;
+import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 4/19/17
+ * @since 2/14/17
  */
-public enum  CollectorType {
+public class ParallelGCParserTest extends MultiLineGCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    G1,
-    Parallel,
-    CMS,
-    ;
-
-    private static final int LINE_COUNT = 4;
+    private static final Logger log = LoggerFactory.getLogger(ParallelGCParserTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
-
-    /**
-     * Contains heuristics that attempts to guess the collector type based on a quick examination of the content of the
-     * file. No GC event parsing is actually done.
-     *
-     * @exception IOException on failure to handle the file
-     *
-     * @return null if no known collector type is detected.
-     */
-    public static CollectorType find(File f) throws IOException {
-
-        if (f == null) {
-
-            return null;
-        }
-
-        BufferedReader br = null;
-
-        CollectorType t = null;
-
-        try {
-
-            br = new BufferedReader(new FileReader(f));
-
-            int lineNumber = 0;
-
-            while(t == null && lineNumber < 4) {
-
-                lineNumber ++;
-
-                String line = br.readLine();
-
-                if (lineNumber == 3 && line.startsWith("CommandLine flags:")) {
-
-                    if (line.contains("-XX:+UseParallelGC")) {
-
-                        t = Parallel;
-                    }
-                    else if (line.contains("-XX:+UseG1GC")) {
-
-                        t = G1;
-                    }
-                }
-            }
-        }
-        finally {
-
-            if (br != null) {
-
-                br.close();
-            }
-        }
-
-
-        return t;
-    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
@@ -100,9 +44,17 @@ public enum  CollectorType {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    // Tests -----------------------------------------------------------------------------------------------------------
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected ParallelGCParser getGCParserToTest() throws Exception {
+
+        return new ParallelGCParser();
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 
