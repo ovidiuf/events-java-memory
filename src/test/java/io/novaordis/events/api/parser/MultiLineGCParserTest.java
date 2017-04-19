@@ -20,8 +20,7 @@ package io.novaordis.events.api.parser;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public abstract class MultiLineParserBase implements MultiLineGCParser {
-
+public abstract class MultiLineGCParserTest extends GCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -29,43 +28,18 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private long lineNumber;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    protected MultiLineParserBase() {
-
-        this.lineNumber = 0;
-    }
-
-    // MultiLineParser implementation ----------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Current line number.
-     */
-    public long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    /**
-     * The number of lines parsed so far.
-     */
-    public long getParsedLineCount() {
-
-        return lineNumber;
-    }
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected void incrementLineNumber() {
-
-        lineNumber ++;
-    }
+    @Override
+    protected abstract MultiLineGCParser getGCParserToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

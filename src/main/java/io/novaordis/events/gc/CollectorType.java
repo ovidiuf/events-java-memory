@@ -14,58 +14,32 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.api.parser;
+package io.novaordis.events.gc;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 4/19/17
  */
-public abstract class MultiLineParserBase implements MultiLineGCParser {
-
+public enum  CollectorType {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    G1,
+    Parallel,
+    CMS,
+    ;
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private long lineNumber;
-
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    protected MultiLineParserBase() {
-
-        this.lineNumber = 0;
-    }
-
-    // MultiLineParser implementation ----------------------------------------------------------------------------------
-
     // Public ----------------------------------------------------------------------------------------------------------
-
-    /**
-     * Current line number.
-     */
-    public long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    /**
-     * The number of lines parsed so far.
-     */
-    public long getParsedLineCount() {
-
-        return lineNumber;
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected void incrementLineNumber() {
-
-        lineNumber ++;
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

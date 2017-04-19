@@ -17,7 +17,7 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.parser.MultiLineParserTest;
+import io.novaordis.events.api.parser.MultiLineGCParserTest;
 import io.novaordis.utilities.time.Timestamp;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class G1ParserTest extends MultiLineParserTest {
+public class G1ParserTest extends MultiLineGCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -275,7 +275,7 @@ public class G1ParserTest extends MultiLineParserTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected G1Parser getMultiLineParserToTest() throws Exception {
+    protected G1Parser getGCParserToTest() throws Exception {
 
         return new G1Parser();
     }

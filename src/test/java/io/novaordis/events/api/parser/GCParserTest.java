@@ -18,9 +18,9 @@ package io.novaordis.events.api.parser;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 4/19/17
  */
-public abstract class MultiLineParserTest {
+public abstract class GCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -32,13 +32,11 @@ public abstract class MultiLineParserTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected abstract MultiLineParser getMultiLineParserToTest() throws Exception;
+    protected abstract GCParser getGCParserToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 
