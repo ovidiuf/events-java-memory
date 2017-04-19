@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/g1-parser.iml" filepath="$PROJECT_DIR$/g1-parser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-parser.iml" filepath="$PROJECT_DIR$/gc-parser.iml" />
     </modules>
   </component>
 </project>

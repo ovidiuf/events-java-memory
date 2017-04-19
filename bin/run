@@ -41,7 +41,6 @@ function get-novaordis-utilities() {
     echo ${version}
 }
 
-
 function main() {
 
     local args;
