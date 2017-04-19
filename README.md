@@ -1,4 +1,5 @@
-# events-g1-parser
-Temporary project for a G1 Parser. Will be merged into events/events-api
+# events-gc-parser
 
-https://kb.novaordis.com/index.php/Events-g1-parser
+Temporary project for a GC parser that works with G1 and Parallel GC-generated logs.. Will be merged into events/events-api
+
+https://kb.novaordis.com/index.php/Events-gc-parser
