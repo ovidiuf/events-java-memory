@@ -18,6 +18,7 @@ package io.novaordis.events.api.parser;
 
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCParsingException;
+import io.novaordis.events.gc.CollectorType;
 
 import java.io.File;
 import java.util.List;
@@ -31,6 +32,11 @@ public interface GCParser {
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    static GCParser buildInstance(CollectorType t) throws GCParsingException {
+
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+    }
 
     /**
      * Contains heuristics that attempts to guess the collector type and build the corresponding parser based on a

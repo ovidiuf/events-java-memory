@@ -39,7 +39,9 @@ public abstract class GCParserTest {
     // buildInstance() -------------------------------------------------------------------------------------------------
 
     @Test
-    public void buildInstance() throws Exception {
+    public void buildInstance_UnrecognizedCollectorType() throws Exception {
+
+
 
 
     }

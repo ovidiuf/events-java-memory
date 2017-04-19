@@ -16,6 +16,11 @@
 
 package io.novaordis.events.gc;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 4/19/17
@@ -29,7 +34,65 @@ public enum  CollectorType {
     CMS,
     ;
 
+    private static final int LINE_COUNT = 4;
+
     // Static ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * Contains heuristics that attempts to guess the collector type based on a quick examination of the content of the
+     * file. No GC event parsing is actually done.
+     *
+     * @exception IOException on failure to interact with the file
+     *
+     * @return null if no known collector type is detected.
+     */
+    static CollectorType find(File f) throws IOException {
+
+        if (f == null) {
+
+            return null;
+        }
+
+        BufferedReader br = null;
+
+        CollectorType t = null;
+
+        try {
+
+            br = new BufferedReader(new FileReader(f));
+
+            int lineNumber = 0;
+
+            while(t == null && lineNumber < 4) {
+
+                lineNumber ++;
+
+                String line = br.readLine();
+
+                if (lineNumber == 3 && line.startsWith("CommandLine flags:")) {
+
+                    if (line.contains("-XX:+UseParallelGC")) {
+
+                        t = Parallel;
+                    }
+                    else if (line.contains("-XX:+UseG1GC")) {
+
+                        t = G1;
+                    }
+                }
+            }
+        }
+        finally {
+
+            if (br != null) {
+
+                br.close();
+            }
+        }
+
+
+        return t;
+    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
