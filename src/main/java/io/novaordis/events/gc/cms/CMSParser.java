@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.parallel;
+package io.novaordis.events.gc.cms;
 
-import io.novaordis.events.api.parser.GCParser;
-import io.novaordis.events.api.parser.MultiLineGCParserTest;
-import io.novaordis.events.gc.CollectorType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCParsingException;
+import io.novaordis.events.api.parser.MultiLineParserBase;
 
-import java.io.File;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
 /**
+ *
+ * Not thread safe - must be accessed by a single thread.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class ParallelGCParserTest extends MultiLineGCParserTest {
+public class CMSParser extends MultiLineParserBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(ParallelGCParserTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -46,40 +39,30 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public CMSParser() {
+
+        super();
+    }
+
+    // GCParser implementation -----------------------------------------------------------------------------------------
+
+    @Override
+    public List<Event> parse(String line) throws GCParsingException {
+
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public List<Event> close() throws GCParsingException {
+
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
-
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void buildInstance() throws Exception {
-
-        GCParser p = GCParser.buildInstance(CollectorType.Parallel);
-
-        assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
-    }
-
-    @Test
-    public void buildInstance_FileHeuristics() throws Exception {
-
-        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
-        assertTrue(logFile.isFile());
-
-        GCParser p = GCParser.buildInstance(logFile);
-
-        assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected ParallelGCParser getGCParserToTest() throws Exception {
-
-        return new ParallelGCParser();
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

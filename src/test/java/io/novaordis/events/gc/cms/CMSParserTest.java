@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.parallel;
+package io.novaordis.events.gc.cms;
 
 import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.api.parser.MultiLineGCParserTest;
 import io.novaordis.events.gc.CollectorType;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -34,11 +30,9 @@ import static org.junit.Assert.assertTrue;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class ParallelGCParserTest extends MultiLineGCParserTest {
+public class CMSParserTest extends MultiLineGCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(ParallelGCParserTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -53,22 +47,23 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
     @Test
     public void buildInstance() throws Exception {
 
-        GCParser p = GCParser.buildInstance(CollectorType.Parallel);
+        GCParser p = GCParser.buildInstance(CollectorType.CMS);
 
         assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
+        assertTrue(p instanceof CMSParser);
     }
 
-    @Test
+    // TODO when I have a CMS log
+    // @Test
     public void buildInstance_FileHeuristics() throws Exception {
 
-        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
+        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-???-CMS-???.log");
         assertTrue(logFile.isFile());
 
         GCParser p = GCParser.buildInstance(logFile);
 
         assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
+        assertTrue(p instanceof CMSParser);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -76,9 +71,9 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected ParallelGCParser getGCParserToTest() throws Exception {
+    protected CMSParser getGCParserToTest() throws Exception {
 
-        return new ParallelGCParser();
+        return new CMSParser();
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

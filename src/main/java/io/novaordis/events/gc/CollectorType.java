@@ -63,7 +63,7 @@ public enum  CollectorType {
 
             int lineNumber = 0;
 
-            while(t == null && lineNumber < 4) {
+            while(t == null && lineNumber < LINE_COUNT) {
 
                 lineNumber ++;
 

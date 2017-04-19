@@ -18,8 +18,6 @@ package io.novaordis.events.api.parser;
 
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.gc.CollectorType;
-import io.novaordis.events.gc.g1.G1Parser;
-import io.novaordis.events.gc.parallel.ParallelGCParser;
 import io.novaordis.utilities.Files;
 import org.junit.After;
 import org.junit.Before;
@@ -27,8 +25,6 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -90,48 +86,6 @@ public abstract class GCParserTest {
             String msg = e.getMessage();
             assert(msg.contains("null collector type"));
         }
-    }
-
-    @Test
-    public void buildInstance_Parallel() throws Exception {
-
-        GCParser p = GCParser.buildInstance(CollectorType.Parallel);
-
-        assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
-    }
-
-    @Test
-    public void buildInstance_G1() throws Exception {
-
-        GCParser p = GCParser.buildInstance(CollectorType.G1);
-
-        assertNotNull(p);
-        assertTrue(p instanceof G1Parser);
-    }
-
-    @Test
-    public void buildInstance_File_Parallel() throws Exception {
-
-        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
-        assertTrue(logFile.isFile());
-
-        GCParser p = GCParser.buildInstance(logFile);
-
-        assertNotNull(p);
-        assertTrue(p instanceof ParallelGCParser);
-    }
-
-    @Test
-    public void buildInstance_File_G1() throws Exception {
-
-        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_74-G1-windows-1.log");
-        assertTrue(logFile.isFile());
-
-        GCParser p = GCParser.buildInstance(logFile);
-
-        assertNotNull(p);
-        assertTrue(p instanceof G1Parser);
     }
 
     @Test

@@ -17,12 +17,15 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.api.parser.MultiLineGCParserTest;
+import io.novaordis.events.gc.CollectorType;
 import io.novaordis.utilities.time.Timestamp;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -50,6 +53,27 @@ public class G1ParserTest extends MultiLineGCParserTest {
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void buildInstance() throws Exception {
+
+        GCParser p = GCParser.buildInstance(CollectorType.G1);
+
+        assertNotNull(p);
+        assertTrue(p instanceof G1Parser);
+    }
+
+    @Test
+    public void buildInstance_FileHeuristics() throws Exception {
+
+        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_74-G1-windows-1.log");
+        assertTrue(logFile.isFile());
+
+        GCParser p = GCParser.buildInstance(logFile);
+
+        assertNotNull(p);
+        assertTrue(p instanceof G1Parser);
+    }
 
     // identifyGCEventStartMarker() ------------------------------------------------------------------------------------
 

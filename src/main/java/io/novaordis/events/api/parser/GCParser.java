@@ -19,6 +19,7 @@ package io.novaordis.events.api.parser;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.gc.CollectorType;
+import io.novaordis.events.gc.cms.CMSParser;
 import io.novaordis.events.gc.g1.G1Parser;
 import io.novaordis.events.gc.parallel.ParallelGCParser;
 
@@ -56,6 +57,12 @@ public interface GCParser {
 
             return new G1Parser();
         }
+
+        if (CollectorType.CMS.equals(t)) {
+
+            return new CMSParser();
+        }
+
 
         throw new GCParsingException("don't know to handle " + t);
     }
