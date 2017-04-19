@@ -154,7 +154,7 @@ public abstract class GCParserTest {
         catch(GCParsingException e) {
 
             String msg = e.getMessage();
-            assert(msg.contains("no known collector type can be inferred"));
+            assert(msg.contains("no known garbage collector type can be inferred"));
         }
 
     }

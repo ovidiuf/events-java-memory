@@ -64,7 +64,7 @@ public interface GCParser {
      * Contains heuristics that attempts to guess the collector type and build the corresponding parser based on a
      * quick examination of the content of the file. No parsing is actually done.
      *
-     * @exception GCParsingException on any kind of trouble.
+     * @exception GCParsingException if no collector type can be guessed from the file.
      *
      * @exception IOException on failure to handle the file
      *
@@ -79,7 +79,7 @@ public interface GCParser {
 
         if (t == null) {
 
-            throw new GCParsingException("no known collector type can be inferred from " + f);
+            throw new GCParsingException("no known garbage collector type can be inferred from " + f);
         }
 
         return buildInstance(t);
