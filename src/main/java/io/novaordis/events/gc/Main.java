@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.gc;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.gc.g1.G1Event;
+import io.novaordis.events.gc.g1.G1History;
+import io.novaordis.events.gc.g1.G1Parser;
 import io.novaordis.utilities.time.Timestamp;
 
 import java.io.BufferedReader;
@@ -42,7 +45,7 @@ public class Main {
 
         if (args.length == 0) {
 
-            throw new Exception("G1 log file name required");
+            throw new Exception("GC log file name required");
         }
 
         File f = new File(args[0]);
