@@ -17,9 +17,9 @@
 package io.novaordis.events.gc;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.events.gc.g1.G1History;
-import io.novaordis.events.gc.g1.G1Parser;
 import io.novaordis.utilities.time.Timestamp;
 
 import java.io.BufferedReader;
@@ -57,7 +57,7 @@ public class Main {
 
         List<Event> gcEvents = new ArrayList<>();
 
-        G1Parser p = new G1Parser();
+        GCParser p = GCParser.buildInstance(f);
 
         BufferedReader br = null;
 

@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * A parser were events may span multiple lines, as it is the case of garbage collection logs. At the same time,
- * mutiple events can be found on a single line.
+ * multiple events can be found on a single line.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
@@ -35,18 +35,5 @@ public interface MultiLineGCParser extends GCParser {
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
-
-    /**
-     * @return may return an empty list but never null.
-     */
-    List<Event> parse(String line) throws ParsingException;
-
-    /**
-     * Processes the remaining accumulated state and closes the parser. A parser that was closed cannot be re-used.
-     *
-     * @return may return an empty list but never null.
-     */
-    List<Event> close() throws ParsingException;
-
 
 }

@@ -16,6 +16,11 @@
 
 package io.novaordis.events.api.parser;
 
+import io.novaordis.events.api.event.Event;
+
+import java.io.File;
+import java.util.List;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 4/19/17
@@ -26,6 +31,31 @@ public interface GCParser {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Contains heuristics that attempts to guess the collector type and build the corresponding parser based on a
+     * quick examination of the content of the file. No parsing is actually done.
+     *
+     * @exception Exception on any kind of trouble.
+     */
+    static GCParser buildInstance(File f) throws Exception {
+
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * @return may return an empty list but never null.
+     */
+    List<Event> parse(String line) throws ParsingException;
+
+    /**
+     * Processes the remaining accumulated state and closes the parser. A parser that was closed cannot be re-used.
+     *
+     * @return may return an empty list but never null.
+     */
+    List<Event> close() throws ParsingException;
+
 
 }
