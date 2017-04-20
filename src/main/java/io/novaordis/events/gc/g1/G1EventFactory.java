@@ -18,6 +18,7 @@ package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.gc.model.Heap;
+import io.novaordis.events.api.parser.GCEventFactory;
 import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
 
 import java.util.StringTokenizer;
@@ -26,7 +27,7 @@ import java.util.StringTokenizer;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1EventFactory {
+public class G1EventFactory implements GCEventFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,11 +35,18 @@ public class G1EventFactory {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    public static G1Event build(RawGCEvent re) throws GCParsingException {
+    // Attributes ------------------------------------------------------------------------------------------------------
+
+    // Constructors ----------------------------------------------------------------------------------------------------
+
+    // GCEventFactory implementation -----------------------------------------------------------------------------------
+
+    @Override
+    public G1Event build(RawGCEvent re) throws GCParsingException {
 
         if (re == null) {
 
-            throw new IllegalArgumentException("null raw content");
+            throw new IllegalArgumentException("null raw event");
         }
 
         G1Event event;
@@ -123,13 +131,6 @@ public class G1EventFactory {
         }
 
         return event;
-    }
-
-    // Attributes ------------------------------------------------------------------------------------------------------
-
-    // Constructors ----------------------------------------------------------------------------------------------------
-
-    private G1EventFactory() {
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

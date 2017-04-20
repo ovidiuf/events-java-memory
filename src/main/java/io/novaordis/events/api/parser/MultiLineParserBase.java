@@ -19,7 +19,6 @@ package io.novaordis.events.api.parser;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.gc.g1.G1EventFactory;
 import io.novaordis.events.gc.g1.GCEventStartMarker;
 import io.novaordis.events.gc.g1.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
@@ -133,7 +132,8 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
         return new GCEventStartMarker(t, from + m.start(), contentStart);
     }
 
-    public static List<Event> toEventList(List<RawGCEvent> rawGCEvents) throws GCParsingException {
+    public static List<Event> toEventList(List<RawGCEvent> rawGCEvents, GCEventFactory eventFactory)
+            throws GCParsingException {
 
         if (rawGCEvents.isEmpty()) {
 
@@ -144,7 +144,7 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
 
         for(RawGCEvent re: rawGCEvents) {
 
-            GCEvent e = G1EventFactory.build(re);
+            GCEvent e = eventFactory.build(re);
             result.add(e);
         }
 
@@ -156,6 +156,11 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
     private long lineNumber;
     private List<RawGCEvent> completedEvents;
     private RawGCEvent currentEvent;
+
+    //
+    // must be initialized by the subclass' constructor
+    //
+    protected GCEventFactory eventFactory;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -172,14 +177,14 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
     public List<Event> parse(String line) throws GCParsingException {
 
         List<RawGCEvent> rawGCEvents = processLine(line);
-        return toEventList(rawGCEvents);
+        return toEventList(rawGCEvents, eventFactory);
     }
 
     @Override
     public List<Event> close() throws GCParsingException {
 
         List<RawGCEvent> rawGCEvents = closeInternal();
-        return toEventList(rawGCEvents);
+        return toEventList(rawGCEvents, eventFactory);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

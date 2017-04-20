@@ -53,7 +53,7 @@ public class EndToEndTest {
         Main.main(args);
     }
 
-    // @Test
+    @Test
     public void parallel() throws Exception {
 
         File logFile = new File(System.getProperty("basedir"),

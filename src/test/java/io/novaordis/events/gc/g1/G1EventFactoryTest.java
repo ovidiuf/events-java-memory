@@ -17,26 +17,22 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.parser.GCEventFactoryTest;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1EventFactoryTest {
+public class G1EventFactoryTest extends GCEventFactoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(G1EventFactoryTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -51,22 +47,9 @@ public class G1EventFactoryTest {
     // build() ---------------------------------------------------------------------------------------------------------
 
     @Test
-    public void build_NullRawContent() throws Exception {
-
-        try {
-
-            G1EventFactory.build(null);
-            fail("should have thrown exception");
-        }
-        catch(IllegalArgumentException e) {
-
-            String msg = e.getMessage();
-            log.info(msg);
-        }
-    }
-
-    @Test
     public void build_COLLECTION_EVACUATION_young() throws Exception {
+        
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "[GC pause (G1 Evacuation Pause) (young), 0.7919126 secs]\n" +
@@ -101,7 +84,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -130,6 +113,8 @@ public class G1EventFactoryTest {
 
     @Test
     public void build_COLLECTION_EVACUATION_mixed() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "[GC pause (G1 Evacuation Pause) (mixed), 0.1724330 secs]\n"+
@@ -164,7 +149,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -176,6 +161,8 @@ public class G1EventFactoryTest {
 
     @Test
     public void build_COLLECTION_EVACUATION_young_initialMark() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "[GC pause (G1 Evacuation Pause) (young) (initial-mark), 0.1847971 secs]\n" +
@@ -211,7 +198,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -223,6 +210,8 @@ public class G1EventFactoryTest {
 
     @Test
     public void build_COLLECTION_METADATA_THRESHOLD_young_initialMark() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "[GC pause (Metadata GC Threshold) (young) (initial-mark), 0.0184816 secs]\n" +
@@ -257,7 +246,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -269,6 +258,8 @@ public class G1EventFactoryTest {
 
     @Test
     public void build_COLLECTION_GCLOCKER_young() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
 
@@ -305,7 +296,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -317,6 +308,8 @@ public class G1EventFactoryTest {
 
     @Test
     public void build_COLLECTION_HUMONGOUS_ALLOCATION_FAILURE_young() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "2017-02-14T04:02:06.690-0600: 1304.097: [GC pause (G1 Humongous Allocation) (young) (initial-mark), 0.0800982 secs]\n" +
@@ -352,7 +345,7 @@ public class G1EventFactoryTest {
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1Collection e = (G1Collection)G1EventFactory.build(re);
+        G1Collection e = (G1Collection)f.build(re);
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
@@ -365,138 +358,162 @@ public class G1EventFactoryTest {
     @Test
     public void build_CONCURRENT_CYCLE_ROOT_REGION_SCAN_START() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-root-region-scan-start]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_ROOT_REGION_SCAN_END() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-root-region-scan-end, 0.0192842 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_CONCURRENT_MARK_START() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-mark-start]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_CONCURRENT_MARK_END() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-mark-end, 0.4287195 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_END, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_REMARK() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC remark ";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_REMARK, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_FINALIZE_MARKING() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[Finalize Marking, 0.0006334 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_FINALIZE_MARKING, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_REF_PROC() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC ref-proc, 0.0002593 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_REF_PROC, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_UNLOADING() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[Unloading, 0.1314876 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_UNLOADING, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_CLEANUP() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC cleanup 359M->301M(5120M), 0.0400808 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_CLEANUP, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-cleanup-start]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START, e.getType());
     }
 
     @Test
     public void build_CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END() throws Exception {
 
+        G1EventFactory f = getGEEventFactoryToTest();
+
         String rawContent = "[GC concurrent-cleanup-end, 0.0001026 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
         re.setContent(rawContent);
 
-        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)G1EventFactory.build(re);
+        G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
         assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END, e.getType());
     }
 
     @Test
     public void generic() throws Exception {
+
+        G1EventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
                 "[GC pause (G1 Evacuation Pause) (young), 0.7919126 secs]\n" +
@@ -534,7 +551,7 @@ public class G1EventFactoryTest {
 
         re.append(rawContent);
 
-        GCEvent e = G1EventFactory.build(re);
+        GCEvent e = f.build(re);
 
         Timestamp ts2 = e.getTimestamp();
         assertEquals(ts, ts2);
@@ -545,6 +562,12 @@ public class G1EventFactoryTest {
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected G1EventFactory getGEEventFactoryToTest() throws Exception {
+        
+        return new G1EventFactory();
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 
