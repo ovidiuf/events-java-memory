@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.parallel;
+package io.novaordis.events.api.gc;
 
-import io.novaordis.events.api.gc.GCEventTest;
+import io.novaordis.events.api.gc.RawGCEvent;
+import io.novaordis.events.gc.g1.Time;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public abstract class ParallelGCEventTest extends GCEventTest {
+public class RawGCEventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -37,15 +41,23 @@ public abstract class ParallelGCEventTest extends GCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    // append() --------------------------------------------------------------------------------------------------------
+
     @Test
-    public abstract void setType_getType() throws Exception;
+    public void append() throws Exception {
+
+        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
+
+        assertNull(e.getContent());
+
+        e.append("A");
+
+        assertEquals("A", e.getContent());
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected abstract ParallelGCEvent getEventToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

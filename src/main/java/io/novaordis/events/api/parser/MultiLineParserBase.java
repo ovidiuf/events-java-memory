@@ -20,7 +20,7 @@ import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.gc.g1.GCEventStartMarker;
-import io.novaordis.events.gc.g1.RawGCEvent;
+import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;

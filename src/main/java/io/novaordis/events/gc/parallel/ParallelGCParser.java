@@ -36,6 +36,12 @@ public class ParallelGCParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public ParallelGCParser() {
+
+        super();
+        this.eventFactory = new ParallelGCEventFactory();
+    }
+
     // GCParser implementation -----------------------------------------------------------------------------------------
 
     @Override

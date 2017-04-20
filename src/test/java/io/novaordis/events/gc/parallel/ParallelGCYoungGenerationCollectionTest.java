@@ -16,14 +16,19 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.gc.GCEventTest;
+import io.novaordis.events.api.gc.RawGCEvent;
+import io.novaordis.events.gc.g1.Time;
+import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 4/20/17
  */
-public abstract class ParallelGCEventTest extends GCEventTest {
+public class ParallelGCYoungGenerationCollectionTest extends ParallelGCEventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -37,15 +42,38 @@ public abstract class ParallelGCEventTest extends GCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
-    public abstract void setType_getType() throws Exception;
+    public void setType_getType() throws Exception {
+
+        ParallelGCYoungGenerationCollection e = getEventToTest();
+
+        ParallelGCEventType et = e.getType();
+        assertEquals(ParallelGCEventType.YOUNG_GENERATION_COLLECTION, et);
+
+        try {
+
+            e.setType(ParallelGCEventType.FULL_COLLECTION);
+            fail("should throw exception");
+        }
+        catch(IllegalArgumentException ise) {
+
+            String msg = ise.getMessage();
+            assertEquals("cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION, msg);
+        }
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
-    // Protected -------------------------------------------------------------------------------------------------------
-
     @Override
-    protected abstract ParallelGCEvent getEventToTest() throws Exception;
+    protected ParallelGCYoungGenerationCollection getEventToTest() throws Exception {
+
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        RawGCEvent re = new RawGCEvent(t, 1L);
+        return new ParallelGCYoungGenerationCollection(re);
+    }
+
+    // Protected -------------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
 

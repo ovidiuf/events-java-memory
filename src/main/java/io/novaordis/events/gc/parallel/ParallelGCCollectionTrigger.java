@@ -14,66 +14,29 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.gc.parallel;
 
 /**
- *  TODO class shares code with ParallelGCCollectionTrigger, consolidate.
+ * TODO class shares code with G1CollectionTrigger, consolidate.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public enum G1CollectionTrigger {
+public enum ParallelGCCollectionTrigger {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    EVACUATION("G1 Evacuation Pause"),
-    METADATA_THRESHOLD("Metadata GC Threshold"),
-    GCLOCKER("GCLocker Initiated GC"),
-    HUMONGOUS_ALLOCATION_FAILURE("G1 Humongous Allocation"),
-    HEAP_DUMP,
-    SYSTEM_GC,
+    ALLOCATION_FAILURE("Allocation Failure"),
     ;
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     /**
-     * Attempts to find a collection trigger marker on the line and returns the corresponding enum instance. If more
-     * than one trigger are present, the current implementation returns the one that was declared first in this class.
-     * If no collection trigger is identified, the method returns null.
-     */
-    static G1CollectionTrigger find(String line) {
-
-        if (line == null) {
-
-            return null;
-        }
-
-        for(G1CollectionTrigger t: values()) {
-
-            String marker = t.getLogMarker();
-
-            if (marker == null) {
-
-                continue;
-            }
-
-            int i = line.indexOf(marker);
-
-            if (i != -1) {
-
-                return t;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @return null if the external value is not among the known values.
      */
-    static G1CollectionTrigger fromExternalValue(String externalValue) {
+    static ParallelGCCollectionTrigger fromExternalValue(String externalValue) {
 
-        for(G1CollectionTrigger et: values()) {
+        for(ParallelGCCollectionTrigger et: values()) {
 
             if (et.toExternalValue().equals(externalValue)) {
 
@@ -84,13 +47,30 @@ public enum G1CollectionTrigger {
         return null;
     }
 
+    /**
+     * @return null if the provided string is not among the known log marker values
+     */
+    static ParallelGCCollectionTrigger fromLogMarker(String getLogMarker) {
+
+        for(ParallelGCCollectionTrigger et: values()) {
+
+            if (et.getLogMarker().equals(getLogMarker)) {
+
+                return et;
+            }
+        }
+
+        return null;
+    }
+
+
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private String logMarker;
 
     // Constructor -----------------------------------------------------------------------------------------------------
 
-    G1CollectionTrigger() {
+    ParallelGCCollectionTrigger() {
 
         this(null);
     }
@@ -99,7 +79,7 @@ public enum G1CollectionTrigger {
      * @param logMarker The string marker that identifies this trigger in the GC logs.
      *
      */
-    G1CollectionTrigger(String logMarker) {
+    ParallelGCCollectionTrigger(String logMarker) {
 
         this.logMarker = logMarker;
     }

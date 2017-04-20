@@ -17,6 +17,7 @@
 package io.novaordis.events.gc.g1;
 
 import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.api.parser.GCEventFactoryTest;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;

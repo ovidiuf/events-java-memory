@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc;
+package io.novaordis.events.api.gc;
 
-import org.junit.Test;
-
-import java.io.File;
-
-import static org.junit.Assert.assertTrue;
+import io.novaordis.events.gc.g1.Time;
 
 /**
+ * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 4/20/17
+ * @since 2/15/17
  */
-public class EndToEndTest {
+public class RawGCEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,36 +32,72 @@ public class EndToEndTest {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private Time time;
+    private Long lineNumber;
+    private String content;
+
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    /**
+     * @param lineNumber the line number of the first line of this event
+     */
+    public RawGCEvent(Time time, Long lineNumber) {
+
+        this.time = time;
+        this.lineNumber = lineNumber;
+    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
+    public Time getTime() {
 
-    @Test
-    public void G1() throws Exception {
-
-        File logFile = new File(System.getProperty("basedir"),
-                "/src/test/resources/data/jvm-1.8.0_74-G1-windows-1.log");
-
-        assertTrue(logFile.isFile());
-
-        String[] args = {logFile.getPath()};
-
-        Main.main(args);
+        return time;
     }
 
-    @Test
-    public void parallel() throws Exception {
+    public void setTime(Time time) {
 
-        File logFile = new File(System.getProperty("basedir"),
-                "/src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
+        this.time = time;
+    }
 
-        assertTrue(logFile.isFile());
+    /**
+     * @return the line number of the first line of the event.
+     */
+    public Long getLineNumber() {
 
-        String[] args = {logFile.getPath()};
+        return lineNumber;
+    }
 
-        Main.main(args);
+    public String getContent() {
+
+        return content;
+    }
+
+    public void setContent(String content) {
+
+        this.content = content;
+    }
+
+    public void append(String s) {
+
+        if (content == null) {
+
+            content = s;
+        }
+        else {
+
+            content += s;
+        }
+    }
+
+    @Override
+    public String toString() {
+
+        if (time == null) {
+
+            return "UNINITIALIZED";
+        }
+
+        return "" + time;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.parser.ParsingException;
+import io.novaordis.events.api.gc.RawGCEvent;
+import io.novaordis.events.gc.g1.Time;
+import io.novaordis.utilities.time.TimestampImpl;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
- * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 4/20/17
  */
-public class RawGCEvent {
+public class ParallelGCFullCollectionTest extends ParallelGCEventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -33,74 +36,41 @@ public class RawGCEvent {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private Time time;
-    private Long lineNumber;
-    private String content;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    /**
-     * @param lineNumber the line number of the first line of this event
-     */
-    public RawGCEvent(Time time, Long lineNumber) {
-
-        this.time = time;
-        this.lineNumber = lineNumber;
-    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public Time getTime() {
-
-        return time;
-    }
-
-    public void setTime(Time time) {
-
-        this.time = time;
-    }
-
-    /**
-     * @return the line number of the first line of the event.
-     */
-    public Long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    public String getContent() {
-
-        return content;
-    }
-
-    public void append(String s) {
-
-        if (content == null) {
-
-            content = s;
-        }
-        else {
-
-            content += s;
-        }
-    }
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     @Override
-    public String toString() {
+    @Test
+    public void setType_getType() throws Exception {
 
-        if (time == null) {
+        ParallelGCFullCollection e = getEventToTest();
 
-            return "UNINITIALIZED";
+        ParallelGCEventType et = e.getType();
+        assertEquals(ParallelGCEventType.YOUNG_GENERATION_COLLECTION, et);
+
+        try {
+
+            e.setType(ParallelGCEventType.FULL_COLLECTION);
+            fail("should throw exception");
         }
+        catch(IllegalArgumentException ise) {
 
-        return "" + time;
+            String msg = ise.getMessage();
+            assertEquals("cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION, msg);
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
-    void setContent(String content) {
+    @Override
+    protected ParallelGCFullCollection getEventToTest() throws Exception {
 
-        this.content = content;
+        Time t = new Time(new TimestampImpl(0L), 0L);
+        RawGCEvent re = new RawGCEvent(t, 1L);
+        return new ParallelGCFullCollection(re);
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

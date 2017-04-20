@@ -19,7 +19,7 @@ package io.novaordis.events.api.parser;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.gc.g1.G1Parser;
 import io.novaordis.events.gc.g1.GCEventStartMarker;
-import io.novaordis.events.gc.g1.RawGCEvent;
+import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
 import org.junit.Test;

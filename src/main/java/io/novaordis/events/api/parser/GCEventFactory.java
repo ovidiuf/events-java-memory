@@ -18,7 +18,7 @@ package io.novaordis.events.api.parser;
 
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.gc.g1.RawGCEvent;
+import io.novaordis.events.api.gc.RawGCEvent;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>

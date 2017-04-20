@@ -16,14 +16,16 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.gc.GCEventTest;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 4/20/17
  */
-public abstract class ParallelGCEventTest extends GCEventTest {
+public class ParallelGCCollectionTriggerTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -38,14 +40,36 @@ public abstract class ParallelGCEventTest extends GCEventTest {
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
-    public abstract void setType_getType() throws Exception;
+    public void ALLOCATION_FAILURE() throws Exception {
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.ALLOCATION_FAILURE;
+
+        String marker = t.getLogMarker();
+
+        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
+
+        assertEquals(t, t2);
+    }
+
+    // find() ----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void fromLogMarker_Null() throws Exception {
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.fromLogMarker(null);
+        assertNull(t);
+    }
+
+    @Test
+    public void fromLogMarker_NoSuchMarker() throws Exception {
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.fromLogMarker("invalid log marker");
+        assertNull(t);
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected abstract ParallelGCEvent getEventToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

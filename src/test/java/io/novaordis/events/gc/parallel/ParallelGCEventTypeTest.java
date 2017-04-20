@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.gc.parallel;
 
+import io.novaordis.events.gc.g1.G1EventType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertNull;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
-public class RawGCEventTest {
+public class ParallelGCEventTypeTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -39,18 +40,24 @@ public class RawGCEventTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    // append() --------------------------------------------------------------------------------------------------------
+    // fromExternalValue() ---------------------------------------------------------------------------------------------
 
     @Test
-    public void append() throws Exception {
+    public void fromExternalValue_NoSuchType() {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
+        ParallelGCEventType et = ParallelGCEventType.fromExternalValue("I am sure there's no such external value");
 
-        assertNull(e.getContent());
+        assertNull(et);
+    }
 
-        e.append("A");
+    @Test
+    public void fromExternalValue_YOUNG_GENERATION_COLLECTION() {
 
-        assertEquals("A", e.getContent());
+        String ev = ParallelGCEventType.YOUNG_GENERATION_COLLECTION.toExternalValue();
+
+        ParallelGCEventType et = ParallelGCEventType.fromExternalValue(ev);
+
+        assertEquals(ParallelGCEventType.YOUNG_GENERATION_COLLECTION, et);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

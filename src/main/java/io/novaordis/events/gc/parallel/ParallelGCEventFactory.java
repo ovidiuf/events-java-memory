@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.g1;
+package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.gc.RawGCEvent;
-import io.novaordis.events.api.gc.model.Heap;
 import io.novaordis.events.api.parser.GCEventFactory;
-import io.novaordis.events.gc.g1.patterns.HeapSnapshotLine;
+import io.novaordis.events.api.gc.RawGCEvent;
 
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
  */
-public class G1EventFactory implements GCEventFactory {
+public class ParallelGCEventFactory implements GCEventFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    public static final String INITIAL_MARK_LOG_MARKER = "initial-mark";
+    //
+    // Attempts to match both
+    // "[GC (Allocation Failure) ...]"
+    // and
+    // "[Full GC (Metadata GC Threshold) ...]"
+    //
+
+    public static final Pattern PARALLEL_CG_EVENT_PATTERN = Pattern.compile("^\\[(.*)GC \\((.+)\\) ");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -43,16 +50,15 @@ public class G1EventFactory implements GCEventFactory {
     // GCEventFactory implementation -----------------------------------------------------------------------------------
 
     @Override
-    public G1Event build(RawGCEvent re) throws GCParsingException {
+    public ParallelGCEvent build(RawGCEvent re) throws GCParsingException {
 
         if (re == null) {
 
             throw new IllegalArgumentException("null raw event");
         }
 
-        G1Event event;
+        ParallelGCEvent event;
 
-        Time time = re.getTime();
         Long lineNumber = re.getLineNumber();
         String rawContent = re.getContent();
 
@@ -65,70 +71,34 @@ public class G1EventFactory implements GCEventFactory {
         String firstLine = st.nextToken();
 
         //
-        // attempt to identify collection trigger markers
+        // attempt to identify whether we are looking at a young generation collection or full collection, the lines
+        // look like "GC (Metadata GC Threshold) ..." and "[Full GC (Metadata GC Threshold) ..."
         //
 
-        G1CollectionTrigger trigger = G1CollectionTrigger.find(firstLine);
+        Matcher m = PARALLEL_CG_EVENT_PATTERN.matcher(firstLine);
 
-        if (trigger != null) {
+        if (!m.find()) {
 
-            //
-            // this is a collection
-            //
+            throw new GCParsingException("no known parallel GC event identified", lineNumber);
+        }
 
-            event = new G1Collection(lineNumber, time, trigger);
+        String qualifier = m.group(1);
+        String trigger = m.group(2);
 
-            if (firstLine.contains(G1CollectionScope.MIXED.getLogMarker())) {
+        if (qualifier.isEmpty()) {
 
-                ((G1Collection)event).setCollectionScope(G1CollectionScope.MIXED);
-            }
+            event = new ParallelGCYoungGenerationCollection(re);
+        }
+        else if ("Full".equals(qualifier)) {
 
-            if (firstLine.contains(INITIAL_MARK_LOG_MARKER)) {
-
-                ((G1Collection)event).setInitialMark(true);
-            }
+            event = new ParallelGCFullCollection(re);
         }
         else {
 
-            G1EventType cct = G1EventType.find(firstLine);
-
-            if (cct != null) {
-
-                //
-                // this is a concurrent cycle event
-                //
-
-                event = new G1ConcurrentCycleEvent(lineNumber, time);
-                event.setType(cct);
-            }
-            else {
-
-                throw new GCParsingException(
-                        "no collection trigger or a concurrent cycle event marker found on the first line of the event",
-                        lineNumber, 0);
-            }
-        }
-
-        //
-        // parse the rest of the lines and keep track of the line numbers
-        //
-
-        while(st.hasMoreTokens()) {
-
-            String line = st.nextToken();
-
-            lineNumber = lineNumber == null ? null : lineNumber + 1;
-
-            Heap h = HeapSnapshotLine.find(lineNumber, line);
-
-            if (h != null) {
-
-                //
-                // this is a heap snapshot line
-                //
-
-                event.loadHeapSnapshotProperties(h);
-            }
+            //
+            // unknown qualifier
+            //
+            throw new GCParsingException("unknown parallel GC collection qualifier \"" + qualifier + "\"", lineNumber);
         }
 
         return event;

@@ -17,19 +17,19 @@
 package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.gc.GCEventBase;
+import io.novaordis.events.api.gc.GCEventType;
 import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 
 /**
- *  TODO code shared with G1Event, consolidate
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 2/16/17
  */
-public abstract class ParallelGCEvent extends GCEventBase {
+public class ParallelGCFullCollection extends ParallelGCEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    public static final String COLLECTION_TRIGGER_PROPERTY_NAME = "trigger";
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -37,24 +37,35 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCEvent(RawGCEvent re) {
+    public ParallelGCFullCollection(RawGCEvent re) {
 
-        super(re.getLineNumber(), re.getTime());
+        super(re);
+    }
+
+    // Overrides -------------------------------------------------------------------------------------------------------
+
+    /**
+     * We override this because we want to protect against changing the type to anything else but a COLLECTION
+     */
+    @Override
+    protected void setType(GCEventType type) {
+
+        if (ParallelGCEventType.YOUNG_GENERATION_COLLECTION.equals(type)) {
+
+            super.setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
+        }
+        else {
+
+            throw new IllegalArgumentException(
+                    "cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
+        }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Type specialization.
-     */
-    @Override
-    public ParallelGCEventType getType() {
+    public ParallelGCCollectionTrigger getCollectionTrigger() {
 
-        //
-        // extracts the type from the corresponding String property
-        //
-
-        StringProperty p = getStringProperty(EVENT_TYPE);
+        StringProperty p = getStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME);
 
         if (p == null) {
 
@@ -63,12 +74,7 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
         String value = p.getString();
 
-        if (value == null) {
-
-            return null;
-        }
-
-        ParallelGCEventType t = ParallelGCEventType.fromExternalValue(value);
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.fromExternalValue(value);
 
         if (t == null) {
 
@@ -76,15 +82,40 @@ public abstract class ParallelGCEvent extends GCEventBase {
             // the stored value was not recognized
             //
 
-            throw new IllegalStateException("\"" + value + "\" is not a valid GC event type");
+            throw new IllegalStateException("\"" + value + "\" is not a valid GC collection trigger");
         }
 
         return t;
     }
 
+    @Override
+    public String toString() {
+
+        return "YG COLLECTION (" + getCollectionTrigger() + ")";
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    /**
+     * @param trigger null removes the underlying property.
+     */
+    void setCollectionTrigger(ParallelGCCollectionTrigger trigger) {
+
+        //
+        // maintained as a String property where the value is the externalized format of the enum
+        //
+
+        if (trigger == null) {
+
+            removeStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME);
+        }
+        else {
+
+            setStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME, trigger.toExternalValue());
+        }
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

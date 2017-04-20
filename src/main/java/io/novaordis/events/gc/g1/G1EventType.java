@@ -19,6 +19,8 @@ package io.novaordis.events.gc.g1;
 import io.novaordis.events.api.gc.GCEventType;
 
 /**
+ *  TODO code shared with ParallelGCEventType, consolidate
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */

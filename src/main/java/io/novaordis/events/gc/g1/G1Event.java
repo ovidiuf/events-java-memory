@@ -26,6 +26,8 @@ import io.novaordis.events.api.gc.model.SurvivorSpace;
 import io.novaordis.events.api.gc.model.YoungGeneration;
 
 /**
+ * TODO code shared with ParallelGCEvent, consolidate
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
@@ -43,6 +45,10 @@ public abstract class G1Event extends GCEventBase {
 
         super(lineNumber, time);
     }
+
+    // Public ----------------------------------------------------------------------------------------------------------
+
+    public abstract boolean isCollection();
 
     /**
      * Type specialization.
@@ -81,10 +87,6 @@ public abstract class G1Event extends GCEventBase {
 
         return t;
     }
-
-    // Public ----------------------------------------------------------------------------------------------------------
-
-    public abstract boolean isCollection();
 
     public Long getYoungGenerationOccupancyBefore() {
 
