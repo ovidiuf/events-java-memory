@@ -16,7 +16,6 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
@@ -69,8 +68,8 @@ public class ParallelGCYoungGenerationCollectionTest extends ParallelGCEventTest
     protected ParallelGCYoungGenerationCollection getEventToTest() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 1L);
-        return new ParallelGCYoungGenerationCollection(re);
+        ParallelGCEventPayload preParsedPayload = new ParallelGCEventPayload("", "something", "something", "something");
+        return new ParallelGCYoungGenerationCollection(1L, t, preParsedPayload);
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

@@ -37,9 +37,9 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCYoungGenerationCollection(RawGCEvent re) {
+    public ParallelGCYoungGenerationCollection(Long lineNumber, Time time, ParallelGCEventPayload preParsedContent) {
 
-        super(re);
+        super(lineNumber, time);
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------

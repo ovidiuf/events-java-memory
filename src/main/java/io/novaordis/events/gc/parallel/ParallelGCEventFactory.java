@@ -19,6 +19,7 @@ package io.novaordis.events.gc.parallel;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.GCEventFactory;
 import io.novaordis.events.api.gc.RawGCEvent;
+import io.novaordis.events.gc.g1.Time;
 
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -39,28 +40,11 @@ public class ParallelGCEventFactory implements GCEventFactory {
     // "[Full GC (Metadata GC Threshold) ...]"
     //
 
-    public static final Pattern PARALLEL_CG_EVENT_PATTERN = Pattern.compile("^\\[(.*)GC \\((.+)\\) ");
+    public static final Pattern PARALLEL_CG_EVENT_PATTERN = Pattern.compile("^\\[(.*)GC \\((.+)\\) (.+)\\] (.+)");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
-    // Attributes ------------------------------------------------------------------------------------------------------
-
-    // Constructors ----------------------------------------------------------------------------------------------------
-
-    // GCEventFactory implementation -----------------------------------------------------------------------------------
-
-    @Override
-    public ParallelGCEvent build(RawGCEvent re) throws GCParsingException {
-
-        if (re == null) {
-
-            throw new IllegalArgumentException("null raw event");
-        }
-
-        ParallelGCEvent event;
-
-        Long lineNumber = re.getLineNumber();
-        String rawContent = re.getContent();
+    public static ParallelGCEventPayload preParse(Long lineNumber, String rawContent) throws GCParsingException {
 
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
 
@@ -82,22 +66,46 @@ public class ParallelGCEventFactory implements GCEventFactory {
             throw new GCParsingException("no known parallel GC event identified", lineNumber);
         }
 
-        String qualifier = m.group(1);
-        String trigger = m.group(2);
+        return new ParallelGCEventPayload(m.group(1), m.group(2), m.group(3), m.group(4));
+    }
+
+    // Attributes ------------------------------------------------------------------------------------------------------
+
+    // Constructors ----------------------------------------------------------------------------------------------------
+
+    // GCEventFactory implementation -----------------------------------------------------------------------------------
+
+    @Override
+    public ParallelGCEvent build(RawGCEvent re) throws GCParsingException {
+
+        if (re == null) {
+
+            throw new IllegalArgumentException("null raw event");
+        }
+
+        ParallelGCEvent event;
+
+        Long lineNumber = re.getLineNumber();
+        Time time = re.getTime();
+        String rawContent = re.getContent();
+        ParallelGCEventPayload preParsedContent = preParse(lineNumber, rawContent);
+
+        String qualifier = preParsedContent.getCollectionTypeQualifier();
 
         if (qualifier.isEmpty()) {
 
-            event = new ParallelGCYoungGenerationCollection(re);
+            event = new ParallelGCYoungGenerationCollection(lineNumber, time, preParsedContent);
         }
         else if ("Full".equals(qualifier)) {
 
-            event = new ParallelGCFullCollection(re);
+            event = new ParallelGCFullCollection(lineNumber, time, preParsedContent);
         }
         else {
 
             //
             // unknown qualifier
             //
+
             throw new GCParsingException("unknown parallel GC collection qualifier \"" + qualifier + "\"", lineNumber);
         }
 

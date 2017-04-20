@@ -69,8 +69,9 @@ public class ParallelGCFullCollectionTest extends ParallelGCEventTest {
     protected ParallelGCFullCollection getEventToTest() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 1L);
-        return new ParallelGCFullCollection(re);
+        ParallelGCEventPayload preParsedPayload =
+                new ParallelGCEventPayload("Full", "something", "something", "something");
+        return new ParallelGCFullCollection(1L, t, preParsedPayload);
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

@@ -16,17 +16,11 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.gc.GCEventBase;
-import io.novaordis.events.gc.g1.Time;
-
 /**
- *  TODO code shared with G1Event, consolidate
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 4/20/17
  */
-public abstract class ParallelGCEvent extends GCEventBase {
+class ParallelGCEventPayload {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,54 +28,48 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    // empty string or "Full"
+
+    private String qualifier;
+
+    // the string between parantheses following the connection type qualifier
+    private String trigger;
+
+    private String firstSquareBracketedSegment;
+
+    private String restOfThePayload;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCEvent(Long lineNumber, Time time) {
+    public ParallelGCEventPayload(
+            String qualifier, String trigger, String firstSquareBracketedSegment, String restOfThePayload) {
 
-        super(lineNumber, time);
+        this.qualifier = qualifier;
+        this.trigger = trigger;
+        this.firstSquareBracketedSegment = firstSquareBracketedSegment;
+        this.restOfThePayload = restOfThePayload;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     *
-     * TODO c66t3gt consolidate type in GCEventBase and make sure G1 uses it.
-     *
-     * Type specialization.
-     */
-    @Override
-    public ParallelGCEventType getType() {
+    public String getCollectionTypeQualifier() {
 
-        //
-        // extracts the type from the corresponding String property
-        //
+        return qualifier;
+    }
 
-        StringProperty p = getStringProperty(EVENT_TYPE);
+    public String getTrigger() {
 
-        if (p == null) {
+        return trigger;
+    }
 
-            return null;
-        }
+    public String getFirstSquareBracketedSegment() {
 
-        String value = p.getString();
+        return firstSquareBracketedSegment;
+    }
 
-        if (value == null) {
+    public String getRestOfThePayload() {
 
-            return null;
-        }
-
-        ParallelGCEventType t = ParallelGCEventType.fromExternalValue(value);
-
-        if (t == null) {
-
-            //
-            // the stored value was not recognized
-            //
-
-            throw new IllegalStateException("\"" + value + "\" is not a valid GC event type");
-        }
-
-        return t;
+        return restOfThePayload;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

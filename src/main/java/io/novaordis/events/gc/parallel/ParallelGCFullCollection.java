@@ -37,9 +37,9 @@ public class ParallelGCFullCollection extends ParallelGCEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCFullCollection(RawGCEvent re) {
+    public ParallelGCFullCollection(Long lineNumber, Time time, ParallelGCEventPayload payload) {
 
-        super(re);
+        super(lineNumber, time);
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------

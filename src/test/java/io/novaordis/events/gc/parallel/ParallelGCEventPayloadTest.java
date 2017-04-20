@@ -16,17 +16,11 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.gc.GCEventBase;
-import io.novaordis.events.gc.g1.Time;
-
 /**
- *  TODO code shared with G1Event, consolidate
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 4/20/17
  */
-public abstract class ParallelGCEvent extends GCEventBase {
+public class ParallelGCEventPayloadTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -36,53 +30,9 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCEvent(Long lineNumber, Time time) {
-
-        super(lineNumber, time);
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     *
-     * TODO c66t3gt consolidate type in GCEventBase and make sure G1 uses it.
-     *
-     * Type specialization.
-     */
-    @Override
-    public ParallelGCEventType getType() {
-
-        //
-        // extracts the type from the corresponding String property
-        //
-
-        StringProperty p = getStringProperty(EVENT_TYPE);
-
-        if (p == null) {
-
-            return null;
-        }
-
-        String value = p.getString();
-
-        if (value == null) {
-
-            return null;
-        }
-
-        ParallelGCEventType t = ParallelGCEventType.fromExternalValue(value);
-
-        if (t == null) {
-
-            //
-            // the stored value was not recognized
-            //
-
-            throw new IllegalStateException("\"" + value + "\" is not a valid GC event type");
-        }
-
-        return t;
-    }
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 

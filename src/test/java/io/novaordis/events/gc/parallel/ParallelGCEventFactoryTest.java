@@ -45,6 +45,37 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    // preParse() ------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void preParse_InvalidParallelGCEventPattern() throws Exception {
+
+        try {
+            ParallelGCEventFactory.preParse(1L, "something that has no change of being a valid parallel GC event");
+            fail("should throw exception");
+        }
+        catch(GCParsingException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("no known parallel GC event identified"));
+            Long ln = e.getLineNumber();
+            assertEquals(1L, ln.longValue());
+        }
+    }
+
+    @Test
+    public void preParse_ValidPattern() throws Exception {
+
+        String valid = "[Something (something else) this is what fills up the bracket] the rest of the stuff";
+
+        ParallelGCEventPayload p = ParallelGCEventFactory.preParse(1L, valid);
+
+        assertEquals("Something", p.getCollectionTypeQualifier());
+        assertEquals("something else", p.getTrigger());
+        assertEquals("this is what fills up the bracket", p.getFirstSquareBracketedSegment());
+        assertEquals("the rest of the stuff", p.getRestOfThePayload());
+    }
+
     // build() ---------------------------------------------------------------------------------------------------------
 
     @Test
@@ -111,8 +142,10 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         ParallelGCYoungGenerationCollection e = (ParallelGCYoungGenerationCollection)f.build(re);
 
-        fail("Return here");
+        assertEquals(111L, e.getTime().longValue());
+        assertEquals(222L, e.getLineNumber().longValue());
 
+        fail("Return here");
     }
 
     @Test
@@ -128,6 +161,9 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
         re.setContent(rawContent);
 
         ParallelGCFullCollection e = (ParallelGCFullCollection)f.build(re);
+
+        assertEquals(111L, e.getTime().longValue());
+        assertEquals(222L, e.getLineNumber().longValue());
 
         fail("Return here");
     }
