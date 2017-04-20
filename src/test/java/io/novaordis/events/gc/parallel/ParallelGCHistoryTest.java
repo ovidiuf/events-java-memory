@@ -16,21 +16,19 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.parser.MultiLineParserBase;
+import io.novaordis.events.api.gc.GCHistory;
+import io.novaordis.events.api.gc.GCHistoryTest;
 import io.novaordis.events.gc.CollectorType;
+import org.junit.Test;
 
-import java.util.List;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- *
- * Not thread safe - must be accessed by a single thread.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 2/16/17
  */
-public class ParallelGCParser extends MultiLineParserBase {
+public class ParallelGCHistoryTest extends GCHistoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -40,34 +38,37 @@ public class ParallelGCParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCParser() {
-
-        super();
-    }
-
-    // GCParser implementation -----------------------------------------------------------------------------------------
-
-    @Override
-    public CollectorType getCollectorType() {
-
-        return CollectorType.Parallel;
-    }
-
-    @Override
-    public List<Event> parse(String line) throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
-    @Override
-    public List<Event> close() throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
 
+    // Tests -----------------------------------------------------------------------------------------------------------
+
+    // build() ---------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void build() throws Exception {
+
+        GCHistory h = GCHistory.build(CollectorType.Parallel);
+
+        assertNotNull(h);
+
+        assertTrue(h instanceof ParallelGCHistory);
+    }
+
+    @Test
+    public void detectEventsThatAreNotSentInSequence() throws Exception {
+
+        //
+        // TODO temporarily disabled, restore when update() is implemented
+        //
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
+
+    @Override
+    protected ParallelGCHistory getGCHistoryToTest() {
+
+        return new ParallelGCHistory();
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

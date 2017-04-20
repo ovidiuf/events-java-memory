@@ -19,6 +19,7 @@ package io.novaordis.events.gc.cms;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.MultiLineParserBase;
+import io.novaordis.events.gc.CollectorType;
 
 import java.util.List;
 
@@ -45,6 +46,12 @@ public class CMSParser extends MultiLineParserBase {
     }
 
     // GCParser implementation -----------------------------------------------------------------------------------------
+
+    @Override
+    public CollectorType getCollectorType() {
+
+        return CollectorType.CMS;
+    }
 
     @Override
     public List<Event> parse(String line) throws GCParsingException {

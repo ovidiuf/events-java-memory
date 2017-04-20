@@ -16,21 +16,14 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.parser.MultiLineParserBase;
-import io.novaordis.events.gc.CollectorType;
-
-import java.util.List;
+import io.novaordis.events.api.gc.GCEventBase;
+import io.novaordis.events.gc.g1.Time;
 
 /**
- *
- * Not thread safe - must be accessed by a single thread.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 2/15/17
  */
-public class ParallelGCParser extends MultiLineParserBase {
+public abstract class ParallelGCEvent extends GCEventBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -40,32 +33,14 @@ public class ParallelGCParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCParser() {
+    public ParallelGCEvent(Long lineNumber, Time time) {
 
-        super();
-    }
-
-    // GCParser implementation -----------------------------------------------------------------------------------------
-
-    @Override
-    public CollectorType getCollectorType() {
-
-        return CollectorType.Parallel;
-    }
-
-    @Override
-    public List<Event> parse(String line) throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
-    @Override
-    public List<Event> close() throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
+        super(lineNumber, time);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    public abstract boolean isCollection();
 
     // Package protected -----------------------------------------------------------------------------------------------
 

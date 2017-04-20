@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.gc.parallel;
+package io.novaordis.events.gc.cms;
 
-import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.gc.GCHistoryBase;
 import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.parser.MultiLineParserBase;
-import io.novaordis.events.gc.CollectorType;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
- * Not thread safe - must be accessed by a single thread.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 2/16/17
  */
-public class ParallelGCParser extends MultiLineParserBase {
+public class CMSHistory extends GCHistoryBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(CMSHistory.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -40,27 +38,16 @@ public class ParallelGCParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCParser() {
-
-        super();
-    }
-
-    // GCParser implementation -----------------------------------------------------------------------------------------
+    // Overrides -------------------------------------------------------------------------------------------------------
 
     @Override
-    public CollectorType getCollectorType() {
-
-        return CollectorType.Parallel;
-    }
-
-    @Override
-    public List<Event> parse(String line) throws GCParsingException {
+    public void update(GCEvent event) throws GCParsingException {
 
         throw new RuntimeException("NOT YET IMPLEMENTED");
     }
 
     @Override
-    public List<Event> close() throws GCParsingException {
+    public String getStatistics() {
 
         throw new RuntimeException("NOT YET IMPLEMENTED");
     }

@@ -16,8 +16,13 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.gc.GCHistory;
 import io.novaordis.events.api.gc.GCHistoryTest;
+import io.novaordis.events.gc.CollectorType;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -37,12 +42,22 @@ public class G1HistoryTest extends GCHistoryTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    // build() ---------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void build() throws Exception {
+
+        GCHistory h = GCHistory.build(CollectorType.G1);
+
+        assertNotNull(h);
+
+        assertTrue(h instanceof G1History);
+    }
+
     // concurrent cycle detection --------------------------------------------------------------------------------------
 
     @Test
     public void concurrentCycleDetection() throws Exception {
-
-
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

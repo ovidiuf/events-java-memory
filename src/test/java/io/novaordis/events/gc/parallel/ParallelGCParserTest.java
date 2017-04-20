@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -50,8 +51,9 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
-    public void buildInstance() throws Exception {
+    public void build() throws Exception {
 
         GCParser p = GCParser.buildInstance(CollectorType.Parallel);
 
@@ -59,8 +61,9 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
         assertTrue(p instanceof ParallelGCParser);
     }
 
+    @Override
     @Test
-    public void buildInstance_FileHeuristics() throws Exception {
+    public void buildWithFileHeuristics() throws Exception {
 
         File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_51-Parallel-Linux.log");
         assertTrue(logFile.isFile());
@@ -69,6 +72,12 @@ public class ParallelGCParserTest extends MultiLineGCParserTest {
 
         assertNotNull(p);
         assertTrue(p instanceof ParallelGCParser);
+    }
+
+    @Override
+    public void getCollectorType() throws Exception {
+
+        assertEquals(CollectorType.Parallel, getGCParserToTest().getCollectorType());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

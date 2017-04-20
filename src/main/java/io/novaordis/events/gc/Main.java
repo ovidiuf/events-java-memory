@@ -17,6 +17,8 @@
 package io.novaordis.events.gc;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.gc.GCEvent;
+import io.novaordis.events.api.gc.GCHistory;
 import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.events.gc.g1.G1History;
@@ -89,11 +91,11 @@ public class Main {
         // build the history
         //
 
-        G1History history = new G1History();
+        GCHistory history = GCHistory.build(p.getCollectorType());
 
         for(Event e: gcEvents) {
 
-            history.update((G1Event)e);
+            history.update((GCEvent)e);
         }
 
         String s = history.getStatistics();

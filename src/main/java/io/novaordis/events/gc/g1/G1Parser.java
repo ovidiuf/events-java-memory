@@ -20,6 +20,7 @@ import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.MultiLineParserBase;
+import io.novaordis.events.gc.CollectorType;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
 
@@ -165,6 +166,12 @@ public class G1Parser extends MultiLineParserBase {
     }
 
     // MultiLineParser implementation ----------------------------------------------------------------------------------
+
+    @Override
+    public CollectorType getCollectorType() {
+
+        return CollectorType.G1;
+    }
 
     @Override
     public List<Event> parse(String line) throws GCParsingException {

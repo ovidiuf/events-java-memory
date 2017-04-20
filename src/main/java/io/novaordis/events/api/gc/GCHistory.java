@@ -16,6 +16,11 @@
 
 package io.novaordis.events.api.gc;
 
+import io.novaordis.events.gc.CollectorType;
+import io.novaordis.events.gc.cms.CMSHistory;
+import io.novaordis.events.gc.g1.G1History;
+import io.novaordis.events.gc.parallel.ParallelGCHistory;
+
 /**
  * The interface defining the contract for the logic of analyzing a GC event sequence in search of problems.
  *
@@ -27,6 +32,31 @@ public interface GCHistory {
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    static GCHistory build(CollectorType t) {
+
+        if (t == null) {
+
+            throw new IllegalArgumentException("null collector type");
+        }
+
+        if (CollectorType.G1.equals(t)) {
+
+            return new G1History();
+        }
+
+        if (CollectorType.Parallel.equals(t)) {
+
+            return new ParallelGCHistory();
+        }
+
+        if (CollectorType.CMS.equals(t)) {
+
+            return new CMSHistory();
+        }
+
+        throw new RuntimeException("don't know how to handle " + t);
+    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 

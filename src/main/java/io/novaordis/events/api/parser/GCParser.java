@@ -95,6 +95,11 @@ public interface GCParser {
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
+     * @return the collector type this whose logs are understood by this parser.
+     */
+    CollectorType getCollectorType();
+
+    /**
      * @return may return an empty list but never null.
      */
     List<Event> parse(String line) throws GCParsingException;

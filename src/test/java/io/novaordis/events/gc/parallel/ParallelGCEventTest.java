@@ -16,23 +16,20 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.parser.MultiLineParserBase;
-import io.novaordis.events.gc.CollectorType;
-
-import java.util.List;
+import io.novaordis.events.api.gc.GCEventTest;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
- * Not thread safe - must be accessed by a single thread.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/14/17
+ * @since 2/15/17
  */
-public class ParallelGCParser extends MultiLineParserBase {
+public abstract class ParallelGCEventTest extends GCEventTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(ParallelGCEventTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -40,36 +37,22 @@ public class ParallelGCParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCParser() {
-
-        super();
-    }
-
-    // GCParser implementation -----------------------------------------------------------------------------------------
-
-    @Override
-    public CollectorType getCollectorType() {
-
-        return CollectorType.Parallel;
-    }
-
-    @Override
-    public List<Event> parse(String line) throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
-    @Override
-    public List<Event> close() throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
     // Public ----------------------------------------------------------------------------------------------------------
+
+    // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public abstract void setType_getType() throws Exception;
+
+    @Test
+    public abstract void isCollection() throws Exception;
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected abstract ParallelGCEvent getEventToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

@@ -54,8 +54,9 @@ public class G1ParserTest extends MultiLineGCParserTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
-    public void buildInstance() throws Exception {
+    public void build() throws Exception {
 
         GCParser p = GCParser.buildInstance(CollectorType.G1);
 
@@ -63,8 +64,9 @@ public class G1ParserTest extends MultiLineGCParserTest {
         assertTrue(p instanceof G1Parser);
     }
 
+    @Override
     @Test
-    public void buildInstance_FileHeuristics() throws Exception {
+    public void buildWithFileHeuristics() throws Exception {
 
         File logFile = new File(baseDirectory, "src/test/resources/data/jvm-1.8.0_74-G1-windows-1.log");
         assertTrue(logFile.isFile());
@@ -73,6 +75,12 @@ public class G1ParserTest extends MultiLineGCParserTest {
 
         assertNotNull(p);
         assertTrue(p instanceof G1Parser);
+    }
+
+    @Override
+    public void getCollectorType() throws Exception {
+
+        assertEquals(CollectorType.G1, getGCParserToTest().getCollectorType());
     }
 
     // identifyGCEventStartMarker() ------------------------------------------------------------------------------------

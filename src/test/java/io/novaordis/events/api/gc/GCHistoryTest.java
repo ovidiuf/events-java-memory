@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -41,6 +42,23 @@ public abstract class GCHistoryTest {
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Tests -----------------------------------------------------------------------------------------------------------
+
+    // build() ---------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void build_Null() throws Exception {
+
+        try {
+
+            GCHistory.build(null);
+            fail("should throw Exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("null collector type"));
+        }
+    }
 
     @Test
     public void detectEventsThatAreNotSentInSequence() throws Exception {

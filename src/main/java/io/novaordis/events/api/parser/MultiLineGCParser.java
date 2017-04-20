@@ -16,10 +16,6 @@
 
 package io.novaordis.events.api.parser;
 
-import io.novaordis.events.api.event.Event;
-
-import java.util.List;
-
 /**
  * A parser were events may span multiple lines, as it is the case of garbage collection logs. At the same time,
  * multiple events can be found on a single line.
@@ -28,7 +24,6 @@ import java.util.List;
  * @since 2/14/17
  */
 public interface MultiLineGCParser extends GCParser {
-
 
     // Constants -------------------------------------------------------------------------------------------------------
 

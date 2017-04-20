@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,8 +45,9 @@ public class CMSParserTest extends MultiLineGCParserTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Override
     @Test
-    public void buildInstance() throws Exception {
+    public void build() throws Exception {
 
         GCParser p = GCParser.buildInstance(CollectorType.CMS);
 
@@ -53,17 +55,29 @@ public class CMSParserTest extends MultiLineGCParserTest {
         assertTrue(p instanceof CMSParser);
     }
 
-    // TODO when I have a CMS log
-    // @Test
-    public void buildInstance_FileHeuristics() throws Exception {
+    @Override
+    @Test
+    public void buildWithFileHeuristics() throws Exception {
 
-        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-???-CMS-???.log");
-        assertTrue(logFile.isFile());
+        // noop
 
-        GCParser p = GCParser.buildInstance(logFile);
+        //
+        // TODO when I have a CMS log
+        //
 
-        assertNotNull(p);
-        assertTrue(p instanceof CMSParser);
+//        File logFile = new File(baseDirectory, "src/test/resources/data/jvm-???-CMS-???.log");
+//        assertTrue(logFile.isFile());
+//
+//        GCParser p = GCParser.buildInstance(logFile);
+//
+//        assertNotNull(p);
+//        assertTrue(p instanceof CMSParser);
+    }
+
+    @Override
+    public void getCollectorType() throws Exception {
+
+        assertEquals(CollectorType.CMS, getGCParserToTest().getCollectorType());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

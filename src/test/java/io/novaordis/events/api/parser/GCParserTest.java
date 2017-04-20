@@ -71,6 +71,15 @@ public abstract class GCParserTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    @Test
+    public abstract void build() throws Exception;
+
+    @Test
+    public abstract void buildWithFileHeuristics() throws Exception;
+
+        @Test
+    public abstract void getCollectorType() throws Exception;
+
     // buildInstance() -------------------------------------------------------------------------------------------------
 
     @Test
