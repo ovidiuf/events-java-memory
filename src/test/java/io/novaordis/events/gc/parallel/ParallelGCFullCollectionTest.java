@@ -16,7 +16,6 @@
 
 package io.novaordis.events.gc.parallel;
 
-import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
@@ -70,8 +69,9 @@ public class ParallelGCFullCollectionTest extends ParallelGCEventTest {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
         ParallelGCEventPayload preParsedPayload =
-                new ParallelGCEventPayload("Full", "something", "something", "something");
-        return new ParallelGCFullCollection(1L, t, preParsedPayload);
+                new ParallelGCEventPayload(1L, "Full", ParallelGCCollectionTrigger.ALLOCATION_FAILURE.getLogMarker(),
+                        "something", "something");
+        return new ParallelGCFullCollection(t, preParsedPayload);
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

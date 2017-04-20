@@ -50,8 +50,11 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
     @Test
     public void preParse_InvalidParallelGCEventPattern() throws Exception {
 
+        String s = "something that has no change of being a valid parallel GC event";
+
         try {
-            ParallelGCEventFactory.preParse(1L, "something that has no change of being a valid parallel GC event");
+
+            ParallelGCEventFactory.preParse(3L, s);
             fail("should throw exception");
         }
         catch(GCParsingException e) {
@@ -59,19 +62,38 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
             String msg = e.getMessage();
             assertTrue(msg.contains("no known parallel GC event identified"));
             Long ln = e.getLineNumber();
-            assertEquals(1L, ln.longValue());
+            assertEquals(3L, ln.longValue());
+        }
+    }
+
+    @Test
+    public void preParse_InvalidTrigger() throws Exception {
+
+        String s = "[Something GC (No Such Trigger) this is what fills up the bracket] the rest of the stuff";
+
+        try {
+
+            ParallelGCEventFactory.preParse(2L, s);
+            fail("should throw exception");
+        }
+        catch(GCParsingException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid parallel GC trigger \"No Such Trigger\""));
+            Long ln = e.getLineNumber();
+            assertEquals(2L, ln.longValue());
         }
     }
 
     @Test
     public void preParse_ValidPattern() throws Exception {
 
-        String valid = "[Something (something else) this is what fills up the bracket] the rest of the stuff";
+        String valid = "[Some Kind of GC (Allocation Failure) this is what fills up the bracket] the rest of the stuff";
 
         ParallelGCEventPayload p = ParallelGCEventFactory.preParse(1L, valid);
 
-        assertEquals("Something", p.getCollectionTypeQualifier());
-        assertEquals("something else", p.getTrigger());
+        assertEquals("Some Kind of", p.getCollectionTypeQualifier());
+        assertEquals(ParallelGCCollectionTrigger.ALLOCATION_FAILURE, p.getTrigger());
         assertEquals("this is what fills up the bracket", p.getFirstSquareBracketedSegment());
         assertEquals("the rest of the stuff", p.getRestOfThePayload());
     }
@@ -108,7 +130,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         ParallelGCEventFactory f = getGEEventFactoryToTest();
 
-        String rawContent = "[Half GC (Allocation Failure) something something]";
+        String rawContent = "[Half GC (Allocation Failure) something] something";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);

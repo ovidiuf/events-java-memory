@@ -51,6 +51,30 @@ public class ParallelGCCollectionTriggerTest {
         assertEquals(t, t2);
     }
 
+    @Test
+    public void METADATA_THRESHOLD() throws Exception {
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.METADATA_THRESHOLD;
+
+        String marker = t.getLogMarker();
+
+        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
+
+        assertEquals(t, t2);
+    }
+
+    @Test
+    public void GC_LOCKER_INITIATED() throws Exception {
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.GC_LOCKER_INITIATED;
+
+        String marker = t.getLogMarker();
+
+        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
+
+        assertEquals(t, t2);
+    }
+
     // find() ----------------------------------------------------------------------------------------------------------
 
     @Test

@@ -27,6 +27,8 @@ public enum ParallelGCCollectionTrigger {
     // Constants -------------------------------------------------------------------------------------------------------
 
     ALLOCATION_FAILURE("Allocation Failure"),
+    METADATA_THRESHOLD("Metadata GC Threshold"),
+    GC_LOCKER_INITIATED("GCLocker Initiated GC"),
     ;
 
     // Static ----------------------------------------------------------------------------------------------------------
@@ -69,11 +71,6 @@ public enum ParallelGCCollectionTrigger {
     private String logMarker;
 
     // Constructor -----------------------------------------------------------------------------------------------------
-
-    ParallelGCCollectionTrigger() {
-
-        this(null);
-    }
 
     /**
      * @param logMarker The string marker that identifies this trigger in the GC logs.

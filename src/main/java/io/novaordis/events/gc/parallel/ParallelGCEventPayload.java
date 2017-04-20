@@ -16,6 +16,8 @@
 
 package io.novaordis.events.gc.parallel;
 
+import io.novaordis.events.api.gc.GCParsingException;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 4/20/17
@@ -28,12 +30,13 @@ class ParallelGCEventPayload {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private Long lineNumber;
+
     // empty string or "Full"
 
     private String qualifier;
 
-    // the string between parantheses following the connection type qualifier
-    private String trigger;
+    private ParallelGCCollectionTrigger trigger;
 
     private String firstSquareBracketedSegment;
 
@@ -42,10 +45,17 @@ class ParallelGCEventPayload {
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public ParallelGCEventPayload(
-            String qualifier, String trigger, String firstSquareBracketedSegment, String restOfThePayload) {
+            Long lineNumber, String qualifier, String strigger,
+            String firstSquareBracketedSegment, String restOfThePayload) throws GCParsingException {
 
-        this.qualifier = qualifier;
-        this.trigger = trigger;
+        this.lineNumber = lineNumber;
+        this.qualifier = qualifier.trim();
+        this.trigger = ParallelGCCollectionTrigger.fromLogMarker(strigger);
+
+        if (trigger == null) {
+
+            throw new GCParsingException("invalid parallel GC trigger \"" + strigger + "\"", lineNumber);
+        }
         this.firstSquareBracketedSegment = firstSquareBracketedSegment;
         this.restOfThePayload = restOfThePayload;
     }
@@ -57,7 +67,7 @@ class ParallelGCEventPayload {
         return qualifier;
     }
 
-    public String getTrigger() {
+    public ParallelGCCollectionTrigger getTrigger() {
 
         return trigger;
     }
@@ -70,6 +80,14 @@ class ParallelGCEventPayload {
     public String getRestOfThePayload() {
 
         return restOfThePayload;
+    }
+
+    /**
+     * May return null.
+     */
+    public Long getLineNumber() {
+
+        return lineNumber;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

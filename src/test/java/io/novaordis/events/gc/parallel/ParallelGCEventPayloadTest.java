@@ -16,6 +16,13 @@
 
 package io.novaordis.events.gc.parallel;
 
+import io.novaordis.events.api.gc.GCParsingException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 4/20/17
@@ -33,6 +40,22 @@ public class ParallelGCEventPayloadTest {
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void invalidTrigger() throws Exception {
+
+        try {
+
+            new ParallelGCEventPayload(2L, "", "No Such Trigger", "something", "something else");
+            fail("should have thrown exception");
+        }
+        catch (GCParsingException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid parallel GC trigger \"No Such Trigger\""));
+            assertEquals(2L, e.getLineNumber().longValue());
+        }
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

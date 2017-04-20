@@ -18,7 +18,6 @@ package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEventType;
-import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 
 /**
@@ -37,9 +36,9 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCYoungGenerationCollection(Long lineNumber, Time time, ParallelGCEventPayload preParsedContent) {
+    public ParallelGCYoungGenerationCollection(Time time, ParallelGCEventPayload preParsedContent) {
 
-        super(lineNumber, time);
+        super(preParsedContent.getLineNumber(), time);
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------

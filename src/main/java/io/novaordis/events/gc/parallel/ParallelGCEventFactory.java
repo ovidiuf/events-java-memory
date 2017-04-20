@@ -44,6 +44,9 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * @throws GCParsingException if invalid GC log entries are encountered
+     */
     public static ParallelGCEventPayload preParse(Long lineNumber, String rawContent) throws GCParsingException {
 
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
@@ -66,7 +69,7 @@ public class ParallelGCEventFactory implements GCEventFactory {
             throw new GCParsingException("no known parallel GC event identified", lineNumber);
         }
 
-        return new ParallelGCEventPayload(m.group(1), m.group(2), m.group(3), m.group(4));
+        return new ParallelGCEventPayload(lineNumber, m.group(1), m.group(2), m.group(3), m.group(4));
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -94,11 +97,11 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
         if (qualifier.isEmpty()) {
 
-            event = new ParallelGCYoungGenerationCollection(lineNumber, time, preParsedContent);
+            event = new ParallelGCYoungGenerationCollection(time, preParsedContent);
         }
         else if ("Full".equals(qualifier)) {
 
-            event = new ParallelGCFullCollection(lineNumber, time, preParsedContent);
+            event = new ParallelGCFullCollection(time, preParsedContent);
         }
         else {
 
