@@ -16,12 +16,8 @@
 
 package io.novaordis.events.gc.cms;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.MultiLineParserBase;
 import io.novaordis.events.gc.CollectorType;
-
-import java.util.List;
 
 /**
  *
@@ -40,29 +36,12 @@ public class CMSParser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public CMSParser() {
-
-        super();
-    }
-
     // GCParser implementation -----------------------------------------------------------------------------------------
 
     @Override
     public CollectorType getCollectorType() {
 
         return CollectorType.CMS;
-    }
-
-    @Override
-    public List<Event> parse(String line) throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
-    }
-
-    @Override
-    public List<Event> close() throws GCParsingException {
-
-        throw new RuntimeException("NOT YET IMPLEMENTED");
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

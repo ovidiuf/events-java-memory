@@ -36,11 +36,6 @@ public class G1Parser extends MultiLineParserBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1Parser() {
-
-        super();
-    }
-
     // MultiLineParser implementation ----------------------------------------------------------------------------------
 
     @Override
