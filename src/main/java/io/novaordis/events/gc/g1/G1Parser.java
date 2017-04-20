@@ -52,6 +52,9 @@ public class G1Parser extends MultiLineParserBase {
     public static final Pattern PrintGCDateStamps_PATTERN = Pattern.compile(
             "[1-2][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9][-|+][0-9][0-9][0-9][0-9]");
 
+    //
+    // relative time since the GC collection started, in seconds followed by milliseconds ("7.896:")
+    //
     public static final Pattern PrintGCTimeStamps_PATTERN = Pattern.compile("([0-9]+\\.[0-9][0-9][0-9]):");
 
 
