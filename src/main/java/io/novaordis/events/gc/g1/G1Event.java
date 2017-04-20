@@ -46,13 +46,8 @@ public abstract class G1Event extends GCEventBase {
         super(lineNumber, time);
     }
 
-    // Public ----------------------------------------------------------------------------------------------------------
+    // GCEvent implementation ------------------------------------------------------------------------------------------
 
-    public abstract boolean isCollection();
-
-    /**
-     * Type specialization.
-     */
     @Override
     public G1EventType getType() {
 
@@ -87,6 +82,10 @@ public abstract class G1Event extends GCEventBase {
 
         return t;
     }
+
+    // Public ----------------------------------------------------------------------------------------------------------
+
+    public abstract boolean isCollection();
 
     public Long getYoungGenerationOccupancyBefore() {
 

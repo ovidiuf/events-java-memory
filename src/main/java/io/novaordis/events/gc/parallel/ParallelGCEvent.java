@@ -18,6 +18,7 @@ package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEventBase;
+import io.novaordis.events.api.gc.GCEventType;
 import io.novaordis.events.gc.g1.Time;
 
 /**
@@ -43,12 +44,8 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     *
-     * TODO c66t3gt consolidate type in GCEventBase and make sure G1 uses it.
-     *
-     * Type specialization.
-     */
+    // GCEvent implementation ------------------------------------------------------------------------------------------
+
     @Override
     public ParallelGCEventType getType() {
 
@@ -87,6 +84,12 @@ public abstract class ParallelGCEvent extends GCEventBase {
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void setType(GCEventType type) {
+
+        super.setType(type);
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

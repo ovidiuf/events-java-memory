@@ -39,25 +39,22 @@ public class ParallelGCFullCollection extends ParallelGCEvent {
     public ParallelGCFullCollection(Time time, ParallelGCEventPayload payload) {
 
         super(payload.getLineNumber(), time);
+        setType(ParallelGCEventType.FULL_COLLECTION);
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
-    /**
-     * We override this because we want to protect against changing the type to anything else but a COLLECTION
-     */
+    // GCEventBase implementation --------------------------------------------------------------------------------------
+
     @Override
-    protected void setType(GCEventType type) {
+    protected void validateEventType(GCEventType type) {
 
-        if (ParallelGCEventType.YOUNG_GENERATION_COLLECTION.equals(type)) {
+        if (type == null || ParallelGCEventType.FULL_COLLECTION.equals(type)) {
 
-            super.setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
+            return;
         }
-        else {
 
-            throw new IllegalArgumentException(
-                    "cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
-        }
+        throw new IllegalArgumentException(type + " is not a valid event type for " + this);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

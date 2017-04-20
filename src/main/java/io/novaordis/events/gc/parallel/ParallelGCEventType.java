@@ -31,9 +31,13 @@ public enum ParallelGCEventType implements GCEventType {
     //
     // stops application threads
     //
-    //
 
     YOUNG_GENERATION_COLLECTION,
+
+    //
+    // stops application threads
+    //
+
     FULL_COLLECTION,
 
     ;

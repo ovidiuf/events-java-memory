@@ -58,7 +58,7 @@ public class ParallelGCYoungGenerationCollectionTest extends ParallelGCEventTest
         catch(IllegalArgumentException ise) {
 
             String msg = ise.getMessage();
-            assertEquals("cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION, msg);
+            assertEquals(ParallelGCEventType.FULL_COLLECTION + " is not a valid event type for " + e, msg);
         }
     }
 

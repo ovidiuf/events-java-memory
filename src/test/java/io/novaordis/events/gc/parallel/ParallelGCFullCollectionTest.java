@@ -48,17 +48,18 @@ public class ParallelGCFullCollectionTest extends ParallelGCEventTest {
         ParallelGCFullCollection e = getEventToTest();
 
         ParallelGCEventType et = e.getType();
-        assertEquals(ParallelGCEventType.YOUNG_GENERATION_COLLECTION, et);
+        assertEquals(ParallelGCEventType.FULL_COLLECTION, et);
 
         try {
 
-            e.setType(ParallelGCEventType.FULL_COLLECTION);
+            e.setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
             fail("should throw exception");
         }
         catch(IllegalArgumentException ise) {
 
             String msg = ise.getMessage();
-            assertEquals("cannot set type to anything else but " + ParallelGCEventType.YOUNG_GENERATION_COLLECTION, msg);
+            assertEquals(ParallelGCEventType.YOUNG_GENERATION_COLLECTION +
+                    " is not a valid event type for " + e, msg);
         }
     }
 

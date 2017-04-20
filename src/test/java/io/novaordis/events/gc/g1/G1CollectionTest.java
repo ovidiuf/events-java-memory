@@ -64,8 +64,9 @@ public class G1CollectionTest extends G1EventTest {
         catch(IllegalArgumentException ise) {
 
             String msg = ise.getMessage();
-            log.info(msg);
-            assertEquals("cannot set type to anything else but " + G1EventType.COLLECTION, msg);
+
+            assertEquals(G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START +
+                    " is not a valid event type for " + e, msg);
         }
     }
 

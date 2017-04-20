@@ -46,22 +46,17 @@ public class G1Collection extends G1Event {
         setCollectionScope(G1CollectionScope.YOUNG);
     }
 
-    // Overrides -------------------------------------------------------------------------------------------------------
+    // GCEventBase implementation --------------------------------------------------------------------------------------
 
-    /**
-     * We override this because we want to protect against changing the type to anything else but a COLLECTION
-     */
     @Override
-    protected void setType(GCEventType type) {
+    protected void validateEventType(GCEventType type) {
 
-        if (G1EventType.COLLECTION.equals(type)) {
+        if (type == null || G1EventType.COLLECTION.equals(type)) {
 
-            super.setType(G1EventType.COLLECTION);
+            return;
         }
-        else {
 
-            throw new IllegalArgumentException("cannot set type to anything else but " + G1EventType.COLLECTION);
-        }
+        throw new IllegalArgumentException(type + " is not a valid event type for " + this);
     }
 
     @Override

@@ -46,6 +46,11 @@ public interface GCEvent extends TimedEvent {
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
+     * @return the GC event type. It is one of G1EventType, ParallelGCEventType, etc.
+     *
+     * @see io.novaordis.events.gc.g1.G1EventType
+     * @see io.novaordis.events.gc.parallel.ParallelGCEventType
+     *
      * May return null if the event does not stores a type.
      */
     GCEventType getType();

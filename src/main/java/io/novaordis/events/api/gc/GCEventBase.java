@@ -100,8 +100,15 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     /**
      * @param type null is acceptable, it clears the type
+     *
+     * @exception IllegalArgumentException if the given type does not match the instance is being set on
      */
     protected void setType(GCEventType type) {
+
+        //
+        // before storing it, give the subclass a change to validate it
+        //
+        validateEventType(type);
 
         //
         // we maintain the type as a String property, null means "clear"
@@ -112,9 +119,17 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
             removeStringProperty(EVENT_TYPE);
         }
         else {
+
             setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
         }
     }
+
+    /**
+     * A noop if the type is valid.
+     *
+     * @exception IllegalArgumentException if the given type does not match the instance is being set on
+     */
+    protected abstract void validateEventType(GCEventType type);
 
     // Private ---------------------------------------------------------------------------------------------------------
 

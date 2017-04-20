@@ -16,6 +16,8 @@
 
 package io.novaordis.events.gc.g1;
 
+import io.novaordis.events.api.gc.GCEventType;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
@@ -41,13 +43,29 @@ public class G1ConcurrentCycleEvent extends G1Event {
         setType(type);
     }
 
-    // Public ----------------------------------------------------------------------------------------------------------
+    // GCEventBase implementation --------------------------------------------------------------------------------------
+
+    @Override
+    protected void validateEventType(GCEventType type) {
+
+        if (type == null || (type instanceof G1EventType && !G1EventType.COLLECTION.equals(type))) {
+
+            return;
+        }
+
+        throw new IllegalArgumentException(type + " is not a valid event type for " + this);
+
+    }
+
+    // G1Event implementation ------------------------------------------------------------------------------------------
 
     @Override
     public boolean isCollection() {
-        
+
         return false;
     }
+
+    // Public ----------------------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
