@@ -40,39 +40,15 @@ public class ParallelGCCollectionTriggerTest {
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
-    public void ALLOCATION_FAILURE() throws Exception {
+    public void logMarker() throws Exception {
 
-        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.ALLOCATION_FAILURE;
+        for(ParallelGCCollectionTrigger t: ParallelGCCollectionTrigger.values()) {
 
-        String marker = t.getLogMarker();
+            String marker = t.getLogMarker();
+            ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
 
-        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
-
-        assertEquals(t, t2);
-    }
-
-    @Test
-    public void METADATA_THRESHOLD() throws Exception {
-
-        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.METADATA_THRESHOLD;
-
-        String marker = t.getLogMarker();
-
-        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
-
-        assertEquals(t, t2);
-    }
-
-    @Test
-    public void GC_LOCKER_INITIATED() throws Exception {
-
-        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.GC_LOCKER_INITIATED;
-
-        String marker = t.getLogMarker();
-
-        ParallelGCCollectionTrigger t2 = ParallelGCCollectionTrigger.fromLogMarker(marker);
-
-        assertEquals(t, t2);
+            assertEquals(t, t2);
+        }
     }
 
     // find() ----------------------------------------------------------------------------------------------------------

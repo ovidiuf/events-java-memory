@@ -53,6 +53,20 @@ public class EndToEndParallelTest {
         Main.main(args);
     }
 
+    @Test
+    public void endToEnd2() throws Exception {
+
+        File logFile = new File(System.getProperty("basedir"),
+                "/src/test/resources/data/jvm-1.8.0_51-Parallel-Linux-2.log");
+
+        assertTrue(logFile.isFile());
+
+        String[] args = {logFile.getPath()};
+
+        Main.main(args);
+    }
+
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------

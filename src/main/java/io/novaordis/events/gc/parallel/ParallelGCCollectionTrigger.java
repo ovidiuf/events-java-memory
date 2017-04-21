@@ -29,6 +29,7 @@ public enum ParallelGCCollectionTrigger {
     ALLOCATION_FAILURE("Allocation Failure"),
     METADATA_THRESHOLD("Metadata GC Threshold"),
     GC_LOCKER_INITIATED("GCLocker Initiated GC"),
+    ERGONOMICS("Ergonomics"),
     ;
 
     // Static ----------------------------------------------------------------------------------------------------------
