@@ -43,13 +43,13 @@ public class ParallelGCHistory extends GCHistoryBase {
     @Override
     public void update(GCEvent event) throws GCParsingException {
 
-        throw new RuntimeException("NOT YET IMPLEMENTED");
+        super.update(event);
     }
 
     @Override
     public String getStatistics() {
 
-        throw new RuntimeException("NOT YET IMPLEMENTED");
+        return "NOT YET IMPLEMENTED";
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

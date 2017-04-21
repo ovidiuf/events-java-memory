@@ -21,7 +21,6 @@ import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCHistory;
 import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.gc.g1.G1Event;
-import io.novaordis.events.gc.g1.G1History;
 import io.novaordis.utilities.time.Timestamp;
 
 import java.io.BufferedReader;
