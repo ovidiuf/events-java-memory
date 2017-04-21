@@ -156,7 +156,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
         ParallelGCEventFactory f = getGEEventFactoryToTest();
 
         String rawContent =
-                "[GC (Metadata GC Threshold) [PSYoungGen: 300919K->17152K(389632K)] 300919K->17160K(1280000K), 0.0125226 secs] [Times: user=0.04 sys=0.00, real=0.02 secs]";
+                "[GC (Allocation Failure) [PSYoungGen: 300919K->17152K(389632K)] 300919K->17160K(1280000K), 0.0125226 secs] [Times: user=0.04 sys=0.00, real=0.02 secs]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
         RawGCEvent re = new RawGCEvent(t, 222L);
@@ -166,8 +166,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
-
-        fail("Return here");
+        assertEquals(ParallelGCCollectionTrigger.ALLOCATION_FAILURE, e.getCollectionTrigger());
     }
 
     @Test
@@ -186,8 +185,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         assertEquals(111L, e.getTime().longValue());
         assertEquals(222L, e.getLineNumber().longValue());
-
-        fail("Return here");
+        assertEquals(ParallelGCCollectionTrigger.METADATA_THRESHOLD, e.getCollectionTrigger());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -31,18 +31,19 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    public static final String COLLECTION_TRIGGER_PROPERTY_NAME = "trigger";
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCEvent(Long lineNumber, Time time) {
+    public ParallelGCEvent(Long lineNumber, Time time, ParallelGCCollectionTrigger trigger) {
 
         super(lineNumber, time);
+        setCollectionTrigger(trigger);
     }
-
-    // Public ----------------------------------------------------------------------------------------------------------
 
     // GCEvent implementation ------------------------------------------------------------------------------------------
 
@@ -81,6 +82,36 @@ public abstract class ParallelGCEvent extends GCEventBase {
         return t;
     }
 
+    // Public ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * TODO duplicate code in G1Collection.getCollectionTrigger(), consolidate
+     */
+    public ParallelGCCollectionTrigger getCollectionTrigger() {
+
+        StringProperty p = getStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME);
+
+        if (p == null) {
+
+            return null;
+        }
+
+        String value = p.getString();
+
+        ParallelGCCollectionTrigger t = ParallelGCCollectionTrigger.fromExternalValue(value);
+
+        if (t == null) {
+
+            //
+            // the stored value was not recognized
+            //
+
+            throw new IllegalStateException("\"" + value + "\" is not a valid GC collection trigger");
+        }
+
+        return t;
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
@@ -89,6 +120,27 @@ public abstract class ParallelGCEvent extends GCEventBase {
     protected void setType(GCEventType type) {
 
         super.setType(type);
+    }
+
+    /**
+     * TODO duplicate code in G1Collection.setCollectionTrigger(...), consolidate
+     *
+     * @param trigger null removes the underlying property.
+     */
+    void setCollectionTrigger(ParallelGCCollectionTrigger trigger) {
+
+        //
+        // maintained as a String property where the value is the externalized format of the enum
+        //
+
+        if (trigger == null) {
+
+            removeStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME);
+        }
+        else {
+
+            setStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME, trigger.toExternalValue());
+        }
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

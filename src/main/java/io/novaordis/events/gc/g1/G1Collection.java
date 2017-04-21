@@ -67,6 +67,9 @@ public class G1Collection extends G1Event {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * TODO duplicate code in ParallelGCEvent.getCollectionTrigger(), consolidate
+     */
     public G1CollectionTrigger getCollectionTrigger() {
 
         StringProperty p = getStringProperty(COLLECTION_TRIGGER_PROPERTY_NAME);
@@ -157,6 +160,8 @@ public class G1Collection extends G1Event {
     // Protected -------------------------------------------------------------------------------------------------------
 
     /**
+     * TODO duplicate code in ParallelGCEvent.setCollectionTrigger(...), consolidate
+     *
      * @param trigger null removes the underlying property.
      */
     void setCollectionTrigger(G1CollectionTrigger trigger) {

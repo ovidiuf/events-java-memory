@@ -38,7 +38,7 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
     public ParallelGCYoungGenerationCollection(Time time, ParallelGCEventPayload preParsedContent) {
 
-        super(preParsedContent.getLineNumber(), time);
+        super(preParsedContent.getLineNumber(), time, preParsedContent.getTrigger());
         setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
     }
 
@@ -87,7 +87,7 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
     @Override
     public String toString() {
 
-        return "YG COLLECTION (" + getCollectionTrigger() + ")";
+        return "YOUNG GENERATION COLLECTION (" + getCollectionTrigger() + ")";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -97,7 +97,7 @@ public class RawGCEvent {
             return "UNINITIALIZED";
         }
 
-        return "" + time;
+        return "" + lineNumber  + ": " + time;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

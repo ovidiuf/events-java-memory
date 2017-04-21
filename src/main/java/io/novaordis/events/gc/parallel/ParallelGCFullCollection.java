@@ -36,9 +36,9 @@ public class ParallelGCFullCollection extends ParallelGCEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCFullCollection(Time time, ParallelGCEventPayload payload) {
+    public ParallelGCFullCollection(Time time, ParallelGCEventPayload preParsedContent) {
 
-        super(payload.getLineNumber(), time);
+        super(preParsedContent.getLineNumber(), time, preParsedContent.getTrigger());
         setType(ParallelGCEventType.FULL_COLLECTION);
     }
 
