@@ -65,10 +65,10 @@ public class ParallelGCHistory extends GCHistoryBase {
 
         String s = "";
 
-        for(ParallelGCEvent e: events) {
-
-            s += OUTPUT_FORMAT.format(e.getTime()) + ", " + e.getType() + "\n";
-        }
+//        for(ParallelGCEvent e: events) {
+//
+//            s += OUTPUT_FORMAT.format(e.getTime()) + ", " + e.getType() + "\n";
+//        }
 
         return s;
     }

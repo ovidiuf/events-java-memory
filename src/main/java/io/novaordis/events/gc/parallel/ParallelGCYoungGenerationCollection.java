@@ -18,6 +18,9 @@ package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEventType;
+import io.novaordis.events.api.gc.GCParsingException;
+import io.novaordis.events.api.gc.model.Heap;
+import io.novaordis.events.api.gc.model.MemoryMeasurement;
 import io.novaordis.events.gc.g1.Time;
 
 /**
@@ -32,14 +35,62 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
     // Static ----------------------------------------------------------------------------------------------------------
 
+    public static Heap extractHeap(Time time, String s) throws GCParsingException {
+
+        // [PSYoungGen: 1096633K->85374K(1114624K)] 2771921K->1761229K(3561472K), 0.0999662 secs
+
+        int i = s.indexOf("]");
+
+        if (i == -1) {
+
+            return null;
+        }
+
+        s = s.substring(i + 2);
+
+        i = s.indexOf("->");
+
+        try {
+
+            MemoryMeasurement hb = new MemoryMeasurement(-1L, 0, i, s);
+
+            int j = s.indexOf("(");
+
+            MemoryMeasurement ha = new MemoryMeasurement(-1L, i + 2, j, s);
+
+            int k = s.indexOf(")");
+
+            MemoryMeasurement ht = new MemoryMeasurement(-1L, j + 1, k, s);
+
+            long t = time.getTimestamp().getTime();
+
+            System.out.print(ParallelGCHistory.OUTPUT_FORMAT.format(t) + ", ");
+
+            System.out.printf("%2.1f, %2.1f, %2.1f, \n",
+                    ((float)hb.getBytes())/(1024 * 1024),
+                    ((float)ha.getBytes())/(1024 * 1024),
+                    ((float)ht.getBytes())/(1024 * 1024));
+
+        }
+        catch(Exception e) {
+
+            throw new GCParsingException("", e);
+        }
+
+
+        return null;
+    }
+
     // Attributes ------------------------------------------------------------------------------------------------------
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public ParallelGCYoungGenerationCollection(Time time, ParallelGCEventPayload preParsedContent) {
+    public ParallelGCYoungGenerationCollection(Time time, ParallelGCEventPayload preParsedContent)
+            throws GCParsingException {
 
         super(preParsedContent.getLineNumber(), time, preParsedContent.getTrigger());
         setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
+        extractHeap(time, preParsedContent.getFirstSquareBracketedSegment());
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------
