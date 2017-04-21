@@ -22,6 +22,10 @@ import io.novaordis.events.api.gc.GCParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/16/17
@@ -32,11 +36,20 @@ public class ParallelGCHistory extends GCHistoryBase {
 
     private static final Logger log = LoggerFactory.getLogger(ParallelGCHistory.class);
 
+    public static final SimpleDateFormat OUTPUT_FORMAT = new SimpleDateFormat("MM/dd/YY HH:mm:ss.SSS");
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    List<ParallelGCEvent> events;
+
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    public ParallelGCHistory() {
+
+        this.events = new ArrayList<>();
+    }
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
@@ -44,12 +57,20 @@ public class ParallelGCHistory extends GCHistoryBase {
     public void update(GCEvent event) throws GCParsingException {
 
         super.update(event);
+        events.add((ParallelGCEvent)event);
     }
 
     @Override
     public String getStatistics() {
 
-        return "NOT YET IMPLEMENTED";
+        String s = "";
+
+        for(ParallelGCEvent e: events) {
+
+            s += OUTPUT_FORMAT.format(e.getTime()) + ", " + e.getType() + "\n";
+        }
+
+        return s;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
