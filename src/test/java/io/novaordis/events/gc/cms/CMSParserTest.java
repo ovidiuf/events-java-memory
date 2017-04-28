@@ -17,11 +17,9 @@
 package io.novaordis.events.gc.cms;
 
 import io.novaordis.events.api.parser.GCParser;
-import io.novaordis.events.api.parser.MultiLineGCParserTest;
+import io.novaordis.events.api.parser.GCParserTest;
 import io.novaordis.events.gc.CollectorType;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +29,7 @@ import static org.junit.Assert.assertTrue;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class CMSParserTest extends MultiLineGCParserTest {
+public class CMSParserTest extends GCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 

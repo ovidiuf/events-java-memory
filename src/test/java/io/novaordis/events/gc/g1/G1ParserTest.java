@@ -16,33 +16,24 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.parser.GCParser;
-import io.novaordis.events.api.parser.MultiLineGCParserTest;
+import io.novaordis.events.api.parser.GCParserTest;
 import io.novaordis.events.gc.CollectorType;
-import io.novaordis.utilities.time.Timestamp;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class G1ParserTest extends MultiLineGCParserTest {
+public class G1ParserTest extends GCParserTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(G1ParserTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 

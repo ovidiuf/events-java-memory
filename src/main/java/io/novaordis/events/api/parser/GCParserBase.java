@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public abstract class MultiLineParserBase implements MultiLineGCParser {
+public abstract class GCParserBase extends ParserBase implements GCParser {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -153,7 +153,6 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private long lineNumber;
     private List<RawGCEvent> completedEvents;
     private RawGCEvent currentEvent;
 
@@ -164,46 +163,28 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    protected MultiLineParserBase() {
+    protected GCParserBase() {
 
-        this.lineNumber = 0;
         this.completedEvents = new ArrayList<>();
         this.currentEvent = null;
     }
 
-    // MultiLineParser implementation ----------------------------------------------------------------------------------
+    // ParserBase implementation ---------------------------------------------------------------------------------------
 
     @Override
-    public List<Event> parse(String line) throws GCParsingException {
+    public List<Event> parse(long lineNumber, String line) throws ParsingException {
 
         List<RawGCEvent> rawGCEvents = processLine(line);
         return toEventList(rawGCEvents, eventFactory);
     }
 
     @Override
-    public List<Event> close() throws GCParsingException {
+    public List<Event> close(long lineNumber) throws ParsingException {
 
-        List<RawGCEvent> rawGCEvents = closeInternal();
-        return toEventList(rawGCEvents, eventFactory);
+        return toEventList(closeInternal(), eventFactory);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
-
-    /**
-     * Current line number.
-     */
-    public long getLineNumber() {
-
-        return lineNumber;
-    }
-
-    /**
-     * The number of lines parsed so far.
-     */
-    public long getParsedLineCount() {
-
-        return lineNumber;
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
@@ -221,8 +202,6 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
     }
 
     List<RawGCEvent> processLine(String line) throws GCParsingException {
-
-        incrementLineNumber();
 
         GCEventStartMarker currentMarker = null;
 
@@ -263,11 +242,6 @@ public abstract class MultiLineParserBase implements MultiLineGCParser {
         List<RawGCEvent> result = completedEvents;
         completedEvents = new ArrayList<>();
         return result;
-    }
-
-    void incrementLineNumber() {
-
-        lineNumber ++;
     }
 
     /**

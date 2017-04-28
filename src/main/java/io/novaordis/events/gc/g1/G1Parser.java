@@ -16,7 +16,7 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.parser.MultiLineParserBase;
+import io.novaordis.events.api.parser.GCParserBase;
 import io.novaordis.events.gc.CollectorType;
 
 /**
@@ -26,7 +26,7 @@ import io.novaordis.events.gc.CollectorType;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/14/17
  */
-public class G1Parser extends MultiLineParserBase {
+public class G1Parser extends GCParserBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
 

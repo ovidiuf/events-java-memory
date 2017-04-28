@@ -16,7 +16,6 @@
 
 package io.novaordis.events.api.parser;
 
-import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.gc.CollectorType;
 import io.novaordis.events.gc.cms.CMSParser;
@@ -25,13 +24,12 @@ import io.novaordis.events.gc.parallel.ParallelGCParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 4/19/17
  */
-public interface GCParser {
+public interface GCParser extends Parser {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -98,18 +96,5 @@ public interface GCParser {
      * @return the collector type this whose logs are understood by this parser.
      */
     CollectorType getCollectorType();
-
-    /**
-     * @return may return an empty list but never null.
-     */
-    List<Event> parse(String line) throws GCParsingException;
-
-    /**
-     * Processes the remaining accumulated state and closes the parser. A parser that was closed cannot be re-used.
-     *
-     * @return may return an empty list but never null.
-     */
-    List<Event> close() throws GCParsingException;
-
 
 }
