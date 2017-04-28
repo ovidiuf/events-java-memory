@@ -172,14 +172,14 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     // ParserBase implementation ---------------------------------------------------------------------------------------
 
     @Override
-    public List<Event> parse(long lineNumber, String line) throws ParsingException {
+    protected List<Event> parse(long lineNumber, String line) throws ParsingException {
 
         List<RawGCEvent> rawGCEvents = processLine(line);
         return toEventList(rawGCEvents, eventFactory);
     }
 
     @Override
-    public List<Event> close(long lineNumber) throws ParsingException {
+    protected List<Event> close(long lineNumber) throws ParsingException {
 
         return toEventList(closeInternal(), eventFactory);
     }
