@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 function build-classpath() {
 
     local found=false
@@ -20,7 +19,7 @@ function get-events-api-version() {
     [ -f ${pom_file} ] || { echo "POM file ${pom_file} not found" 1>&2; exit 1; }
 
     local version
-    version=$(grep "<events\.api\.version>" ${pom_file}) || exit 1
+    version=$(grep "<events\.api\.version>" ${pom_file}) || { echo "<events.api.version> not found" 1>&2; exit 1; }
 
     version=${version#*>}
     version=${version%?/events*}
@@ -34,7 +33,7 @@ function get-novaordis-utilities() {
     [ -f ${pom_file} ] || { echo "POM file ${pom_file} not found" 1>&2; exit 1; }
 
     local version
-    version=$(grep "<novaordis\.utilities\.version>" ${pom_file}) || exit 1
+    version=$(grep "<novaordis\.utilities\.version>" ${pom_file}) || { echo "<novaordis.utilities.version> not found" 1>&2; exit 1; }
 
     version=${version#*>}
     version=${version%?/novaordis*}

@@ -19,6 +19,7 @@ package io.novaordis.events.gc;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCEvent;
 import io.novaordis.events.api.gc.GCHistory;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.utilities.time.Timestamp;
@@ -44,61 +45,67 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length == 0) {
-
-            throw new Exception("GC log file name required");
-        }
-
-        File f = new File(args[0]);
-
-        if (!f.isFile() || !f.canRead()) {
-
-            throw new Exception("file " + f + " does not exist or cannot be read");
-        }
-
-        List<Event> gcEvents = new ArrayList<>();
-
-        GCParser p = GCParser.buildInstance(f);
-
-        BufferedReader br = null;
-
         try {
 
-            br = new BufferedReader(new FileReader(f));
+            if (args.length == 0) {
 
-            String line;
-
-            while((line = br.readLine()) != null) {
-
-                List<Event> es = p.parse(line);
-                gcEvents.addAll(es);
-            }
-        }
-        finally {
-
-            if (br != null) {
-
-                br.close();
+                throw new Exception("GC log file name required");
             }
 
+            File f = new File(args[0]);
+
+            if (!f.isFile() || !f.canRead()) {
+
+                throw new Exception("file " + f + " does not exist or cannot be read");
+            }
+
+            List<Event> gcEvents = new ArrayList<>();
+
+            GCParser p = GCParser.buildInstance(f);
+
+            BufferedReader br = null;
+
+            try {
+
+                br = new BufferedReader(new FileReader(f));
+
+                String line;
+
+                while ((line = br.readLine()) != null) {
+
+                    List<Event> es = p.parse(line);
+                    gcEvents.addAll(es);
+                }
+            } finally {
+
+                if (br != null) {
+
+                    br.close();
+                }
+
+            }
+
+            List<Event> es = p.close();
+            gcEvents.addAll(es);
+
+            //
+            // build the history
+            //
+
+            GCHistory history = GCHistory.build(p.getCollectorType());
+
+            for (Event e : gcEvents) {
+
+                history.update((GCEvent) e);
+            }
+
+            String s = history.getStatistics();
+            System.out.println(s);
         }
+        catch (GCParsingException e) {
 
-        List<Event> es = p.close();
-        gcEvents.addAll(es);
-
-        //
-        // build the history
-        //
-
-        GCHistory history = GCHistory.build(p.getCollectorType());
-
-        for(Event e: gcEvents) {
-
-            history.update((GCEvent)e);
+            System.err.println("[error]: " + e.getMessage() + " at line " + e.getLineNumber());
         }
-
-        String s = history.getStatistics();
-        System.out.println(s);
 
     }
 
