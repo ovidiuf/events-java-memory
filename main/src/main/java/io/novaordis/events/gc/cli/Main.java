@@ -22,6 +22,8 @@ import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.cli.Configuration;
 import io.novaordis.events.cli.ConfigurationImpl;
 import io.novaordis.events.processing.Procedure;
+import io.novaordis.events.query.MatchAll;
+import io.novaordis.events.query.Query;
 import io.novaordis.utilities.UserErrorException;
 import io.novaordis.utilities.help.InLineHelp;
 
@@ -56,6 +58,9 @@ public class Main {
 
             is = c.getInputStream();
 
+            Query query = c.getQuery();
+            query = query == null ? new MatchAll() : query;
+
             GCParser parser = GCParser.buildInstance(is);
 
             Procedure procedure = c.getProcedure();
@@ -67,10 +72,12 @@ public class Main {
             while ((line = br.readLine()) != null) {
 
                 List<Event> es = parser.parse(line);
+                es = query.filter(es);
                 procedure.process(es);
             }
 
             List<Event> es = parser.close();
+            es = query.filter(es);
             procedure.process(es);
         }
         catch(UserErrorException e) {
