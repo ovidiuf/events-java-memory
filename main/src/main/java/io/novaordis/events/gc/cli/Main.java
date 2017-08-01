@@ -17,17 +17,17 @@
 package io.novaordis.events.gc.cli;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.gc.GCEvent;
-import io.novaordis.events.api.gc.GCHistory;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.GCParser;
 import io.novaordis.events.cli.Configuration;
 import io.novaordis.events.cli.ConfigurationImpl;
+import io.novaordis.events.processing.Procedure;
+import io.novaordis.utilities.UserErrorException;
+import io.novaordis.utilities.help.InLineHelp;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,74 +42,72 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        InputStream is = null;
+
         try {
 
             Configuration c = new ConfigurationImpl(args);
 
-            InputStream is = c.getInputStream();
+            if (c.isHelp()) {
 
-            List<Event> gcEvents = new ArrayList<>();
-
-            GCParser p = GCParser.buildInstance(is);
-
-            BufferedReader br = null;
-
-            try {
-
-                br = new BufferedReader(new InputStreamReader(is));
-
-                String line;
-
-                while ((line = br.readLine()) != null) {
-
-                    List<Event> es = p.parse(line);
-                    gcEvents.addAll(es);
-                }
-            }
-            finally {
-
-                if (br != null) {
-
-                    br.close();
-                }
-
+                System.out.println(InLineHelp.get("gc"));
+                System.exit(0);
             }
 
-            List<Event> es = p.close();
-            gcEvents.addAll(es);
+            is = c.getInputStream();
 
-            //
-            // build the history
-            //
+            GCParser parser = GCParser.buildInstance(is);
 
-            GCHistory history = GCHistory.build(p.getCollectorType());
+            Procedure procedure = c.getProcedure();
 
-            for (Event e : gcEvents) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-                history.update((GCEvent) e);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                List<Event> es = parser.parse(line);
+                procedure.process(es);
             }
 
-            String s = history.getStatistics();
-            System.out.println(s);
+            List<Event> es = parser.close();
+            procedure.process(es);
+        }
+        catch(UserErrorException e) {
+
+            System.err.println("[error]: " + e.getMessage());
         }
         catch (GCParsingException e) {
 
             System.err.println("[error]: " + e.getMessage() + " at line " + e.getLineNumber());
         }
+        finally {
 
+            if (is != null) {
+
+                is.close();
+            }
+        }
     }
 
-    // Attributes ------------------------------------------------------------------------------------------------------
+//    GCHistory history = GCHistory.build(parser.getCollectorType());
+//    for (Event e : gcEvents) {
+//
+//        history.update((GCEvent) e);
+//    }
+//    String s = history.getStatistics();
 
-    // Constructors ----------------------------------------------------------------------------------------------------
+// Attributes ------------------------------------------------------------------------------------------------------
 
-    // Public ----------------------------------------------------------------------------------------------------------
+// Constructors ----------------------------------------------------------------------------------------------------
 
-    // Package protected -----------------------------------------------------------------------------------------------
+// Public ----------------------------------------------------------------------------------------------------------
 
-    // Protected -------------------------------------------------------------------------------------------------------
+// Package protected -----------------------------------------------------------------------------------------------
 
-    // Private ---------------------------------------------------------------------------------------------------------
+// Protected -------------------------------------------------------------------------------------------------------
+
+// Private ---------------------------------------------------------------------------------------------------------
 
 //    private static final BigDecimal BYTES_IN_MB = new BigDecimal(1024 * 1024);
 //
@@ -149,6 +147,6 @@ public class Main {
 //        }
 //    }
 
-    // Inner classes ---------------------------------------------------------------------------------------------------
+// Inner classes ---------------------------------------------------------------------------------------------------
 
 }
