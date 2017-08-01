@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="events-gc-parser" />
+    <orderEntry type="library" name="Maven: io.novaordis.events.gc:events-gc-parser:1.1.0-SNAPSHOT-" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.utilities:novaordis-utilities:4.7.9-SNAPSHOT-1" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.17" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.events.api:events-api:1.2.1-SNAPSHOT-4" level="project" />
