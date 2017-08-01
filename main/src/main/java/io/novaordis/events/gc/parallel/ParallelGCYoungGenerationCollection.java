@@ -64,12 +64,12 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
             long t = time.getTimestamp().getTime();
 
-            System.out.print(ParallelGCHistory.OUTPUT_FORMAT.format(t) + ", ");
-
-            System.out.printf("%2.1f, %2.1f, %2.1f, \n",
-                    ((float)hb.getBytes())/(1024 * 1024),
-                    ((float)ha.getBytes())/(1024 * 1024),
-                    ((float)ht.getBytes())/(1024 * 1024));
+//            System.out.print(ParallelGCHistory.OUTPUT_FORMAT.format(t) + ", ");
+//
+//            System.out.printf("%2.1f, %2.1f, %2.1f, \n",
+//                    ((float)hb.getBytes())/(1024 * 1024),
+//                    ((float)ha.getBytes())/(1024 * 1024),
+//                    ((float)ht.getBytes())/(1024 * 1024));
 
         }
         catch(Exception e) {
