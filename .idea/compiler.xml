@@ -17,16 +17,18 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
-      <profile default="false" name="Annotation profile for gc-parser" enabled="true">
+      <profile default="false" name="Annotation profile for events-gc-parser" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="gc-parser" />
+        <module name="events-gc-parser" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gc-parser" target="1.8" />
+      <module name="events-gc-parser" target="1.8" />
+      <module name="events-gc-parser-release" target="1.8" />
+      <module name="events-gc-parser-root" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

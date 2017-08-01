@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.novaordis.events.api:events-api:1.2.1-SNAPSHOT-4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/events/api/events-api/1.2.1-SNAPSHOT-4/events-api-1.2.1-SNAPSHOT-4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/events/api/events-api/1.2.1-SNAPSHOT-4/events-api-1.2.1-SNAPSHOT-4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/events/api/events-api/1.2.1-SNAPSHOT-4/events-api-1.2.1-SNAPSHOT-4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

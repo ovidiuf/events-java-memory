@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.novaordis.utilities:novaordis-utilities:4.7.9-SNAPSHOT-1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/utilities/novaordis-utilities/4.7.9-SNAPSHOT-1/novaordis-utilities-4.7.9-SNAPSHOT-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/utilities/novaordis-utilities/4.7.9-SNAPSHOT-1/novaordis-utilities-4.7.9-SNAPSHOT-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/novaordis/utilities/novaordis-utilities/4.7.9-SNAPSHOT-1/novaordis-utilities-4.7.9-SNAPSHOT-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

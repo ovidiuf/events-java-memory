@@ -1,3 +1,5 @@
 target
 .idea/workspace.xml
 .DS_Store
+~$*.docx
+.~lock.*.odg#

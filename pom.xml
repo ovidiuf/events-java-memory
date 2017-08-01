@@ -1,14 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <name>main</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.novaordis.events.gc</groupId>
-    <artifactId>gc-parser</artifactId>
-    <packaging>jar</packaging>
+    <name>Events GC Parser (events-gc-parser)</name>
 
+    <groupId>io.novaordis.events.gc</groupId>
+    <artifactId>events-gc-parser-root</artifactId>
     <version>1.0.1-SNAPSHOT-1</version>
+    <packaging>pom</packaging>
 
     <properties>
 
@@ -16,28 +17,106 @@
             Dependencies
         -->
 
-        <novaordis.utilities.version>4.7.6</novaordis.utilities.version>
-        <events.api.version>1.1.7</events.api.version>
+        <novaordis.utilities.version>4.7.9-SNAPSHOT-1</novaordis.utilities.version>
+        <events.api.version>1.2.1-SNAPSHOT-4</events.api.version>
+        <events.processing.version>1.1.0</events.processing.version>
+        <events.cli.version>1.0.2-SNAPSHOT-1</events.cli.version>
+
         <slf4j.version>1.7.6</slf4j.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12</junit.version>
 
         <!--
             End of Dependencies
         -->
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <source.java.version>1.8</source.java.version>
+        <target.java.version>1.8</target.java.version>
         <test.scratch.directory>target/test-scratch</test.scratch.directory>
+        <test.log.directory>target</test.log.directory>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>MM/dd/yy</maven.build.timestamp.format>
+        <release_date>${maven.build.timestamp}</release_date>
     </properties>
+
+    <modules>
+        <module>main</module>
+        <module>release</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.novaordis.utilities</groupId>
+            <artifactId>novaordis-utilities</artifactId>
+            <version>${novaordis.utilities.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.novaordis.events.api</groupId>
+            <artifactId>events-api</artifactId>
+            <version>${events.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.novaordis.events.cli</groupId>
+            <artifactId>events-cli</artifactId>
+            <version>${events.cli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.novaordis.events.processing</groupId>
+            <artifactId>events-processing</artifactId>
+            <version>${events.processing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!--
+            Testing Dependencies
+        -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            End of Testing Dependencies
+        -->
+
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${source.java.version}</source>
+                    <target>${target.java.version}</target>
+                    <debug>true</debug>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -55,7 +134,7 @@
                         <phase>generate-test-resources</phase>
                         <configuration>
                             <tasks>
-                                <mkdir dir="${test.scratch.directory}" />
+                                <mkdir dir="${test.scratch.directory}"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -64,30 +143,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xmx512m</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>test.log.directory</name>
+                            <value>${test.log.directory}</value>
+                        </property>
+                        <property>
+                            <name>test.scratch.directory</name>
+                            <value>${test.scratch.directory}</value>
+                        </property>
+                        <property>
+                            <name>maven.injected.project.version</name>
+                            <value>${project.version}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.novaordis.events.api</groupId>
-            <artifactId>events-api</artifactId>
-            <version>${events.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-        </dependency>
-    </dependencies>
-
 </project>
+

@@ -1,2 +1,15 @@
+#
+# release configuration 
+#
+qualification:
+  os.command.to.get.installed.version: gc version
+
+build:
+
+publish:
+  local.artifact.repository.root: ${M2}
+
+install:
+  installation.directory: ${RUNTIME_DIR}
 
 

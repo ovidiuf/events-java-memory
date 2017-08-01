@@ -1,0 +1,205 @@
+#!/bin/bash
+#
+# https://kb.novaordis.com/index.php/Bash-wrapper-functions
+#
+# Import with:
+#
+# [ -f $(dirname $0)/bash-wrapper-functions ] && .  $(dirname $0)/bash-wrapper-functions || { echo "$(dirname $0)/bash-wrapper-functions not found" 1>&2; exit 1; }
+#
+#
+
+bash_wrapper_functions_version=2-SNAPSHOT-2
+
+function error() {
+
+    echo "[error]: "$@ 1>&2
+    exit 1
+}
+
+function debug() {
+
+    ${VERBOSE} && echo $@ 1>&2
+}
+
+#
+# Attempts to identify JAVA_HOME and returns the path to the java binary based on that, while verifying the presence
+# and the executability of the binary. If JAVA_HOME is not found, then the method simply returns "java" with the
+# assumption the path to it is declared in PATH and warn.
+#
+function get-java-binary() {
+
+    if [ -z "${JAVA_HOME}" ]; then
+
+            echo "java"
+            echo "[warn]: no JAVA_HOME environment variable found, using 'java'" 1>&2
+            return 0
+    fi
+
+    [ -d ${JAVA_HOME} ] || \
+        { echo "JAVA_HOME points to an invalid directory: ${JAVA_HOME}" 1>&2; exit 1; }
+
+    [ -d ${JAVA_HOME}/bin ] || \
+        { echo "JAVA_HOME points to a directory that does not contain a 'bin' subdirectory: ${JAVA_HOME}" 1>&2; exit 1; }
+
+    [ -f ${JAVA_HOME}/bin/java ] || \
+        { echo "invalid JAVA_HOME, ${JAVA_HOME}/bin/java does not exist" 1>&2; exit 1; }
+
+    [ -x ${JAVA_HOME}/bin/java ] || \
+        { echo "invalid JAVA_HOME, ${JAVA_HOME}/bin/java exists but is not executable" 1>&2; exit 1; }
+
+    echo ${JAVA_HOME}/bin/java
+}
+
+#
+# Inspects the content of the given directory and produces a ":" separated classpath containing all JAR files found
+# in the directory. All classpath elements start with the path provided as argument of the function. The function
+# does NOT recursively descend in the sub-directories. The result is returned at stdout. If a failure of any kind is
+# encountered, the corresponding error message will be sent to stderr and the current shell will *exit* with 1.
+#
+# arg1 (mandatory) - the directory to scan
+# arg2 (optional, boolean) - whether to include the directory itself at the beginning of the classpath. By default
+#       the directory is not included in the classpath.
+#
+#
+# Usage:
+#
+# local classpath
+# classpath=$(classpath-from-directory ./some-dir) || exit 1
+# [ -z "${classpath}" ] && { # nothing was generated, react accordingly }
+#
+#
+function get-classpath-from-directory() {
+
+    local dir=$1
+    local include_directory_in_classpath=$2
+
+    [ -z "${dir}" ] && { echo "get-classpath-from-directory(): target directory not provided" 1>&2; exit 1; }
+    [ -d ${dir} ] || { echo "get-classpath-from-directory(): ${dir} is not a valid directory" 1>&2; exit 1; }
+    [ -z "${include_directory_in_classpath}" ] && include_directory_in_classpath=false
+    [ "${include_directory_in_classpath}" = "true" -o "${include_directory_in_classpath}" = "false" ] || \
+        { echo "get-classpath-from-directory(): the second argument must be true or false, but it is ${include_directory_in_classpath}" 1>&2; exit 1; }
+
+    first=true
+
+    ${include_directory_in_classpath} && { echo -n ${dir}; first=false; }
+
+    for i in $(find ${dir} -mindepth 1 -maxdepth 1 -name *.jar); do
+        ${first} && first=false || echo -n ":"
+        echo -n ${i}
+    done
+}
+
+#
+# "Light" version retrieval. The function attempts to located the VERSION file. If found, and if carrying a valid
+# content, it is displayed. Otherwise, the calling layer should pass the command to the java runtime.
+#
+# See https://kb.novaordis.com/index.php/Nova_Ordis_Utilities_Version_Metadata_Handling#.22Light.22_Version_Reporting
+#
+function get-version() {
+
+    [ -f $(dirname $0)/../lib/VERSION ] && { cat $(dirname $0)/../lib/VERSION; return 0; }
+    return 1
+}
+
+function main() {
+
+    #
+    # loop over command line arguments and handle common arguments
+    #
+
+    local args
+    local command
+    local java_debug_args
+
+    while [ -n "$1" ]; do
+
+        debug "arg: $1"
+
+        if [ "$1" = "-d" -o "$1" = "--debug" ]; then
+
+            java_debug_args="${JAVA_DEBUG_ARGS}"
+
+        elif [ "$1" = "-v" -o "$1" = "--verbose" ]; then
+
+            VERBOSE=true
+
+        elif [ "$1" != "${1/ //}" ]; then
+
+            #
+            # the argument contains spaces, which means double quote were used. We need to pass those down, so the
+            # java command line parsing logic can detect the quoted strings. More then that, if the double quoted
+            # string contains escaped quotes, we want to pass them as such
+            #
+            # TODO: if more than one space is enclosed in quotes, the block of spaces is not passed, it is converted
+            #       to just one space, which is a defect. Fix.
+            #
+            escaped_inner_quotes=${1//\"/\\\"}
+            args="${args} \"${escaped_inner_quotes}\""
+
+        elif [ -z "${command}" ]; then
+
+            command=$1
+
+        else
+
+            #
+            # everything else is passed to the java layer
+            #
+
+            args="${args} $1"
+        fi
+        shift
+    done
+
+    debug "command: ${command}"
+
+
+    if [ "${command}" = "version" ]; then
+
+        #
+        # "version" handling - "light" version retrieval
+        #
+
+        debug "handling version"
+
+        local version=$(get-version)
+        if [ -n "${version}" ]; then
+
+            #
+            # display and exit
+            #
+            echo "${version}"
+            return 0
+        fi
+
+        #
+        # we weren't able to handle it satisfactory at the bash level, pass it to the java runtime at the front of
+        # the argument list
+        #
+        args="${command} ${args}"
+
+    else
+
+        #
+        # the command is not handled in bash, add it to the front of the argument list
+        #
+
+        args="${command} ${args}"
+    fi
+
+    local java_bin
+    java_bin=$(get-java-binary) || exit 1
+
+    local classpath
+    classpath=$(get-classpath-from-directory $(dirname $0)/../lib true)
+
+    ${VERBOSE} && verbose_system_property="-Dverbose=true"
+
+    debug "java_bin: ${java_bin}"
+    debug "classpath: ${classpath}"
+    debug "arguments:>${args}<"
+
+    ${java_bin} ${java_debug_args} -cp ${classpath} ${verbose_system_property} ${MAIN_CLASS} ${args}
+}
+
+
