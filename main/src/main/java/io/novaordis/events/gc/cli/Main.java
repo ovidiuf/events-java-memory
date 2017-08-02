@@ -26,6 +26,7 @@ import io.novaordis.events.query.MatchAll;
 import io.novaordis.events.query.Query;
 import io.novaordis.utilities.UserErrorException;
 import io.novaordis.utilities.help.InLineHelp;
+import io.novaordis.utilities.logging.StderrVerboseLogging;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -43,6 +44,8 @@ public class Main {
     // Static ----------------------------------------------------------------------------------------------------------
 
     public static void main(String[] args) throws Exception {
+
+        StderrVerboseLogging.init();
 
         InputStream is = null;
 

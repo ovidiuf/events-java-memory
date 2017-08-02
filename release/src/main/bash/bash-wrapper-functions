@@ -197,6 +197,7 @@ function main() {
 
     debug "java_bin: ${java_bin}"
     debug "classpath: ${classpath}"
+    debug "verbose_system_property: ${verbose_system_property}"
     debug "arguments:>${args}<"
 
     ${java_bin} ${java_debug_args} -cp ${classpath} ${verbose_system_property} ${MAIN_CLASS} ${args}

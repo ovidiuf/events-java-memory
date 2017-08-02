@@ -52,15 +52,15 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
         try {
 
-            MemoryMeasurement hb = new MemoryMeasurement(-1L, 0, i, s);
+            MemoryMeasurement heapBefore = new MemoryMeasurement(-1L, 0, i, s);
 
             int j = s.indexOf("(");
 
-            MemoryMeasurement ha = new MemoryMeasurement(-1L, i + 2, j, s);
+            MemoryMeasurement heapAfter = new MemoryMeasurement(-1L, i + 2, j, s);
 
             int k = s.indexOf(")");
 
-            MemoryMeasurement ht = new MemoryMeasurement(-1L, j + 1, k, s);
+            MemoryMeasurement heapTotal = new MemoryMeasurement(-1L, j + 1, k, s);
 
             long t = time.getTimestamp().getTime();
 
