@@ -21,6 +21,8 @@ import io.novaordis.events.gc.CollectorType;
 import io.novaordis.events.gc.cms.CMSParser;
 import io.novaordis.events.gc.g1.G1Parser;
 import io.novaordis.events.gc.parallel.ParallelGCParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +34,8 @@ import java.io.InputStream;
 public interface GCParser extends Parser {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    Logger log = LoggerFactory.getLogger(GCParser.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -61,7 +65,6 @@ public interface GCParser extends Parser {
             return new CMSParser();
         }
 
-
         throw new GCParsingException("don't know to handle " + t);
     }
 
@@ -89,7 +92,11 @@ public interface GCParser extends Parser {
                     "no known garbage collector type can be inferred from the content of the stream");
         }
 
-        return buildInstance(t);
+        GCParser p = buildInstance(t);
+
+        log.debug(p + " built");
+
+        return p;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

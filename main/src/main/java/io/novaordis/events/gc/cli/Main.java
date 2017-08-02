@@ -45,6 +45,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        StderrVerboseLogging.setLoggingPattern("%c{1}: %m%n");
         StderrVerboseLogging.init();
 
         InputStream is = null;

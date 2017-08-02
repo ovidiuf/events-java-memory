@@ -16,6 +16,9 @@
 
 package io.novaordis.events.gc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,6 +36,8 @@ public enum  CollectorType {
     ;
 
     private static final int LINE_COUNT = 4;
+
+    private static final Logger log = LoggerFactory.getLogger(CollectorType.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -52,6 +57,8 @@ public enum  CollectorType {
             return null;
         }
 
+        log.debug("applying heuristics to determine the collector type");
+
         CollectorType t = null;
 
         int lineNumber = 0;
@@ -67,10 +74,12 @@ public enum  CollectorType {
                 if (line.contains("-XX:+UseParallelGC")) {
 
                     t = Parallel;
+                    log.debug("-XX:+UseParallelGC found on line " + lineNumber + ", assuming a " + t + " collector");
                 }
                 else if (line.contains("-XX:+UseG1GC")) {
 
                     t = G1;
+                    log.debug("-XX:+UseG1GC found on line " + lineNumber + ", assuming a " + t + " collector");
                 }
             }
         }
