@@ -70,7 +70,8 @@ public class ParallelGCFullCollectionTest extends ParallelGCEventTest {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
         ParallelGCEventPayload preParsedPayload =
-                new ParallelGCEventPayload(1L, "Full", ParallelGCCollectionTrigger.ALLOCATION_FAILURE.getLogMarker(),
+                new ParallelGCEventPayload(
+                        1L, 100, "Full", ParallelGCCollectionTrigger.ALLOCATION_FAILURE.getLogMarker(),
                         "something", "something");
         return new ParallelGCFullCollection(t, preParsedPayload);
     }

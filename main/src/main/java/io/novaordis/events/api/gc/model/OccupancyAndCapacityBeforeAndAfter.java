@@ -48,9 +48,6 @@ public class OccupancyAndCapacityBeforeAndAfter {
      *
      * 3054.0M(3054.0M)->0.0B(2048.0K)
      *
-     * @param lineNumber
-     * @param position
-     * @param line
      * @throws ParsingException
      */
     public OccupancyAndCapacityBeforeAndAfter(Long lineNumber, int position, String line) throws ParsingException {

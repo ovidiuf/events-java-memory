@@ -82,7 +82,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
                         " [Times: user=0.64 sys=0.06, real=0.79 secs] \n";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -147,7 +147,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
                         " [Times: user=0.28 sys=0.00, real=0.17 secs]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -196,7 +196,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -244,7 +244,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
                         " [Times: user=0.03 sys=0.00, real=0.02 secs] \n";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -294,7 +294,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -343,7 +343,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1Collection e = (G1Collection)f.build(re);
@@ -364,7 +364,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
         String rawContent = "[GC concurrent-root-region-scan-start]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -378,7 +378,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC concurrent-root-region-scan-end, 0.0192842 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -392,7 +392,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC concurrent-mark-start]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -406,7 +406,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC concurrent-mark-end, 0.4287195 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -420,7 +420,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC remark ";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -434,7 +434,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[Finalize Marking, 0.0006334 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -448,7 +448,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC ref-proc, 0.0002593 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -462,7 +462,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[Unloading, 0.1314876 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -476,7 +476,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC cleanup 359M->301M(5120M), 0.0400808 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -490,7 +490,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC concurrent-cleanup-start]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -504,7 +504,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
 
         String rawContent = "[GC concurrent-cleanup-end, 0.0001026 secs]";
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         G1ConcurrentCycleEvent e = (G1ConcurrentCycleEvent)f.build(re);
@@ -548,7 +548,7 @@ public class G1EventFactoryTest extends GCEventFactoryTest {
         Timestamp ts = new TimestampImpl(123L);
         Time t = new Time(ts, 0L);
 
-        RawGCEvent re = new RawGCEvent(t, 779L);
+        RawGCEvent re = new RawGCEvent(t, 779L, 100);
 
         re.append(rawContent);
 

@@ -46,7 +46,7 @@ public class ParallelGCEventPayloadTest {
 
         try {
 
-            new ParallelGCEventPayload(2L, "", "No Such Trigger", "something", "something else");
+            new ParallelGCEventPayload(2L, 100, "", "No Such Trigger", "something", "something else");
             fail("should have thrown exception");
         }
         catch (GCParsingException e) {

@@ -19,9 +19,9 @@ package io.novaordis.events.gc.parallel;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEventType;
 import io.novaordis.events.api.gc.GCParsingException;
-import io.novaordis.events.api.gc.model.Heap;
-import io.novaordis.events.api.gc.model.MemoryMeasurement;
 import io.novaordis.events.gc.g1.Time;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -33,53 +33,9 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
 
     public static final String COLLECTION_TRIGGER_PROPERTY_NAME = "trigger";
 
+    private static final Logger log = LoggerFactory.getLogger(ParallelGCYoungGenerationCollection.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
-
-    public static Heap extractHeap(Time time, String s) throws GCParsingException {
-
-        // [PSYoungGen: 1096633K->85374K(1114624K)] 2771921K->1761229K(3561472K), 0.0999662 secs
-
-        int i = s.indexOf("]");
-
-        if (i == -1) {
-
-            return null;
-        }
-
-        s = s.substring(i + 2);
-
-        i = s.indexOf("->");
-
-        try {
-
-            MemoryMeasurement heapBefore = new MemoryMeasurement(-1L, 0, i, s);
-
-            int j = s.indexOf("(");
-
-            MemoryMeasurement heapAfter = new MemoryMeasurement(-1L, i + 2, j, s);
-
-            int k = s.indexOf(")");
-
-            MemoryMeasurement heapTotal = new MemoryMeasurement(-1L, j + 1, k, s);
-
-            long t = time.getTimestamp().getTime();
-
-//            System.out.print(ParallelGCHistory.OUTPUT_FORMAT.format(t) + ", ");
-//
-//            System.out.printf("%2.1f, %2.1f, %2.1f, \n",
-//                    ((float)hb.getBytes())/(1024 * 1024),
-//                    ((float)ha.getBytes())/(1024 * 1024),
-//                    ((float)ht.getBytes())/(1024 * 1024));
-
-        }
-        catch(Exception e) {
-
-            throw new GCParsingException("", e);
-        }
-
-
-        return null;
-    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
@@ -88,9 +44,14 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
     public ParallelGCYoungGenerationCollection(Time time, ParallelGCEventPayload preParsedContent)
             throws GCParsingException {
 
-        super(preParsedContent.getLineNumber(), time, preParsedContent.getTrigger());
+        super(preParsedContent.getLineNumber(),
+                preParsedContent.getPositionInLine(),
+                time, preParsedContent.getTrigger(),
+                preParsedContent.getFirstSquareBracketedSegment());
+
         setType(ParallelGCEventType.YOUNG_GENERATION_COLLECTION);
-        extractHeap(time, preParsedContent.getFirstSquareBracketedSegment());
+
+        if (log.isDebugEnabled()) { log.debug(this + " constructed"); }
     }
 
     // Overrides -------------------------------------------------------------------------------------------------------
@@ -138,7 +99,8 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
     @Override
     public String toString() {
 
-        return "YOUNG GENERATION COLLECTION (" + getCollectionTrigger() + ")";
+        return "YOUNG GENERATION COLLECTION (" + getCollectionTrigger() + ")[" +
+                getLineNumber() + ":" + getPositionInLine() + "]";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

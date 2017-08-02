@@ -69,10 +69,9 @@ public class ParallelGCYoungGenerationCollectionTest extends ParallelGCEventTest
 
         Time t = new Time(new TimestampImpl(0L), 0L);
         ParallelGCEventPayload preParsedPayload =
-                new ParallelGCEventPayload(1L, "", ParallelGCCollectionTrigger.ALLOCATION_FAILURE.getLogMarker(),
+                new ParallelGCEventPayload(1L, 100, "",
+                        ParallelGCCollectionTrigger.ALLOCATION_FAILURE.getLogMarker(),
                         "something", "something");
-
-
 
         return new ParallelGCYoungGenerationCollection(t, preParsedPayload);
     }

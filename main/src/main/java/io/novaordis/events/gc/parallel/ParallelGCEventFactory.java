@@ -20,6 +20,8 @@ import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.parser.GCEventFactory;
 import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -42,12 +44,15 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
     public static final Pattern PARALLEL_CG_EVENT_PATTERN = Pattern.compile("^\\[(.*)GC \\((.+)\\) (.+)\\] (.+)");
 
+    private static final Logger log = LoggerFactory.getLogger(ParallelGCEventFactory.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     /**
      * @throws GCParsingException if invalid GC log entries are encountered
      */
-    public static ParallelGCEventPayload preParse(Long lineNumber, String rawContent) throws GCParsingException {
+    public static ParallelGCEventPayload preParse(Long lineNumber, int positionInLine, String rawContent)
+            throws GCParsingException {
 
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
 
@@ -69,7 +74,7 @@ public class ParallelGCEventFactory implements GCEventFactory {
             throw new GCParsingException("no known parallel GC event identified", lineNumber);
         }
 
-        return new ParallelGCEventPayload(lineNumber, m.group(1), m.group(2), m.group(3), m.group(4));
+        return new ParallelGCEventPayload(lineNumber, positionInLine, m.group(1), m.group(2), m.group(3), m.group(4));
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -86,12 +91,14 @@ public class ParallelGCEventFactory implements GCEventFactory {
             throw new IllegalArgumentException("null raw event");
         }
 
+        if (log.isDebugEnabled()) { log.debug("building GCEvent from " + re); }
+
         ParallelGCEvent event;
 
         Long lineNumber = re.getLineNumber();
         Time time = re.getTime();
         String rawContent = re.getContent();
-        ParallelGCEventPayload preParsedContent = preParse(lineNumber, rawContent);
+        ParallelGCEventPayload preParsedContent = preParse(lineNumber, re.getPositionInLine(), rawContent);
 
         String qualifier = preParsedContent.getCollectionTypeQualifier();
 
@@ -111,6 +118,8 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
             throw new GCParsingException("unknown parallel GC collection qualifier \"" + qualifier + "\"", lineNumber);
         }
+
+        if (log.isDebugEnabled()) { log.debug("built " + event); }
 
         return event;
     }

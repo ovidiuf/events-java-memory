@@ -61,57 +61,57 @@ public class G1ConcurrentCycleTest {
         G1ConcurrentCycle c = new G1ConcurrentCycle();
 
         Time t = new Time(new TimestampImpl(1L), 1L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(1L, t, G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(1L, 100, t, G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START)));
 
-        assertFalse(c.update(new G1Collection(1L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(1L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(2L), 2L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(2L, t, G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(2L, 100, t, G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END)));
 
-        assertFalse(c.update(new G1Collection(2L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(2L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(3L), 3L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(3L, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(3L, 100, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START)));
 
-        assertFalse(c.update(new G1Collection(3L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(3L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(4L), 4L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(4L, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_END)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(4L, 100, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_END)));
 
-        assertFalse(c.update(new G1Collection(4L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(4L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(5L), 5L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(5L, t, G1EventType.CONCURRENT_CYCLE_REMARK)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(5L, 100, t, G1EventType.CONCURRENT_CYCLE_REMARK)));
 
-        assertFalse(c.update(new G1Collection(5L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(5L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(6L), 6L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(6L, t, G1EventType.CONCURRENT_CYCLE_FINALIZE_MARKING)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(6L, 100, t, G1EventType.CONCURRENT_CYCLE_FINALIZE_MARKING)));
 
-        assertFalse(c.update(new G1Collection(6L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(6L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(7L), 7L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(7L, t, G1EventType.CONCURRENT_CYCLE_REF_PROC)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(7L, 100, t, G1EventType.CONCURRENT_CYCLE_REF_PROC)));
 
-        assertFalse(c.update(new G1Collection(7L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(7L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(8L), 8L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(8L, t, G1EventType.CONCURRENT_CYCLE_UNLOADING)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(8L, 100, t, G1EventType.CONCURRENT_CYCLE_UNLOADING)));
 
-        assertFalse(c.update(new G1Collection(8L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(8L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(9L), 9L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(9L, t, G1EventType.CONCURRENT_CYCLE_CLEANUP)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(9L, 100, t, G1EventType.CONCURRENT_CYCLE_CLEANUP)));
 
-        assertFalse(c.update(new G1Collection(9L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(9L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(10L), 10L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(10L, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(10L, 100, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_START)));
 
-        assertFalse(c.update(new G1Collection(10L, t, G1CollectionTrigger.EVACUATION)));
+        assertFalse(c.update(new G1Collection(10L, 200, t, G1CollectionTrigger.EVACUATION)));
 
         t = new Time(new TimestampImpl(11L), 11L);
-        assertTrue(c.update(new G1ConcurrentCycleEvent(11L, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END)));
+        assertTrue(c.update(new G1ConcurrentCycleEvent(11L, 100, t, G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END)));
     }
 
     // failIfOlderThanLast() -------------------------------------------------------------------------------------------
@@ -123,14 +123,14 @@ public class G1ConcurrentCycleTest {
 
         long t = 10L;
         G1Event e = new G1ConcurrentCycleEvent(
-                1L, new Time(new TimestampImpl(t), 0L), G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START);
+                1L, 100, new Time(new TimestampImpl(t), 0L), G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_START);
 
         c.setLastEvent(e);
 
 
         long t2 = 9L;
         G1Event e2 = new G1ConcurrentCycleEvent(
-                2L, new Time(new TimestampImpl(t2), 0L), G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END);
+                2L, 100, new Time(new TimestampImpl(t2), 0L), G1EventType.CONCURRENT_CYCLE_ROOT_REGION_SCAN_END);
 
         try {
 
@@ -160,7 +160,7 @@ public class G1ConcurrentCycleTest {
         G1ConcurrentCycle c = new G1ConcurrentCycle();
 
         G1Event e = new G1ConcurrentCycleEvent(
-                1L, new Time(new TimestampImpl(1L), 0L), G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START);
+                1L, 100, new Time(new TimestampImpl(1L), 0L), G1EventType.CONCURRENT_CYCLE_CONCURRENT_MARK_START);
 
         c.setLastEvent(e);
 
@@ -173,7 +173,7 @@ public class G1ConcurrentCycleTest {
         G1ConcurrentCycle c = new G1ConcurrentCycle();
 
         G1Event e = new G1ConcurrentCycleEvent(
-                1L, new Time(new TimestampImpl(1L), 0L), G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END);
+                1L, 100, new Time(new TimestampImpl(1L), 0L), G1EventType.CONCURRENT_CYCLE_CONCURRENT_CLEANUP_END);
 
         c.setLastEvent(e);
 

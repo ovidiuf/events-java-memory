@@ -54,6 +54,7 @@ public class G1EventFactory implements GCEventFactory {
 
         Time time = re.getTime();
         Long lineNumber = re.getLineNumber();
+        int positionInLine = re.getPositionInLine();
         String rawContent = re.getContent();
 
         StringTokenizer st = new StringTokenizer(rawContent, "\n");
@@ -76,7 +77,7 @@ public class G1EventFactory implements GCEventFactory {
             // this is a collection
             //
 
-            event = new G1Collection(lineNumber, time, trigger);
+            event = new G1Collection(lineNumber, positionInLine, time, trigger);
 
             if (firstLine.contains(G1CollectionScope.MIXED.getLogMarker())) {
 
@@ -98,7 +99,7 @@ public class G1EventFactory implements GCEventFactory {
                 // this is a concurrent cycle event
                 //
 
-                event = new G1ConcurrentCycleEvent(lineNumber, time);
+                event = new G1ConcurrentCycleEvent(lineNumber, positionInLine, time);
                 event.setType(cct);
             }
             else {

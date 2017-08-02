@@ -17,6 +17,8 @@
 package io.novaordis.events.gc.parallel;
 
 import io.novaordis.events.api.gc.GCParsingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -26,11 +28,14 @@ class ParallelGCEventPayload {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    private static final Logger log = LoggerFactory.getLogger(ParallelGCEventPayload.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private Long lineNumber;
+    private int positionInLine;
 
     // empty string or "Full"
 
@@ -45,10 +50,11 @@ class ParallelGCEventPayload {
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public ParallelGCEventPayload(
-            Long lineNumber, String qualifier, String strigger,
+            Long lineNumber, int positionInLine, String qualifier, String strigger,
             String firstSquareBracketedSegment, String restOfThePayload) throws GCParsingException {
 
         this.lineNumber = lineNumber;
+        this.positionInLine = positionInLine;
         this.qualifier = qualifier.trim();
         this.trigger = ParallelGCCollectionTrigger.fromLogMarker(strigger);
 
@@ -58,6 +64,8 @@ class ParallelGCEventPayload {
         }
         this.firstSquareBracketedSegment = firstSquareBracketedSegment;
         this.restOfThePayload = restOfThePayload;
+
+        if (log.isDebugEnabled()) { log.debug(this + " contains qualifier: " + (qualifier.isEmpty() ? "''" : qualifier) + ", trigger: " + trigger); }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -88,6 +96,17 @@ class ParallelGCEventPayload {
     public Long getLineNumber() {
 
         return lineNumber;
+    }
+
+    public int getPositionInLine() {
+
+        return positionInLine;
+    }
+
+    @Override
+    public String toString() {
+
+        return "ParallelGCEventPayload[" + lineNumber + ":" + positionInLine + "]";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

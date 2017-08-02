@@ -17,6 +17,8 @@
 package io.novaordis.events.api.gc;
 
 import io.novaordis.events.gc.g1.Time;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple wrapper around the (pre-parsed) timestamp information and the GC event content as string.
@@ -28,12 +30,15 @@ public class RawGCEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    private static final Logger log = LoggerFactory.getLogger(RawGCEvent.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private Time time;
     private Long lineNumber;
+    private int positionInLine;
     private String content;
 
     // Constructors ----------------------------------------------------------------------------------------------------
@@ -41,10 +46,11 @@ public class RawGCEvent {
     /**
      * @param lineNumber the line number of the first line of this event
      */
-    public RawGCEvent(Time time, Long lineNumber) {
+    public RawGCEvent(Time time, Long lineNumber, int positionInLine) {
 
         this.time = time;
         this.lineNumber = lineNumber;
+        this.positionInLine = positionInLine;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -67,6 +73,11 @@ public class RawGCEvent {
         return lineNumber;
     }
 
+    public int getPositionInLine() {
+
+        return positionInLine;
+    }
+
     public String getContent() {
 
         return content;
@@ -78,6 +89,21 @@ public class RawGCEvent {
     }
 
     public void append(String s) {
+
+        if (s == null) {
+
+            throw new IllegalArgumentException("null content");
+        }
+
+        if (s.isEmpty()) {
+
+            return;
+        }
+
+        if (log.isDebugEnabled()) {
+
+            log.debug(this + " appends content: " + ("\n".equals(s) ? "\\n" : "\"" + s  + "\""));
+        }
 
         if (content == null) {
 
@@ -92,12 +118,20 @@ public class RawGCEvent {
     @Override
     public String toString() {
 
+        String s = "RAW[";
+
         if (time == null) {
 
-            return "UNINITIALIZED";
+            s += "UNINITIALIZED";
+        }
+        else {
+
+            s += lineNumber  + ":" + positionInLine;
         }
 
-        return "" + lineNumber  + ": " + time;
+        s += "]";
+
+        return s;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

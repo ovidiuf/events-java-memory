@@ -41,9 +41,9 @@ public abstract class G1Event extends GCEventBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1Event(Long lineNumber, Time time) {
+    public G1Event(Long lineNumber, int positionInLine, Time time) {
 
-        super(lineNumber, time);
+        super(lineNumber, positionInLine, time);
     }
 
     // GCEvent implementation ------------------------------------------------------------------------------------------

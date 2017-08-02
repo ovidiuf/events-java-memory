@@ -32,14 +32,14 @@ public class G1ConcurrentCycleEvent extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time) {
+    public G1ConcurrentCycleEvent(Long lineNumber, int positionInLine, Time time) {
 
-        this(lineNumber, time, null);
+        this(lineNumber, positionInLine, time, null);
     }
 
-    public G1ConcurrentCycleEvent(Long lineNumber, Time time, G1EventType type) {
+    public G1ConcurrentCycleEvent(Long lineNumber, int positionInLine, Time time, G1EventType type) {
 
-        super(lineNumber, time);
+        super(lineNumber, positionInLine, time);
         setType(type);
     }
 

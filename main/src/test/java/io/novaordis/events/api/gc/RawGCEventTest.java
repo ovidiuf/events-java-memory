@@ -16,12 +16,13 @@
 
 package io.novaordis.events.api.gc;
 
-import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -46,13 +47,30 @@ public class RawGCEventTest {
     @Test
     public void append() throws Exception {
 
-        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L);
+        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L, 100);
 
         assertNull(e.getContent());
 
         e.append("A");
 
         assertEquals("A", e.getContent());
+    }
+
+    @Test
+    public void append_Null() throws Exception {
+
+        RawGCEvent e = new RawGCEvent(new Time(null, 0L), 1L, 100);
+
+        try {
+
+            e.append(null);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException iae) {
+
+            String msg = iae.getMessage();
+            assertTrue(msg.contains("null content"));
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

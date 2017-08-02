@@ -34,13 +34,15 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private Time time;
+    private int positionInLine;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public GCEventBase(Long lineNumber, Time time) {
+    public GCEventBase(Long lineNumber, int positionInLine, Time time) {
 
         this.time = time;
         setLineNumber(lineNumber);
+        setPositionInLine(positionInLine);
     }
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------
@@ -94,7 +96,17 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    public int getPositionInLine() {
+
+        return positionInLine;
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
+
+    void setPositionInLine(int i) {
+
+        this.positionInLine = i;
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

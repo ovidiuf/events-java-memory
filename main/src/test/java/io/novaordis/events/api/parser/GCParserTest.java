@@ -288,13 +288,13 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<RawGCEvent> events = p.processLine(line1);
+        List<RawGCEvent> events = p.processLine(1001L, line1);
         assertTrue(events.isEmpty());
 
-        List<RawGCEvent> events2 = p.processLine(line2);
+        List<RawGCEvent> events2 = p.processLine(1002L, line2);
         assertTrue(events2.isEmpty());
 
-        List<RawGCEvent> events3 = p.processLine(line3);
+        List<RawGCEvent> events3 = p.processLine(1003L, line3);
         assertEquals(1, events3.size());
 
         RawGCEvent e = events3.get(0);
@@ -316,7 +316,7 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<RawGCEvent> events = p.processLine(line1);
+        List<RawGCEvent> events = p.processLine(1001L, line1);
         assertEquals(3, events.size());
         RawGCEvent re = events.get(0);
         assertEquals(47719L, re.getTime().getOffset().longValue());
@@ -328,10 +328,10 @@ public abstract class GCParserTest {
         assertEquals(47758L, re3.getTime().getOffset().longValue());
         assertEquals("[GC ref-proc, 0.0002593 secs] ", re3.getContent());
 
-        List<RawGCEvent> events2 = p.processLine(line2);
+        List<RawGCEvent> events2 = p.processLine(1002L, line2);
         assertTrue(events2.isEmpty());
 
-        List<RawGCEvent> events3 = p.processLine(line3);
+        List<RawGCEvent> events3 = p.processLine(1003L,line3);
         assertEquals(1, events3.size());
 
         re = events3.get(0);
@@ -350,8 +350,8 @@ public abstract class GCParserTest {
         assertEquals(48027L, re.getTime().getOffset().longValue());
         assertEquals("[GC cleanup 322M->151M(5120M), 0.3210928 secs]\n", re.getContent());
 
-        assertNull(p.getCurrentEvent());
-        assertTrue(p.getCompletedEvents().isEmpty());
+        assertNull(p.getCurrentRawEvent());
+        assertTrue(p.getCompletedRawEvents().isEmpty());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -96,7 +96,7 @@ public class G1CollectionTest extends G1EventTest {
     public void collectionTriggerManagement() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        G1Collection c = new G1Collection(1L, t, null);
+        G1Collection c = new G1Collection(1L, 100, t, null);
 
         assertNull(c.getCollectionTrigger());
 
@@ -112,7 +112,7 @@ public class G1CollectionTest extends G1EventTest {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
 
-        G1Collection c = new G1Collection(1L, t, null);
+        G1Collection c = new G1Collection(1L, 100, t, null);
 
         c.setStringProperty(G1Collection.COLLECTION_TRIGGER_PROPERTY_NAME, "not-a-valid-g1-collection-trigger");
 
@@ -133,7 +133,7 @@ public class G1CollectionTest extends G1EventTest {
     public void collectionScopeManagement() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        G1Collection c = new G1Collection(1L, t, null);
+        G1Collection c = new G1Collection(1L, 100, t, null);
 
         assertEquals(G1CollectionScope.YOUNG, c.getCollectionScope());
 
@@ -146,7 +146,7 @@ public class G1CollectionTest extends G1EventTest {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
 
-        G1Collection c = new G1Collection(1L, t, null);
+        G1Collection c = new G1Collection(1L, 100, t, null);
 
         c.setStringProperty(G1Collection.COLLECTION_SCOPE_PROPERTY_NAME, "not-a-valid-g1-collection-scope");
 
@@ -167,7 +167,7 @@ public class G1CollectionTest extends G1EventTest {
     public void initialMarkManagement() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        G1Collection c = new G1Collection(1L, t, null);
+        G1Collection c = new G1Collection(1L, 100, t, null);
 
         assertFalse(c.isInitialMark());
 
@@ -184,7 +184,7 @@ public class G1CollectionTest extends G1EventTest {
     protected G1Collection getEventToTest() throws Exception {
 
         Time t = new Time(new TimestampImpl(0L), 0L);
-        return new G1Collection(1L, t, G1CollectionTrigger.EVACUATION);
+        return new G1Collection(1L, 100, t, G1CollectionTrigger.EVACUATION);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

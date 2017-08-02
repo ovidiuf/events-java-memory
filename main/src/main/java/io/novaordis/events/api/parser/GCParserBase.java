@@ -24,6 +24,8 @@ import io.novaordis.events.api.gc.RawGCEvent;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,6 +57,10 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     //
     public static final Pattern PrintGCTimeStamps_PATTERN = Pattern.compile("([0-9]+\\.[0-9][0-9][0-9]):");
 
+    public static final DateFormat LOG_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+
+    private static final Logger log = LoggerFactory.getLogger(GCParserBase.class);
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     /**
@@ -83,6 +89,8 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
         String dateStamp = m.group();
 
+        if (log.isDebugEnabled()) { log.debug("timestamp detected: \"" + dateStamp + "\""); }
+
         Timestamp timestamp;
 
         //
@@ -97,6 +105,8 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
             throw new GCParsingException("failed to parse date stamp \"" + dateStamp + "\" into a date", e);
         }
+
+        if (log.isDebugEnabled()) { log.debug("timestamp parsed: " + LOG_TIMESTAMP_FORMAT.format(timestamp.getTime())); }
 
         String rest = interestingSection.substring(m.start() + dateStamp.length());
 
@@ -116,10 +126,11 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
             offset = 1000L * Integer.parseInt(os.substring(0, os.length() - 4));
             offset += Integer.parseInt(os.substring(os.length() - 3));
             contentStart += m2.end();
+
+            if (log.isDebugEnabled()) { log.debug("offset: \"" + os + "\": " + offset); }
         }
 
         Time t = new Time(timestamp, offset);
-
 
         //
         // discard empty spaces before the content
@@ -154,7 +165,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private List<RawGCEvent> completedEvents;
-    private RawGCEvent currentEvent;
+    private RawGCEvent currentRawEvent;
 
     //
     // must be initialized by the subclass' constructor
@@ -166,7 +177,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     protected GCParserBase() {
 
         this.completedEvents = new ArrayList<>();
-        this.currentEvent = null;
+        this.currentRawEvent = null;
     }
 
     // ParserBase implementation ---------------------------------------------------------------------------------------
@@ -174,7 +185,9 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     @Override
     protected List<Event> parse(long lineNumber, String line) throws ParsingException {
 
-        List<RawGCEvent> rawGCEvents = processLine(line);
+        if (log.isDebugEnabled()) { log.debug("parsing line " + lineNumber + ": " + line); }
+
+        List<RawGCEvent> rawGCEvents = processLine(lineNumber, line);
         return toEventList(rawGCEvents, eventFactory);
     }
 
@@ -190,10 +203,10 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
     List<RawGCEvent> closeInternal() {
 
-        if (currentEvent != null) {
+        if (currentRawEvent != null) {
 
-            completedEvents.add(currentEvent);
-            currentEvent = null;
+            completedEvents.add(currentRawEvent);
+            currentRawEvent = null;
         }
 
         List<RawGCEvent> result = completedEvents;
@@ -201,7 +214,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
         return result;
     }
 
-    List<RawGCEvent> processLine(String line) throws GCParsingException {
+    List<RawGCEvent> processLine(long lineNumber, String line) throws GCParsingException {
 
         GCEventStartMarker currentMarker = null;
 
@@ -213,16 +226,31 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
             GCEventStartMarker newMarker = identifyGCEventStartMarker(line, currentMarker);
 
+            if (log.isDebugEnabled()) {
+
+                if (newMarker == null) {
+
+                    log.debug("no more GC event start markers found on line " + lineNumber);
+
+                }
+                else {
+
+                    log.debug("GC event start marker " + newMarker);
+                }
+            }
+
             updateCurrentEvent(line, currentMarker, newMarker);
 
             if (newMarker != null) {
 
-                if (currentEvent != null) {
+                if (currentRawEvent != null) {
 
-                    completedEvents.add(currentEvent);
+                    if (log.isDebugEnabled()) { log.debug("added " + currentRawEvent + " to the list of completed events"); }
+
+                    completedEvents.add(currentRawEvent);
                 }
                 currentMarker = newMarker;
-                currentEvent = new RawGCEvent(currentMarker.getTime(), getLineNumber());
+                currentRawEvent = new RawGCEvent(currentMarker.getTime(), getLineNumber(), currentMarker.getEventStart());
 
             }
             else {
@@ -247,15 +275,15 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     /**
      * For testing only.
      */
-    RawGCEvent getCurrentEvent() {
+    RawGCEvent getCurrentRawEvent() {
 
-        return currentEvent;
+        return currentRawEvent;
     }
 
     /**
      * For testing only.
      */
-    List<RawGCEvent> getCompletedEvents() {
+    List<RawGCEvent> getCompletedRawEvents() {
 
         return completedEvents;
     }
@@ -269,7 +297,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
      */
     private void updateCurrentEvent(String line, GCEventStartMarker currentMarker, GCEventStartMarker newMarker) {
 
-        if (currentEvent == null) {
+        if (currentRawEvent == null) {
 
             return;
         }
@@ -281,9 +309,11 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
         int from = currentMarker == null ? 0 : currentMarker.getContentStart();
         int to = newMarker == null ? line.length() : newMarker.getEventStart();
         String content = line.substring(from, to);
-        currentEvent.append(content);
+        currentRawEvent.append(content);
+
         if (newMarker == null) {
-            currentEvent.append("\n");
+
+            currentRawEvent.append("\n");
         }
     }
 

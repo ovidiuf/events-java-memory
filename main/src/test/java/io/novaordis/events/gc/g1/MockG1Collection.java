@@ -16,7 +16,6 @@
 
 package io.novaordis.events.gc.g1;
 
-import io.novaordis.events.api.gc.MockGCEvent;
 import io.novaordis.utilities.time.TimestampImpl;
 
 /**
@@ -33,9 +32,9 @@ public class MockG1Collection extends G1Collection {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public MockG1Collection(long lineNumber, long time, G1CollectionTrigger trigger) {
+    public MockG1Collection(long lineNumber, int positionInLine, long time, G1CollectionTrigger trigger) {
 
-        super(lineNumber, new Time(new TimestampImpl(time), null), trigger);
+        super(lineNumber, positionInLine, new Time(new TimestampImpl(time), null), trigger);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

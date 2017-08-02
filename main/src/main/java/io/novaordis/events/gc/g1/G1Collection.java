@@ -38,9 +38,9 @@ public class G1Collection extends G1Event {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public G1Collection(Long lineNumber, Time time, G1CollectionTrigger trigger) {
+    public G1Collection(Long lineNumber, int positionInLine, Time time, G1CollectionTrigger trigger) {
 
-        super(lineNumber, time);
+        super(lineNumber, positionInLine, time);
         setType(G1EventType.COLLECTION);
         setCollectionTrigger(trigger);
         setCollectionScope(G1CollectionScope.YOUNG);

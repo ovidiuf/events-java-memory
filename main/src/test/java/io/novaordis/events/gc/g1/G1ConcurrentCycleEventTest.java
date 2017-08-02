@@ -72,7 +72,7 @@ public class G1ConcurrentCycleEventTest extends G1EventTest {
     protected G1ConcurrentCycleEvent getEventToTest() throws Exception {
 
         Time t = new Time(new TimestampImpl(1001L), 0L);
-        return new G1ConcurrentCycleEvent(2002L, t);
+        return new G1ConcurrentCycleEvent(2002L, 100, t);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

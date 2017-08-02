@@ -87,7 +87,7 @@ public class GCEventStartMarker {
     @Override
     public String toString() {
 
-        return "" + eventStart + " " + time;
+        return "<" + eventStart + "[" + time + "]" + contentStart + ">";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

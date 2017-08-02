@@ -54,7 +54,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         try {
 
-            ParallelGCEventFactory.preParse(3L, s);
+            ParallelGCEventFactory.preParse(3L, 100, s);
             fail("should throw exception");
         }
         catch(GCParsingException e) {
@@ -73,7 +73,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         try {
 
-            ParallelGCEventFactory.preParse(2L, s);
+            ParallelGCEventFactory.preParse(2L, 100, s);
             fail("should throw exception");
         }
         catch(GCParsingException e) {
@@ -90,7 +90,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
 
         String valid = "[Some Kind of GC (Allocation Failure) this is what fills up the bracket] the rest of the stuff";
 
-        ParallelGCEventPayload p = ParallelGCEventFactory.preParse(1L, valid);
+        ParallelGCEventPayload p = ParallelGCEventFactory.preParse(1L, 100, valid);
 
         assertEquals("Some Kind of", p.getCollectionTypeQualifier());
         assertEquals(ParallelGCCollectionTrigger.ALLOCATION_FAILURE, p.getTrigger());
@@ -108,7 +108,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
         String rawContent = "something that has no change of being a valid parallel GC event";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         try {
@@ -133,7 +133,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
         String rawContent = "[Half GC (Allocation Failure) something] something";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         try {
@@ -159,7 +159,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
                 "[GC (Allocation Failure) [PSYoungGen: 300919K->17152K(389632K)] 300919K->17160K(1280000K), 0.0125226 secs] [Times: user=0.04 sys=0.00, real=0.02 secs]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         ParallelGCYoungGenerationCollection e = (ParallelGCYoungGenerationCollection)f.build(re);
@@ -178,7 +178,7 @@ public class ParallelGCEventFactoryTest extends GCEventFactoryTest {
                 "[Full GC (Metadata GC Threshold) [PSYoungGen: 18085K->0K(944640K)] [ParOldGen: 600997K->354601K(2392064K)] 619083K->354601K(3336704K), [Metaspace: 251904K->251904K(1284096K)], 1.2755891 secs] [Times: user=2.97 sys=0.02, real=1.28 secs]";
 
         Time t = new Time(new TimestampImpl(111L), 0L);
-        RawGCEvent re = new RawGCEvent(t, 222L);
+        RawGCEvent re = new RawGCEvent(t, 222L, 100);
         re.setContent(rawContent);
 
         ParallelGCFullCollection e = (ParallelGCFullCollection)f.build(re);
