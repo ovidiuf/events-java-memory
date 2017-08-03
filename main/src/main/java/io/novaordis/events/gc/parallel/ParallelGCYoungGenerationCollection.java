@@ -96,13 +96,6 @@ public class ParallelGCYoungGenerationCollection extends ParallelGCEvent {
         return t;
     }
 
-    @Override
-    public String toString() {
-
-        return "YOUNG GENERATION COLLECTION (" + getCollectionTrigger() + ")[" +
-                getLineNumber() + ":" + getPositionInLine() + "]";
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------

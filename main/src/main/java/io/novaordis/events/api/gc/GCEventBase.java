@@ -131,6 +131,12 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         return positionInLine;
     }
 
+    @Override
+    public String toString() {
+
+        return getClass().getSimpleName() + "[" + getLineNumber() + ":" + getPositionInLine() + "]";
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     void setPositionInLine(int i) {
@@ -212,7 +218,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
         if (log.isDebugEnabled()) {
 
-            log.debug(this + " recoded collection time " + timeMSecs  + " ms");
+            log.debug(this + " stored collection time " + timeMSecs  + " ms");
         }
     }
 

@@ -95,12 +95,6 @@ public class ParallelGCFullCollection extends ParallelGCEvent {
         return t;
     }
 
-    @Override
-    public String toString() {
-
-        return "YG COLLECTION (" + getCollectionTrigger() + ")[" + getLineNumber() + ":" + getPositionInLine() + "]";
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
