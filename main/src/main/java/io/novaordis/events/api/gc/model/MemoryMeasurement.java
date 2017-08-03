@@ -16,8 +16,10 @@
 
 package io.novaordis.events.api.gc.model;
 
+import io.novaordis.events.api.event.LongProperty;
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.measure.MemoryMeasureUnit;
-import io.novaordis.events.api.parser.ParsingException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -46,10 +48,21 @@ public class MemoryMeasurement {
      *
      * @param from fragment starts here
      * @param to fragment ends here (the first character after the fragment)
+     *
+     * @exception StringIndexOutOfBoundsException if from and to are not appropriate for line.
      */
-    public MemoryMeasurement(Long lineNumber, int from, int to, String line) throws ParsingException {
+    public MemoryMeasurement(Long lineNumber, int from, int to, String line) throws GCParsingException {
 
-        String fragment = line.substring(from, to);
+        this(lineNumber, from, line.substring(from, to));
+    }
+
+    /**
+     * Expects a pattern similar to:
+     *
+     * 3054.0M
+     *
+     */
+    public MemoryMeasurement(Long lineNumber, int positionInLine, String fragment) throws GCParsingException {
 
         int position = fragment.length() - 1;
 
@@ -61,7 +74,8 @@ public class MemoryMeasurement {
         }
         catch(IllegalArgumentException e) {
 
-            throw new ParsingException("'" + measureUnit + "' not a valid memory measure unit", lineNumber, position);
+            throw new GCParsingException(
+                    "'" + measureUnit + "' not a valid memory measure unit", lineNumber, positionInLine + position);
         }
 
         String number = fragment.substring(0, position);
@@ -72,12 +86,19 @@ public class MemoryMeasurement {
         }
         catch(Exception e) {
 
-            throw new ParsingException(number + " not a valid number", lineNumber, from);
+            throw new GCParsingException(number + " not a valid number", lineNumber, positionInLine);
         }
 
         Double multiplicand = MemoryMeasureUnit.BYTE.getConversionFactor(mmu);
         bytes = bytes.multiply(new BigDecimal(multiplicand));
         bytes = bytes.setScale(0, RoundingMode.HALF_DOWN);
+        mmu = MemoryMeasureUnit.BYTE;
+    }
+
+    public MemoryMeasurement(long memoryInBytes) {
+
+        bytes = new BigDecimal(memoryInBytes);
+        mmu = MemoryMeasureUnit.BYTE;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -93,6 +114,12 @@ public class MemoryMeasurement {
     public MemoryMeasureUnit getMeasureUnit() {
 
         return mmu;
+    }
+
+    public Property toProperty(PoolType poolType, MemoryMeasurementType measurementType) {
+
+        String name = poolType.toPropertyNameFragment() + "-" + measurementType.toPropertyNameFragment();
+        return new LongProperty(name, bytes.longValue(), mmu);
     }
 
     @Override

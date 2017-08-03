@@ -19,6 +19,7 @@ package io.novaordis.events.gc.parallel;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.GCEventBase;
 import io.novaordis.events.api.gc.GCEventType;
+import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.gc.model.PoolType;
 import io.novaordis.events.gc.g1.Time;
 import org.slf4j.Logger;
@@ -68,11 +69,11 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
     public ParallelGCEvent(Long lineNumber, int positionInLine, Time time,
                            ParallelGCCollectionTrigger trigger,
-                           String getFirstSquareBracketedSegment) {
+                           String getFirstSquareBracketedSegment) throws GCParsingException {
 
         super(lineNumber, positionInLine, time);
         setCollectionTrigger(trigger);
-        setHeapStateAndCollectionTime(getFirstSquareBracketedSegment);
+        setHeapStateAndCollectionTime(lineNumber, getFirstSquareBracketedSegment);
     }
 
     // GCEvent implementation ------------------------------------------------------------------------------------------
@@ -174,7 +175,7 @@ public abstract class ParallelGCEvent extends GCEventBase {
      * [PSYoungGen: 13268K->0K(1194496K)] [ParOldGen: 16K->12633K(2731008K)] 13284K->12633K(3925504K), [Metaspace: 19569K->19569K(1067008K)], 0.0305273 secs
      * [PSYoungGen: 97644K->0K(1203200K)] [ParOldGen: 2705749K->1267519K(2731008K)] 2803393K->1267519K(3934208K), [Metaspace: 386952K->386952K(1415168K)], 1.4253547 secs
      */
-    void setHeapStateAndCollectionTime(String s) {
+    void setHeapStateAndCollectionTime(Long lineNumber, String s) throws GCParsingException {
 
         if (log.isDebugEnabled()) { log.debug(this + " parsing " + s); }
 
@@ -190,7 +191,10 @@ public abstract class ParallelGCEvent extends GCEventBase {
             String after = youngGenMatcher.group(2);
             String capacity = youngGenMatcher.group(3);
 
-            setPoolState(PoolType.YOUNG, before, after, capacity);
+            setPoolState(lineNumber, PoolType.YOUNG,
+                    youngGenMatcher.start(1), before,
+                    youngGenMatcher.start(2), after,
+                    youngGenMatcher.start(3), capacity);
 
             int start = youngGenMatcher.start();
             int end = youngGenMatcher.end();
@@ -205,7 +209,10 @@ public abstract class ParallelGCEvent extends GCEventBase {
             String after = oldGenMatcher.group(2);
             String capacity = oldGenMatcher.group(3);
 
-            setPoolState(PoolType.OLD, before, after, capacity);
+            setPoolState(lineNumber, PoolType.OLD,
+                    oldGenMatcher.start(1), before,
+                    oldGenMatcher.start(2), after,
+                    oldGenMatcher.start(3), capacity);
 
             int start = oldGenMatcher.start();
             int end = oldGenMatcher.end();
@@ -220,7 +227,10 @@ public abstract class ParallelGCEvent extends GCEventBase {
             String after = metaspaceMatcher.group(2);
             String capacity = metaspaceMatcher.group(3);
 
-            setPoolState(PoolType.METASPACE, before, after, capacity);
+            setPoolState(lineNumber, PoolType.METASPACE,
+                    metaspaceMatcher.start(1), before,
+                    metaspaceMatcher.start(2), after,
+                    metaspaceMatcher.start(3), capacity);
 
             int start = metaspaceMatcher.start();
             int end = metaspaceMatcher.end();
@@ -235,7 +245,10 @@ public abstract class ParallelGCEvent extends GCEventBase {
             String after = heapMatcher.group(2);
             String capacity = heapMatcher.group(3);
 
-            setPoolState(PoolType.HEAP, before, after, capacity);
+            setPoolState(lineNumber, PoolType.HEAP,
+                    heapMatcher.start(1), before,
+                    heapMatcher.start(2), after,
+                    heapMatcher.start(3), capacity);
 
             int start = heapMatcher.start();
             int end = heapMatcher.end();
@@ -248,7 +261,7 @@ public abstract class ParallelGCEvent extends GCEventBase {
 
             String timeInSecs = collectionTimeMatcher.group(1);
 
-            setCollectionTime(timeInSecs);
+            setCollectionTime(lineNumber, collectionTimeMatcher.start(1), timeInSecs);
 
             int start = collectionTimeMatcher.start();
             int end = collectionTimeMatcher.end();
@@ -256,23 +269,6 @@ public abstract class ParallelGCEvent extends GCEventBase {
         }
 
         if (log.isDebugEnabled()) { log.debug("remaining unprocessed: " + s); }
-    }
-
-    /**
-     * @param before a string similar to "1293601K"
-     * @param after a string similar to "41319K"
-     * @param capacity a string similar to "1312256K"
-     */
-    void setPoolState(PoolType poolType, String before, String after, String capacity) {
-
-        if (log.isDebugEnabled()) { log.debug("setting " + poolType + " before: " + before); }
-        if (log.isDebugEnabled()) { log.debug("setting " + poolType + " after " + after); }
-        if (log.isDebugEnabled()) { log.debug("setting " + poolType + " capacity " + capacity); }
-    }
-
-    void setCollectionTime(String timeInSeconds) {
-
-        if (log.isDebugEnabled()) { log.debug("setting collection time " + timeInSeconds); }
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

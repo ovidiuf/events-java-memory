@@ -16,67 +16,38 @@
 
 package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.parser.ParsingException;
+import org.junit.Test;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 8/2/17
  */
-@Deprecated
-public class BeforeAndAfter {
+public class MemoryPoolTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final Pattern PATTERN = Pattern.compile("(\\d+\\.\\d*[a-zA-Z])->(\\d+\\.\\d*[a-zA-Z])");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private MemoryMeasurement before;
-    private MemoryMeasurement after;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Expects a pattern similar to:
-     *
-     * 32.0M->124.0M
-     */
-    public BeforeAndAfter(Long lineNumber, int position, String line) throws ParsingException {
-
-        String fragment = line.substring(position);
-
-        Matcher m = PATTERN.matcher(fragment);
-
-        if (!m.find()) {
-
-            throw new ParsingException("no before/after pattern found", lineNumber, position);
-        }
-
-        before = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);
-        after = new MemoryMeasurement(lineNumber, position + m.start(2), position + m.end(2), line);
-    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * @return the value in bytes. Null means no data.
-     */
-    public Long getBefore() {
+    // Tests -----------------------------------------------------------------------------------------------------------
 
-        return before.getBytes();
-    }
+    @Test
+    public void identity() throws Exception {
 
-    /**
-     * @return the value in bytes. Null means no data.
-     */
-    public Long getAfter() {
+        MemoryPool p = new MemoryPool(
+                PoolType.HEAP, new MemoryMeasurement(1L), new MemoryMeasurement(2L), new MemoryMeasurement(3L));
 
-        return after.getBytes();
+        assertEquals(PoolType.HEAP, p.getType());
+        assertEquals(1L, p.getBefore().getBytes());
+        assertEquals(2L, p.getAfter().getBytes());
+        assertEquals(3L, p.getCapacity().getBytes());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

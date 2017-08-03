@@ -16,67 +16,69 @@
 
 package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.parser.ParsingException;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
+ * A Java memory pool representation. It contains GC-related measurement, such as the amount of memory before and
+ * after collection, collection time, etc.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 8/2/17
  */
+// don't really have a use for it, as we store properties in the event
 @Deprecated
-public class BeforeAndAfter {
+public class MemoryPool {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final Pattern PATTERN = Pattern.compile("(\\d+\\.\\d*[a-zA-Z])->(\\d+\\.\\d*[a-zA-Z])");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private MemoryMeasurement before;
-    private MemoryMeasurement after;
+    private PoolType type;
+    private MemoryMeasurement beforeCollection;
+    private MemoryMeasurement afterCollection;
+    private MemoryMeasurement capacity;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * Expects a pattern similar to:
-     *
-     * 32.0M->124.0M
-     */
-    public BeforeAndAfter(Long lineNumber, int position, String line) throws ParsingException {
+    public MemoryPool(PoolType type, MemoryMeasurement beforeCollection,
+                      MemoryMeasurement afterCollection, MemoryMeasurement capacity) {
 
-        String fragment = line.substring(position);
-
-        Matcher m = PATTERN.matcher(fragment);
-
-        if (!m.find()) {
-
-            throw new ParsingException("no before/after pattern found", lineNumber, position);
-        }
-
-        before = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);
-        after = new MemoryMeasurement(lineNumber, position + m.start(2), position + m.end(2), line);
+        this.type = type;
+        this.beforeCollection = beforeCollection;
+        this.afterCollection = afterCollection;
+        this.capacity = capacity;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * @return the value in bytes. Null means no data.
-     */
-    public Long getBefore() {
+    public PoolType getType() {
 
-        return before.getBytes();
+        return type;
     }
 
-    /**
-     * @return the value in bytes. Null means no data.
-     */
-    public Long getAfter() {
+    public MemoryMeasurement getBefore() {
 
-        return after.getBytes();
+        return beforeCollection;
+    }
+
+    public MemoryMeasurement getAfter() {
+
+        return afterCollection;
+    }
+
+    public MemoryMeasurement getCapacity() {
+
+        return capacity;
+    }
+
+    @Override
+    public String toString() {
+
+        return
+                type + ":" +
+                        (beforeCollection == null ? "-" : beforeCollection.getBytes())  + "->" +
+                        (afterCollection ==null ? "-" : afterCollection.getBytes()) + "(" +
+                        (capacity ==null ? "-" : capacity.getBytes()) + ")";
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

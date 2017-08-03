@@ -70,7 +70,9 @@ public class G1ConcurrentCycleEvent extends G1Event {
     @Override
     public String toString() {
 
-        return "" + getType().getDisplayLabel();
+        G1EventType type = getType();
+
+        return (type == null ? "null" : type.getDisplayLabel());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

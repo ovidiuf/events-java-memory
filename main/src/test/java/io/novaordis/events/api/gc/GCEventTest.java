@@ -16,6 +16,10 @@
 
 package io.novaordis.events.api.gc;
 
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.gc.model.PoolType;
+import io.novaordis.events.api.measure.MemoryMeasureUnit;
+import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
@@ -60,6 +64,28 @@ public abstract class GCEventTest {
 
         assertEquals(111L, t.longValue());
         assertEquals(111L, ts2.getTime());
+    }
+
+    // setPoolState() --------------------------------------------------------------------------------------------------
+
+    @Test
+    public void setPoolState() throws Exception {
+
+        GCEventBase e = (GCEventBase)getEventToTest();
+
+        e.setPoolState(1000L, PoolType.YOUNG, 10, "1293601K", 20, "41319K", 30, "1312256K");
+
+        Property p = e.getProperty(G1Event.YOUNG_GENERATION_OCCUPANCY_BEFORE);
+        assertEquals(MemoryMeasureUnit.BYTE, p.getMeasureUnit());
+        assertEquals(1293601L * 1024, ((Long) p.getValue()).longValue());
+
+        Property p2 = e.getProperty(G1Event.YOUNG_GENERATION_OCCUPANCY_AFTER);
+        assertEquals(MemoryMeasureUnit.BYTE, p2.getMeasureUnit());
+        assertEquals(41319L * 1024, ((Long) p2.getValue()).longValue());
+
+        Property p3 = e.getProperty(G1Event.YOUNG_GENERATION_CAPACITY);
+        assertEquals(MemoryMeasureUnit.BYTE, p3.getMeasureUnit());
+        assertEquals(1312256L * 1024, ((Long) p3.getValue()).longValue());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

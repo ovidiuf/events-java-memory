@@ -20,14 +20,13 @@ package io.novaordis.events.api.gc.model;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/2/17
  */
-public enum PoolType {
+public enum MemoryMeasurementType {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    YOUNG("young"),
-    OLD("old"),
-    HEAP("heap"),
-    METASPACE("metaspace");
+    BEFORE("before"),
+    AFTER("after"),
+    CAPACITY("capacity");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -35,7 +34,7 @@ public enum PoolType {
 
     private String propertyNameFragment;
 
-    PoolType(String propertyNameFragment) {
+    MemoryMeasurementType(String propertyNameFragment) {
 
         this.propertyNameFragment = propertyNameFragment;
     }

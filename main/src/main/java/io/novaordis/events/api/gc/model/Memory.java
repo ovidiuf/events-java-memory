@@ -16,67 +16,65 @@
 
 package io.novaordis.events.api.gc.model;
 
-import io.novaordis.events.api.parser.ParsingException;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * A JVM memory snapshot representation, from a garbage collection analysis point of view. It represents the state
+ * of the memory immediately before and immediately after a garbage collection event.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 2/15/17
+ * @since 8/2/17
  */
+// don't really have a use for it, as we store properties in the event
 @Deprecated
-public class BeforeAndAfter {
+public class Memory {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final Pattern PATTERN = Pattern.compile("(\\d+\\.\\d*[a-zA-Z])->(\\d+\\.\\d*[a-zA-Z])");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private MemoryMeasurement before;
-    private MemoryMeasurement after;
+    private Map<PoolType, MemoryPool> pools;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * Expects a pattern similar to:
-     *
-     * 32.0M->124.0M
-     */
-    public BeforeAndAfter(Long lineNumber, int position, String line) throws ParsingException {
+    public Memory() {
 
-        String fragment = line.substring(position);
-
-        Matcher m = PATTERN.matcher(fragment);
-
-        if (!m.find()) {
-
-            throw new ParsingException("no before/after pattern found", lineNumber, position);
-        }
-
-        before = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);
-        after = new MemoryMeasurement(lineNumber, position + m.start(2), position + m.end(2), line);
+        this.pools = new HashMap<>();
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
-     * @return the value in bytes. Null means no data.
+     * @return the internal MemoryPool instance that was created as result of call.
+     *
+     * Since a Memory instance is supposed to be a snapshot, an attempt to replace statistics for an already existing
+     * pool will throw an IllegalArgumentException.
+     *
+     * @exception IllegalArgumentException
      */
-    public Long getBefore() {
+    public MemoryPool setPoolStatistics(PoolType type,
+                                  MemoryMeasurement before, MemoryMeasurement after, MemoryMeasurement capacity) {
 
-        return before.getBytes();
+
+        if (pools.containsKey(type)) {
+
+            throw new IllegalArgumentException("attempt to overwrite pool " + PoolType.HEAP + " statistics");
+        }
+
+        MemoryPool p = new MemoryPool(type, before, after, capacity);
+        pools.put(type, p);
+        return p;
     }
 
     /**
-     * @return the value in bytes. Null means no data.
+     * May return null if no such statistics were recorded yet.
      */
-    public Long getAfter() {
+    public MemoryPool getPoolStatistics(PoolType type) {
 
-        return after.getBytes();
+        return pools.get(type);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

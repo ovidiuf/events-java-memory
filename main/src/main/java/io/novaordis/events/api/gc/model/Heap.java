@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
+@Deprecated
 public class Heap {
 
     // Constants -------------------------------------------------------------------------------------------------------

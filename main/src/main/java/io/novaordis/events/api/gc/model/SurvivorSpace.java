@@ -22,6 +22,7 @@ import io.novaordis.events.api.parser.ParsingException;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 2/15/17
  */
+@Deprecated
 public class SurvivorSpace {
 
     // Constants -------------------------------------------------------------------------------------------------------

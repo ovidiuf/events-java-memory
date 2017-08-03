@@ -28,18 +28,38 @@ public interface GCEvent extends TimedEvent {
 
     String EVENT_TYPE = "event-type";
 
-    String YOUNG_GENERATION_OCCUPANCY_BEFORE = "young-gen-occupancy-before";
-    String YOUNG_GENERATION_CAPACITY_BEFORE = "young-gen-capacity-before";
-    String YOUNG_GENERATION_OCCUPANCY_AFTER = "young-gen-occupancy-after";
-    String YOUNG_GENERATION_CAPACITY_AFTER = "young-gen-capacity-after";
+    String YOUNG_GENERATION_OCCUPANCY_BEFORE = "young-before";
 
-    String SURVIVOR_SPACE_BEFORE = "survivor-space-before";
-    String SURVIVOR_SPACE_AFTER = "survivor-space-after";
+    String YOUNG_GENERATION_OCCUPANCY_AFTER = "young-after";
+
+    String YOUNG_GENERATION_CAPACITY_BEFORE = "young-capacity-before";
+    String YOUNG_GENERATION_CAPACITY_AFTER = "young-capacity-after";
+    // if capacity before is equals with capacity after, YOUNG_GENERATION_CAPACITY should be used
+    String YOUNG_GENERATION_CAPACITY = "young-capacity";
+
+    String OLD_GENERATION_OCCUPANCY_BEFORE = "old-before";
+
+    String OLD_GENERATION_OCCUPANCY_AFTER = "old-after";
+
+    String OLD_GENERATION_CAPACITY_BEFORE = "old-capacity-before";
+    String OLD_GENERATION_CAPACITY_AFTER = "old-capacity-after";
+    // if capacity before is equals with capacity after, OLD_GENERATION_CAPACITY should be used
+    String OLD_GENERATION_CAPACITY = "old-capacity";
+
+    String SURVIVOR_SPACE_BEFORE = "survivor-before";
+    // String SURVIVOR_SPACE_CAPACITY_BEFORE = "survivor-capacity-before";
+
+    String SURVIVOR_SPACE_AFTER = "survivor-after";
+    // String SURVIVOR_SPACE_CAPACITY_AFTER = "survivor-capacity-after";
+
+    String HEAP_OCCUPANCY_BEFORE = "heap-before";
+
+    String HEAP_OCCUPANCY_AFTER = "heap-after";
 
     String HEAP_CAPACITY_BEFORE = "heap-capacity-before";
-    String HEAP_OCCUPANCY_BEFORE = "heap-occupancy-before";
     String HEAP_CAPACITY_AFTER = "heap-capacity-after";
-    String HEAP_OCCUPANCY_AFTER = "heap-occupancy-after";
+    // if capacity before is equals with capacity after, HEAP_CAPACITY should be used
+    String HEAP_CAPACITY = "heap-capacity";
 
     // Static ----------------------------------------------------------------------------------------------------------
 

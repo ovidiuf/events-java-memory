@@ -18,8 +18,13 @@ package io.novaordis.events.api.gc;
 
 import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.gc.model.MemoryMeasurement;
+import io.novaordis.events.api.gc.model.MemoryMeasurementType;
+import io.novaordis.events.api.gc.model.PoolType;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -28,6 +33,8 @@ import io.novaordis.utilities.time.Timestamp;
 public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(GCEventBase.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -134,6 +141,38 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
             setProperty(new StringProperty(EVENT_TYPE, type.toExternalValue()));
         }
+    }
+
+    /**
+     * @param before a string similar to "1293601K"
+     * @param after a string similar to "41319K"
+     * @param capacity a string similar to "1312256K"
+     */
+    protected void setPoolState(
+            Long lineNumber, PoolType poolType,
+            int beforePositionInLine, String before,
+            int afterPositionInLine, String after,
+            int capacityPositionInLine, String capacity) throws GCParsingException {
+
+        MemoryMeasurement b = new MemoryMeasurement(lineNumber, beforePositionInLine, before);
+        setProperty(b.toProperty(poolType, MemoryMeasurementType.BEFORE));
+
+        MemoryMeasurement a = new MemoryMeasurement(lineNumber, afterPositionInLine, after);
+        setProperty(a.toProperty(poolType, MemoryMeasurementType.AFTER));
+
+        MemoryMeasurement c = new MemoryMeasurement(lineNumber, capacityPositionInLine, capacity);
+        setProperty(c.toProperty(poolType, MemoryMeasurementType.CAPACITY));
+
+        if (log.isDebugEnabled()) { log.debug(
+                this + " recorded " + poolType + ":" + b.getBytes() + "->" + a.getBytes() + "(" + c.getBytes() + ")"); }
+    }
+
+    protected void setCollectionTime(Long lineNumber, int positionInLine, String timeInSeconds)
+            throws GCParsingException {
+
+        if (log.isDebugEnabled()) { log.debug("setting collection time " + timeInSeconds); }
+
+        //throw new RuntimeException("setCollectionTime() NOT YET IMPLEMENTED");
     }
 
     /**
