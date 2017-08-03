@@ -188,7 +188,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
         if (log.isDebugEnabled()) {
 
-            log.debug(this + " recorded " + poolType + ":" + b.getBytes() + "->" + a.getBytes() + "(" + c.getBytes() + ")");
+            log.debug(this + " stored " + poolType + ":" + b.getBytes() + "->" + a.getBytes() + "(" + c.getBytes() + ")");
         }
     }
 

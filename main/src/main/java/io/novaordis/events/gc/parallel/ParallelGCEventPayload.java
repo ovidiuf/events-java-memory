@@ -50,22 +50,27 @@ class ParallelGCEventPayload {
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public ParallelGCEventPayload(
-            Long lineNumber, int positionInLine, String qualifier, String strigger,
+            Long lineNumber, int positionInLine, String qualifier, String sTrigger,
             String firstSquareBracketedSegment, String restOfThePayload) throws GCParsingException {
 
         this.lineNumber = lineNumber;
         this.positionInLine = positionInLine;
         this.qualifier = qualifier.trim();
-        this.trigger = ParallelGCCollectionTrigger.fromLogMarker(strigger);
+        this.trigger = ParallelGCCollectionTrigger.fromLogMarker(sTrigger);
 
         if (trigger == null) {
 
-            throw new GCParsingException("invalid parallel GC trigger \"" + strigger + "\"", lineNumber);
+            throw new GCParsingException("invalid parallel GC trigger \"" + sTrigger + "\"", lineNumber);
         }
+
+        if (log.isDebugEnabled()) {
+
+            log.debug(this + " stored qualifier: " + (qualifier.isEmpty() ? "''" : qualifier));
+            log.debug(this + " stored trigger: " + trigger);
+        }
+
         this.firstSquareBracketedSegment = firstSquareBracketedSegment;
         this.restOfThePayload = restOfThePayload;
-
-        if (log.isDebugEnabled()) { log.debug(this + " contains qualifier: " + (qualifier.isEmpty() ? "''" : qualifier) + ", trigger: " + trigger); }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

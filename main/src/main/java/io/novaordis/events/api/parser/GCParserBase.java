@@ -89,7 +89,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
         String dateStamp = m.group();
 
-        if (log.isDebugEnabled()) { log.debug("timestamp detected: \"" + dateStamp + "\""); }
+        if (log.isDebugEnabled()) { log.debug("found timestamp: \"" + dateStamp + "\""); }
 
         Timestamp timestamp;
 
@@ -106,7 +106,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
             throw new GCParsingException("failed to parse date stamp \"" + dateStamp + "\" into a date", e);
         }
 
-        if (log.isDebugEnabled()) { log.debug("timestamp parsed: " + LOG_TIMESTAMP_FORMAT.format(timestamp.getTime())); }
+        if (log.isDebugEnabled()) { log.debug("parsed timestamp: " + LOG_TIMESTAMP_FORMAT.format(timestamp.getTime())); }
 
         String rest = interestingSection.substring(m.start() + dateStamp.length());
 
@@ -127,7 +127,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
             offset += Integer.parseInt(os.substring(os.length() - 3));
             contentStart += m2.end();
 
-            if (log.isDebugEnabled()) { log.debug("offset: \"" + os + "\": " + offset); }
+            if (log.isDebugEnabled()) { log.debug("found offset: \"" + os + "\": " + offset); }
         }
 
         Time t = new Time(timestamp, offset);
@@ -230,12 +230,12 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
                 if (newMarker == null) {
 
-                    log.debug("no more GC event start markers found on line " + lineNumber + ", adding the line to the raw representation of the current event ...");
+                    log.debug("no more start markers found on line " + lineNumber + ", adding the line to the raw representation of the current event ...");
 
                 }
                 else {
 
-                    log.debug("GC event start marker " + newMarker);
+                    log.debug("found event start marker " + newMarker);
                 }
             }
 
