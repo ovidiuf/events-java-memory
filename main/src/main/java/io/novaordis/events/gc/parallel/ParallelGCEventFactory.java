@@ -95,9 +95,10 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
         ParallelGCEvent event;
 
-        Long lineNumber = re.getLineNumber();
         Time time = re.getTime();
         String rawContent = re.getContent();
+        Long lineNumber = re.getLineNumber();
+
         ParallelGCEventPayload preParsedContent = preParse(lineNumber, re.getPositionInLine(), rawContent);
 
         String qualifier = preParsedContent.getCollectionTypeQualifier();
@@ -118,8 +119,6 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
             throw new GCParsingException("unknown parallel GC collection qualifier \"" + qualifier + "\"", lineNumber);
         }
-
-        if (log.isDebugEnabled()) { log.debug("built " + event); }
 
         return event;
     }
