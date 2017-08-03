@@ -230,7 +230,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
 
                 if (newMarker == null) {
 
-                    log.debug("no more GC event start markers found on line " + lineNumber);
+                    log.debug("no more GC event start markers found on line " + lineNumber + ", adding the line to the raw representation of the current event ...");
 
                 }
                 else {
