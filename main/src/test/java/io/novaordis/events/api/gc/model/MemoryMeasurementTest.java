@@ -107,7 +107,7 @@ public class MemoryMeasurementTest {
 
         assertEquals(11L * 1024 * 1024, m.getBytes());
 
-        assertEquals(MemoryMeasureUnit.MEGABYTE, m.getMeasureUnit());
+        assertEquals(MemoryMeasureUnit.BYTE, m.getMeasureUnit());
     }
 
     @Test
@@ -237,7 +237,7 @@ public class MemoryMeasurementTest {
 
         assertEquals(11L * 1024 * 1024, m.getBytes());
 
-        assertEquals(MemoryMeasureUnit.MEGABYTE, m.getMeasureUnit());
+        assertEquals(MemoryMeasureUnit.BYTE, m.getMeasureUnit());
     }
 
     @Test

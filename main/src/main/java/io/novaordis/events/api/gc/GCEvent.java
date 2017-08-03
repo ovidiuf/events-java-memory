@@ -61,6 +61,8 @@ public interface GCEvent extends TimedEvent {
     // if capacity before is equals with capacity after, HEAP_CAPACITY should be used
     String HEAP_CAPACITY = "heap-capacity";
 
+    String COLLECTION_TIME = "collection-time";
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
