@@ -251,7 +251,8 @@ public abstract class GCParserTest {
 
         List<Event> events3 = p.close();
 
-        assertEquals(1, events3.size());
+        assertEquals(1, events3
+                .size());
         assertTrue(events3.get(0) instanceof EndOfStreamEvent);
 
         assertEquals(2, p.getLineNumber());
