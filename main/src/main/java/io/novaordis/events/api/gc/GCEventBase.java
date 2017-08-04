@@ -85,7 +85,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
     // GenericEvent overrides ------------------------------------------------------------------------------------------
 
     @Override
-    public String getPreferredRepresentation() {
+    public String getPreferredRepresentation(String fieldSeparator) {
 
         if (time == null) {
 
@@ -105,13 +105,13 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
         GCEventType t = getType();
 
-        s += ", " + t;
+        s += fieldSeparator + t;
 
         Property p = getProperty(G1Event.HEAP_OCCUPANCY_AFTER);
 
         if (p != null) {
 
-            s += ", " + p.getValue();
+            s += fieldSeparator + p.getValue();
         }
 
         return s;

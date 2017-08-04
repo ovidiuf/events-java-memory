@@ -135,8 +135,13 @@ public class MockGCEvent implements GCEvent {
     }
 
     @Override
-    public String getPreferredRepresentation() {
+    public String getPreferredRepresentation(String fieldSeparator) {
         throw new RuntimeException("getPreferredRepresentation() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public String getPreferredRepresentationHeader(String fieldSeparator) {
+        throw new RuntimeException("getPreferredRepresentationHeader() NOT YET IMPLEMENTED");
     }
 
     @Override

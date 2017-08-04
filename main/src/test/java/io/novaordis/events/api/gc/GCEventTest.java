@@ -257,7 +257,7 @@ public abstract class GCEventTest {
 
         GCEvent e = getEventToTest();
 
-        String s = e.getPreferredRepresentation();
+        String s = e.getPreferredRepresentation("@");
 
         assertNotNull(s);
 
