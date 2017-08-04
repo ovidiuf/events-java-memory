@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Maven: io.novaordis.jboss:novaordis-jboss:1.0.8" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.jmx:novaordis-jmx:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.events.cli:events-cli:1.0.2-SNAPSHOT-8" level="project" />
-    <orderEntry type="library" name="Maven: io.novaordis.events.processing:events-processing:1.1.1-SNAPSHOT-10" level="project" />
+    <orderEntry type="library" name="Maven: io.novaordis.events.processing:events-processing:1.1.1-SNAPSHOT-11" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.6" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
