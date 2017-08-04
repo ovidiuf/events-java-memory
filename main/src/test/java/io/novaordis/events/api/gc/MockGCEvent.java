@@ -135,6 +135,11 @@ public class MockGCEvent implements GCEvent {
     }
 
     @Override
+    public String getPreferredRepresentation() {
+        throw new RuntimeException("getPreferredRepresentation() NOT YET IMPLEMENTED");
+    }
+
+    @Override
     public String getRawRepresentation() {
         throw new RuntimeException("getRawRepresentation() NOT YET IMPLEMENTED");
     }
