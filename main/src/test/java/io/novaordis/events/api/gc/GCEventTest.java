@@ -16,7 +16,9 @@
 
 package io.novaordis.events.api.gc;
 
+import io.novaordis.events.api.event.LongProperty;
 import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.api.gc.model.PoolType;
 import io.novaordis.events.api.measure.MemoryMeasureUnit;
 import io.novaordis.events.api.measure.TimeMeasureUnit;
@@ -26,7 +28,6 @@ import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -250,22 +251,29 @@ public abstract class GCEventTest {
         assertEquals(0L, e.getLongProperty("metaspace-capacity").getLong().longValue());
     }
 
-    // getPreferredRepresentation() ------------------------------------------------------------------------------------
-
     @Test
-    public void getPreferredRepresentation_NotNull() throws Exception {
+    public void getPreferredRepresentationAndHeader_NotNull() throws Exception {
 
         GCEvent e = getEventToTest();
 
+        e.setProperty(new LongProperty(GCEvent.HEAP_OCCUPANCY_AFTER, 1L, MemoryMeasureUnit.BYTE));
+
         String s = e.getPreferredRepresentation("@");
+        String header = e.getPreferredRepresentationHeader("@");
 
-        assertNotNull(s);
+        String expected =
+                GCEventBase.PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT.format(e.getTime()) + "@" +
+                        e.getType() + "@" +
+                        e.getProperty(GCEvent.HEAP_OCCUPANCY_AFTER).getValue();
 
-        Long t = e.getTime();
+        String expectedHeader =
+                TimedEvent.TIMESTAMP_PROPERTY_NAME + "@" +
+                        GCEvent.EVENT_TYPE + "@" +
+                        GCEvent.HEAP_OCCUPANCY_AFTER;
 
-        String expectedTimestamp = GCEventBase.PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT.format(t);
 
-        assertTrue(s.startsWith(expectedTimestamp));
+        assertEquals(expected, s);
+        assertEquals(expectedHeader, header);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

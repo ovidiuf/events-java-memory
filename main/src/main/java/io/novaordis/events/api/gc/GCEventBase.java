@@ -19,6 +19,7 @@ package io.novaordis.events.api.gc;
 import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.api.gc.model.MemoryMeasurement;
 import io.novaordis.events.api.gc.model.MemoryMeasurementType;
 import io.novaordis.events.api.gc.model.PoolType;
@@ -115,6 +116,26 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         }
 
         return s;
+    }
+
+    @Override
+    public String getPreferredRepresentationHeader(String fieldSeparator) {
+
+        if (time == null) {
+
+            return null;
+        }
+
+        Timestamp ts = time.getTimestamp();
+
+        if (ts == null) {
+
+            return null;
+        }
+
+        return TimedEvent.TIMESTAMP_PROPERTY_NAME + fieldSeparator +
+                GCEvent.EVENT_TYPE + fieldSeparator +
+                GCEvent.HEAP_OCCUPANCY_AFTER;
     }
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------
