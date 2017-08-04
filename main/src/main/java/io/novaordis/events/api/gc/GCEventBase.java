@@ -27,6 +27,8 @@ import io.novaordis.utilities.time.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +61,9 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
     // 1.4253547 secs
     public static final Pattern COLLECTION_TIME_PATTERN = Pattern.compile("([0-9]+\\.[0-9]*) +secs");
 
+    public static final DateFormat PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT =
+            new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -73,6 +78,31 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         this.time = time;
         setLineNumber(lineNumber);
         setPositionInLine(positionInLine);
+    }
+
+    // GenericEvent overrides ------------------------------------------------------------------------------------------
+
+    @Override
+    public String getPreferredRepresentation() {
+
+        if (time == null) {
+
+            return null;
+        }
+
+        Timestamp ts = time.getTimestamp();
+
+        if (ts == null) {
+
+            return null;
+        }
+
+        String s = "";
+
+        s += PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT.format(ts.getTime());
+
+        return s;
+
     }
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------

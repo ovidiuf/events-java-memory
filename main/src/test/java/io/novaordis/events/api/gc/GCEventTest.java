@@ -26,6 +26,7 @@ import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -247,6 +248,18 @@ public abstract class GCEventTest {
         assertEquals(0L, e.getLongProperty("metaspace-before").getLong().longValue());
         assertEquals(0L, e.getLongProperty("metaspace-after").getLong().longValue());
         assertEquals(0L, e.getLongProperty("metaspace-capacity").getLong().longValue());
+    }
+
+    // getPreferredRepresentation() ------------------------------------------------------------------------------------
+
+    @Test
+    public void getPreferredRepresentation_NotNull() throws Exception {
+
+        GCEvent e = getEventToTest();
+
+        String s = e.getPreferredRepresentation();
+
+        assertNotNull(s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
