@@ -17,11 +17,13 @@
 package io.novaordis.events.api.gc;
 
 import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.api.gc.model.MemoryMeasurement;
 import io.novaordis.events.api.gc.model.MemoryMeasurementType;
 import io.novaordis.events.api.gc.model.PoolType;
 import io.novaordis.events.api.measure.TimeMeasureUnit;
+import io.novaordis.events.gc.g1.G1Event;
 import io.novaordis.events.gc.g1.Time;
 import io.novaordis.utilities.time.Timestamp;
 import org.slf4j.Logger;
@@ -105,10 +107,14 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
 
         s += ", " + t;
 
+        Property p = getProperty(G1Event.HEAP_OCCUPANCY_AFTER);
 
+        if (p != null) {
+
+            s += ", " + p.getValue();
+        }
 
         return s;
-
     }
 
     // GenericTimedEvent overrides -------------------------------------------------------------------------------------
