@@ -16,6 +16,7 @@
 
 package io.novaordis.events.api.parser;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.gc.GCParsingException;
 import io.novaordis.events.api.gc.RawGCEvent;
@@ -228,9 +229,13 @@ public abstract class GCParserTest {
 
         List<Event> events2 = p.close();
 
-        assertTrue(events2.isEmpty());
+        assertEquals(1, events2.size());
+        assertTrue(events2.get(0) instanceof EndOfStreamEvent);
 
         assertEquals(1, p.getLineNumber());
+
+        List<Event> events3 = p.close();
+        assertTrue(events3.isEmpty());
     }
 
     @Test
@@ -246,7 +251,8 @@ public abstract class GCParserTest {
 
         List<Event> events3 = p.close();
 
-        assertTrue(events3.isEmpty());
+        assertEquals(1, events3.size());
+        assertTrue(events3.get(0) instanceof EndOfStreamEvent);
 
         assertEquals(2, p.getLineNumber());
     }
