@@ -260,6 +260,12 @@ public abstract class GCEventTest {
         String s = e.getPreferredRepresentation();
 
         assertNotNull(s);
+
+        Long t = e.getTime();
+
+        String expectedTimestamp = GCEventBase.PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT.format(t);
+
+        assertTrue(s.startsWith(expectedTimestamp));
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

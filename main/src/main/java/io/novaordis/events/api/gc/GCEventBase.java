@@ -62,7 +62,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
     public static final Pattern COLLECTION_TIME_PATTERN = Pattern.compile("([0-9]+\\.[0-9]*) +secs");
 
     public static final DateFormat PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT =
-            new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+            new SimpleDateFormat("MM/dd/yy HH:mm:ss.SSS");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -100,6 +100,12 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         String s = "";
 
         s += PREFERRED_REPRESENTATION_TIMESTAMP_FORMAT.format(ts.getTime());
+
+        GCEventType t = getType();
+
+        s += ", " + t;
+
+
 
         return s;
 
