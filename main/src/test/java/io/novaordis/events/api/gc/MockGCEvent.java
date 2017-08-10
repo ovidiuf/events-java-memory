@@ -25,7 +25,7 @@ import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.utilities.time.Timestamp;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -75,7 +75,7 @@ public class MockGCEvent implements GCEvent {
     }
 
     @Override
-    public Set<Property> getProperties() {
+    public List<Property> getProperties() {
         throw new RuntimeException("getProperties() NOT YET IMPLEMENTED");
     }
 
@@ -87,6 +87,11 @@ public class MockGCEvent implements GCEvent {
     @Override
     public Property getPropertyByKey(Object propertyKey) {
         throw new RuntimeException("getPropertyByKey() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public StringProperty setStringProperty(String name, String value) {
+        throw new RuntimeException("setStringProperty() NOT YET IMPLEMENTED");
     }
 
     @Override
