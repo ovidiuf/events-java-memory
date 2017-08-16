@@ -4,15 +4,15 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Events GC Parser Library</name>
+    <name>Events Java Memory Library</name>
 
     <parent>
-        <groupId>io.novaordis.events.gc</groupId>
-        <artifactId>events-gc-parser-root</artifactId>
+        <groupId>io.novaordis.events.java.memory</groupId>
+        <artifactId>events-java-memory-root</artifactId>
         <version>1.1.0</version>
     </parent>
 
-    <artifactId>events-gc-parser</artifactId>
+    <artifactId>events-java-memory</artifactId>
     <packaging>jar</packaging>
 
     <build>

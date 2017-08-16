@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/main/events-gc-parser.iml" filepath="$PROJECT_DIR$/main/events-gc-parser.iml" />
-      <module fileurl="file://$PROJECT_DIR$/release/events-gc-parser-release.iml" filepath="$PROJECT_DIR$/release/events-gc-parser-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/events-gc-parser-root.iml" filepath="$PROJECT_DIR$/events-gc-parser-root.iml" />
+      <module fileurl="file://$PROJECT_DIR$/main/events-java-memory.iml" filepath="$PROJECT_DIR$/main/events-java-memory.iml" />
+      <module fileurl="file://$PROJECT_DIR$/release/events-java-memory-release.iml" filepath="$PROJECT_DIR$/release/events-java-memory-release.iml" />
+      <module fileurl="file://$PROJECT_DIR$/events-java-memory-root.iml" filepath="$PROJECT_DIR$/events-java-memory-root.iml" />
     </modules>
   </component>
 </project>
