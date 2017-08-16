@@ -1,5 +1,5 @@
-# events-gc-parser
+# Events Java Memory (events-java-memory)
 
-Temporary project for a GC parser that works with G1 and Parallel GC-generated logs.. Will be merged into events/events-api
+Library for generating java memory and garbage collection-related events, and utilites for parsing JVM garbage collection logs.
 
-https://kb.novaordis.com/index.php/Events-gc-parser
+https://kb.novaordis.com/index.php/Events-java-memory
