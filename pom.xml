@@ -8,7 +8,7 @@
 
     <groupId>io.novaordis.events.gc</groupId>
     <artifactId>events-gc-parser-root</artifactId>
-    <version>1.1.0-SNAPSHOT-45</version>
+    <version>1.1.0-SNAPSHOT-46</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -18,9 +18,9 @@
         -->
 
         <novaordis.utilities.version>4.7.10</novaordis.utilities.version>
-        <events.api.version>1.2.2-SNAPSHOT-13</events.api.version>
-        <events.processing.version>1.1.1-SNAPSHOT-28</events.processing.version>
-        <events.cli.version>1.0.2-SNAPSHOT-15</events.cli.version>
+        <events.api.version>1.2.2-SNAPSHOT-16</events.api.version>
+        <events.processing.version>1.1.1-SNAPSHOT-29</events.processing.version>
+        <events.cli.version>1.0.2-SNAPSHOT-17</events.cli.version>
 
         <slf4j.version>1.7.6</slf4j.version>
         <junit.version>4.12</junit.version>
