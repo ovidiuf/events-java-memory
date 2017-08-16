@@ -16,8 +16,8 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.api.gc.GCHistory;
-import io.novaordis.events.java.memory.api.gc.GCHistoryTest;
+import io.novaordis.events.java.memory.gc.GCHistory;
+import io.novaordis.events.java.memory.gc.GCHistoryTest;
 import io.novaordis.events.java.memory.gc.CollectorType;
 import org.junit.Test;
 

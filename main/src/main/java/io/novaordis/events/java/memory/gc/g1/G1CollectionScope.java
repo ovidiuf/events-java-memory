@@ -36,11 +36,6 @@ public enum G1CollectionScope {
 
     // Constructor -----------------------------------------------------------------------------------------------------
 
-    G1CollectionScope() {
-
-        this(null);
-    }
-
     /**
      * @param logMarker The string marker that identifies this scope in the GC logs.
      *

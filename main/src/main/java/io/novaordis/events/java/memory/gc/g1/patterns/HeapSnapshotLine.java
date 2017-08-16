@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.g1.patterns;
 
-import io.novaordis.events.java.memory.api.gc.model.Heap;
+import io.novaordis.events.java.memory.gc.model.Heap;
 import io.novaordis.events.api.parser.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

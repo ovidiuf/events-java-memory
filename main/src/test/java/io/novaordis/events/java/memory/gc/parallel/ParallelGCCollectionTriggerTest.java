@@ -16,7 +16,6 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.gc.parallel.ParallelGCCollectionTrigger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

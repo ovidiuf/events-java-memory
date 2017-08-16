@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.GCParsingException;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 import org.slf4j.Logger;

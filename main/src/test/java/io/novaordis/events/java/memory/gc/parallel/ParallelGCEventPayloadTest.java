@@ -16,8 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
-import io.novaordis.events.java.memory.gc.parallel.ParallelGCEventPayload;
+import io.novaordis.events.java.memory.gc.GCParsingException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

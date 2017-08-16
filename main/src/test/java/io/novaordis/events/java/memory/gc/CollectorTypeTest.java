@@ -16,7 +16,6 @@
 
 package io.novaordis.events.java.memory.gc;
 
-import io.novaordis.events.java.memory.gc.CollectorType;
 import io.novaordis.utilities.Files;
 import org.junit.After;
 import org.junit.Before;
@@ -70,7 +69,6 @@ public class CollectorTypeTest {
         //
 
         assertTrue(io.novaordis.utilities.Files.rmdir(scratchDirectory, false));
-
     }
 
     // Tests -----------------------------------------------------------------------------------------------------------

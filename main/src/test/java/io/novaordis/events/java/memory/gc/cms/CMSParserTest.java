@@ -16,8 +16,8 @@
 
 package io.novaordis.events.java.memory.gc.cms;
 
-import io.novaordis.events.java.memory.api.parser.GCParser;
-import io.novaordis.events.java.memory.api.parser.GCParserTest;
+import io.novaordis.events.java.memory.gc.parser.GCParser;
+import io.novaordis.events.java.memory.gc.parser.GCParserTest;
 import io.novaordis.events.java.memory.gc.CollectorType;
 import org.junit.Test;
 

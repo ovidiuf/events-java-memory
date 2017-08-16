@@ -16,8 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.g1.patterns;
 
-import io.novaordis.events.java.memory.api.gc.model.Heap;
-import io.novaordis.events.java.memory.gc.g1.patterns.HeapSnapshotLine;
+import io.novaordis.events.java.memory.gc.model.Heap;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

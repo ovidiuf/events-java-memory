@@ -16,11 +16,8 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.api.gc.GCEventTest;
+import io.novaordis.events.java.memory.gc.GCEventTest;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>

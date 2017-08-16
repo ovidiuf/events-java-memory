@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc;
 
-import io.novaordis.events.java.memory.gc.cli.Main;
+import io.novaordis.events.java.memory.cli.Main;
 import org.junit.Test;
 
 import java.io.File;

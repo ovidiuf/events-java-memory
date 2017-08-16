@@ -16,9 +16,9 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.api.gc.GCEvent;
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
-import io.novaordis.events.java.memory.api.gc.GCHistoryBase;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.GCHistoryBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

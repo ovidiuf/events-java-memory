@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.GCParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

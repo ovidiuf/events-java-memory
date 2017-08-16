@@ -16,9 +16,6 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.gc.g1.G1Collection;
-import io.novaordis.events.java.memory.gc.g1.G1CollectionTrigger;
-import io.novaordis.events.java.memory.gc.g1.Time;
 import io.novaordis.utilities.time.TimestampImpl;
 
 /**

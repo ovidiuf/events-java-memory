@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.api.gc.GCEventType;
+import io.novaordis.events.java.memory.gc.GCEventType;
 
 /**
  * TODO code shared with G1EventType, consolidate

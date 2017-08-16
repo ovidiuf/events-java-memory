@@ -16,10 +16,10 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
-import io.novaordis.events.java.memory.api.gc.RawGCEvent;
-import io.novaordis.events.java.memory.api.gc.model.Heap;
-import io.novaordis.events.java.memory.api.parser.GCEventFactory;
+import io.novaordis.events.java.memory.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.RawGCEvent;
+import io.novaordis.events.java.memory.gc.model.Heap;
+import io.novaordis.events.java.memory.gc.parser.GCEventFactory;
 import io.novaordis.events.java.memory.gc.g1.patterns.HeapSnapshotLine;
 
 import java.util.StringTokenizer;

@@ -16,7 +16,6 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.gc.g1.G1CollectionScope;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

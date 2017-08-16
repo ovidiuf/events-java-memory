@@ -16,9 +16,9 @@
 
 package io.novaordis.events.java.memory.gc.g1;
 
-import io.novaordis.events.java.memory.api.gc.GCEvent;
-import io.novaordis.events.java.memory.api.gc.RawGCEvent;
-import io.novaordis.events.java.memory.api.parser.GCEventFactoryTest;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.RawGCEvent;
+import io.novaordis.events.java.memory.gc.parser.GCEventFactoryTest;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;

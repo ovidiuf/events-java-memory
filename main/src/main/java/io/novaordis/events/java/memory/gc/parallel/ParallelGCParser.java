@@ -16,7 +16,7 @@
 
 package io.novaordis.events.java.memory.gc.parallel;
 
-import io.novaordis.events.java.memory.api.parser.GCParserBase;
+import io.novaordis.events.java.memory.gc.parser.GCParserBase;
 import io.novaordis.events.java.memory.gc.CollectorType;
 
 /**

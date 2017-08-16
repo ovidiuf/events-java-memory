@@ -17,9 +17,9 @@
 package io.novaordis.events.java.memory.gc.g1;
 
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.java.memory.api.gc.GCEvent;
-import io.novaordis.events.java.memory.api.gc.GCEventTest;
-import io.novaordis.events.java.memory.api.gc.model.Heap;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.GCEventTest;
+import io.novaordis.events.java.memory.gc.model.Heap;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,9 +17,9 @@
 package io.novaordis.events.java.memory.gc.parallel;
 
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.java.memory.api.gc.GCEventBase;
-import io.novaordis.events.java.memory.api.gc.GCEventType;
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.GCEventBase;
+import io.novaordis.events.java.memory.gc.GCEventType;
+import io.novaordis.events.java.memory.gc.GCParsingException;
 import io.novaordis.events.java.memory.gc.g1.Time;
 
 /**

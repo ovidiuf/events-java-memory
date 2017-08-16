@@ -16,11 +16,9 @@
 
 package io.novaordis.events.java.memory.gc.cms;
 
-import io.novaordis.events.java.memory.api.gc.GCEvent;
-import io.novaordis.events.java.memory.api.gc.GCHistoryBase;
-import io.novaordis.events.java.memory.api.gc.GCParsingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.GCHistoryBase;
+import io.novaordis.events.java.memory.gc.GCParsingException;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -29,8 +27,6 @@ import org.slf4j.LoggerFactory;
 public class CMSHistory extends GCHistoryBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(CMSHistory.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 

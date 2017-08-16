@@ -18,12 +18,12 @@ package io.novaordis.events.java.memory.gc.g1;
 
 import io.novaordis.events.api.event.LongProperty;
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.java.memory.api.gc.GCEvent;
-import io.novaordis.events.java.memory.api.gc.GCEventBase;
-import io.novaordis.events.java.memory.api.gc.GCEventType;
-import io.novaordis.events.java.memory.api.gc.model.Heap;
-import io.novaordis.events.java.memory.api.gc.model.SurvivorSpace;
-import io.novaordis.events.java.memory.api.gc.model.YoungGeneration;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.GCEventBase;
+import io.novaordis.events.java.memory.gc.GCEventType;
+import io.novaordis.events.java.memory.gc.model.Heap;
+import io.novaordis.events.java.memory.gc.model.SurvivorSpace;
+import io.novaordis.events.java.memory.gc.model.YoungGeneration;
 
 /**
  * TODO code shared with ParallelGCEvent, consolidate
