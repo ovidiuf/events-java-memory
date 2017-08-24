@@ -2,7 +2,7 @@
 
 [ -f $(dirname $0)/bash-wrapper-functions ] && . $(dirname $0)/bash-wrapper-functions || { echo "[error]: $(dirname $0)/bash-wrapper-functions not found, the application was probably not installed correctly" 1>&2; exit 1; }
 
-MAIN_CLASS=io.novaordis.events.java.memory.gc.cli.Main
+MAIN_CLASS=io.novaordis.events.java.memory.cli.Main
 JAVA_DEBUG_ARGS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 VERBOSE=false
 

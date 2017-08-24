@@ -82,6 +82,21 @@ public class MockGCEvent implements GCEvent {
     }
 
     @Override
+    public List<Property> getProperties(Class type) {
+        throw new RuntimeException("getProperties() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public Property removeProperty(String name, Class type) {
+        throw new RuntimeException("removeProperty() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public void clearProperties() {
+        throw new RuntimeException("clearProperties() NOT YET IMPLEMENTED");
+    }
+
+    @Override
     public Property getProperty(String name) {
         throw new RuntimeException("getProperty() NOT YET IMPLEMENTED");
     }
