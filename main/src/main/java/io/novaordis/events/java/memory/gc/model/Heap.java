@@ -61,7 +61,7 @@ public class Heap {
 
         if (!m.find()) {
 
-            throw new ParsingException("a heap snapshot pattern could not be found", lineNumber, position);
+            throw new ParsingException(lineNumber, position, "a heap snapshot pattern could not be found");
         }
 
         youngGeneration = new YoungGeneration();

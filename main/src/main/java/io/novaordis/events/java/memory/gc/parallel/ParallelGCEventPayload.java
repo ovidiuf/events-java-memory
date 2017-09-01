@@ -60,7 +60,7 @@ class ParallelGCEventPayload {
 
         if (trigger == null) {
 
-            throw new GCParsingException("invalid parallel GC trigger \"" + sTrigger + "\"", lineNumber);
+            throw new GCParsingException(lineNumber, "invalid parallel GC trigger \"" + sTrigger + "\"");
         }
 
         if (log.isDebugEnabled()) {

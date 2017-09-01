@@ -71,7 +71,7 @@ public class ParallelGCEventFactory implements GCEventFactory {
 
         if (!m.find()) {
 
-            throw new GCParsingException("no known parallel GC event identified", lineNumber);
+            throw new GCParsingException(lineNumber, "no known parallel GC event identified");
         }
 
         return new ParallelGCEventPayload(lineNumber, positionInLine, m.group(1), m.group(2), m.group(3), m.group(4));
@@ -117,7 +117,7 @@ public class ParallelGCEventFactory implements GCEventFactory {
             // unknown qualifier
             //
 
-            throw new GCParsingException("unknown parallel GC collection qualifier \"" + qualifier + "\"", lineNumber);
+            throw new GCParsingException(lineNumber, "unknown parallel GC collection qualifier \"" + qualifier + "\"");
         }
 
         return event;

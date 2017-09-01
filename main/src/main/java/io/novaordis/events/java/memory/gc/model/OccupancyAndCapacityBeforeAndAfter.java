@@ -59,7 +59,7 @@ public class OccupancyAndCapacityBeforeAndAfter {
 
         if (!m.find()) {
 
-            throw new ParsingException("no occupancy/capacity before/after pattern found", lineNumber, position);
+            throw new ParsingException(lineNumber, position, "no occupancy/capacity before/after pattern found");
         }
 
         occupancyBefore = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);

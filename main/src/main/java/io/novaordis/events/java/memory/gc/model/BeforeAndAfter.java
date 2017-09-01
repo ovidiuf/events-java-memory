@@ -54,7 +54,7 @@ public class BeforeAndAfter {
 
         if (!m.find()) {
 
-            throw new ParsingException("no before/after pattern found", lineNumber, position);
+            throw new ParsingException(lineNumber, position, "no before/after pattern found");
         }
 
         before = new MemoryMeasurement(lineNumber, position + m.start(1), position + m.end(1), line);

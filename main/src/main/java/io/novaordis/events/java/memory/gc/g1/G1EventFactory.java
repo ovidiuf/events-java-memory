@@ -105,8 +105,8 @@ public class G1EventFactory implements GCEventFactory {
             else {
 
                 throw new GCParsingException(
-                        "no collection trigger or a concurrent cycle event marker found on the first line of the event",
-                        lineNumber, 0);
+                        lineNumber, 0,
+                        "no collection trigger or a concurrent cycle event marker found on the first line of the event");
             }
         }
 

@@ -75,7 +75,7 @@ public class MemoryMeasurement {
         catch(IllegalArgumentException e) {
 
             throw new GCParsingException(
-                    "'" + measureUnit + "' not a valid memory measure unit", lineNumber, positionInLine + position);
+                    lineNumber, positionInLine + position, "'" + measureUnit + "' not a valid memory measure unit");
         }
 
         String number = fragment.substring(0, position);
@@ -86,7 +86,7 @@ public class MemoryMeasurement {
         }
         catch(Exception e) {
 
-            throw new GCParsingException(number + " not a valid number", lineNumber, positionInLine);
+            throw new GCParsingException(lineNumber, positionInLine, number + " not a valid number");
         }
 
         Double multiplicand = MemoryMeasureUnit.BYTE.getConversionFactor(mmu);

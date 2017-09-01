@@ -40,20 +40,22 @@ public class GCParsingException extends ParsingException {
         super(message, cause);
     }
 
-    public GCParsingException(String message, Long lineNumber) {
-        super(message, lineNumber);
+    public GCParsingException(Long lineNumber, String message) {
+
+        super(lineNumber, message);
     }
 
-    public GCParsingException(String message, Throwable cause, Long lineNumber) {
-        super(message, cause, lineNumber);
+    public GCParsingException(Long lineNumber, String message, Throwable cause) {
+
+        super(lineNumber, message, cause);
     }
 
-    public GCParsingException(String message, Long lineNumber, Integer positionInLine) {
-        super(message, lineNumber, positionInLine);
+    public GCParsingException(Long lineNumber, Integer positionInLine, String message) {
+        super(lineNumber, positionInLine, message);
     }
 
-    public GCParsingException(String message, Throwable cause, Long lineNumber, Integer positionInLine) {
-        super(message, cause, lineNumber, positionInLine);
+    public GCParsingException(Long lineNumber, Integer positionInLine, String message, Throwable cause) {
+        super(lineNumber, positionInLine, message, cause);
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

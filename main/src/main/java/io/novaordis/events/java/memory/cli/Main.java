@@ -52,7 +52,7 @@ public class Main {
 
         try {
 
-            Configuration c = new ConfigurationImpl(args, null, null);
+            Configuration c = new ConfigurationImpl(args, null);
 
             if (c.isHelp()) {
 

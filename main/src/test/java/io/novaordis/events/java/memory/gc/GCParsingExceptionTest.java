@@ -43,7 +43,7 @@ public class GCParsingExceptionTest {
 
         try {
 
-            throw new GCParsingException("test", 10L);
+            throw new GCParsingException(10L, "test");
         }
         catch(GCParsingException e) {
 

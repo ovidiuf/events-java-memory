@@ -272,7 +272,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
         }
         catch(Exception e) {
 
-            throw new GCParsingException("invalid time specification: " + timeInSeconds, e, lineNumber, positionInLine);
+            throw new GCParsingException(lineNumber, positionInLine, "invalid time specification: " + timeInSeconds, e);
         }
 
         long timeMSecs = (long)Math.round(1000 * timeSecs);
