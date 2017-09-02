@@ -20,3 +20,8 @@ Other commands:
 
     describe
 
+More details about queries can be obtained from:
+
+    https://kb.novaordis.com/index.php/Events-api_Concepts#Query
+
+    
