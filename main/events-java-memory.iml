@@ -13,7 +13,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: io.novaordis.utilities:novaordis-utilities:4.7.11-SNAPSHOT-5" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.17" level="project" />
-    <orderEntry type="library" name="Maven: io.novaordis.events.api:events-api:1.2.2-SNAPSHOT-39" level="project" />
+    <orderEntry type="library" name="Maven: io.novaordis.events.api:events-api:1.2.2-SNAPSHOT-40" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.jboss:novaordis-jboss:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.jmx:novaordis-jmx:1.2.5-SNAPSHOT-1" level="project" />
     <orderEntry type="library" name="Maven: io.novaordis.ssh:novaordis-ssh:1.0.0-SNAPSHOT-2" level="project" />

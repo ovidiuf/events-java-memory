@@ -8,7 +8,7 @@
 
     <groupId>io.novaordis.events.java.memory</groupId>
     <artifactId>events-java-memory-root</artifactId>
-    <version>2.0.0-SNAPSHOT-6</version>
+    <version>2.0.0-SNAPSHOT-7</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -18,7 +18,7 @@
         -->
 
         <novaordis.utilities.version>4.7.11-SNAPSHOT-5</novaordis.utilities.version>
-        <events.api.version>1.2.2-SNAPSHOT-39</events.api.version>
+        <events.api.version>1.2.2-SNAPSHOT-40</events.api.version>
         <events.processing.version>1.1.1-SNAPSHOT-40</events.processing.version>
         <events.cli.version>1.0.2-SNAPSHOT-26</events.cli.version>
 
