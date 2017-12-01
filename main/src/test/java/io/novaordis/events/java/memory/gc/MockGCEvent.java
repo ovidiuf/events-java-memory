@@ -16,6 +16,8 @@
 
 package io.novaordis.events.java.memory.gc;
 
+import java.util.List;
+
 import io.novaordis.events.api.event.BooleanProperty;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.EventProperty;
@@ -27,8 +29,6 @@ import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.utilities.time.Timestamp;
-
-import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -188,6 +188,16 @@ public class MockGCEvent implements GCEvent {
     }
 
     @Override
+    public BooleanProperty setBooleanProperty(String name, boolean value) {
+        throw new RuntimeException("setBooleanProperty() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public BooleanProperty removeBooleanProperty(String name) {
+        throw new RuntimeException("removeBooleanProperty() NOT YET IMPLEMENTED");
+    }
+
+    @Override
     public MapProperty getMapProperty(String mapPropertyName) {
         throw new RuntimeException("getMapProperty() NOT YET IMPLEMENTED");
     }
@@ -195,6 +205,11 @@ public class MockGCEvent implements GCEvent {
     @Override
     public ListProperty getListProperty(String listPropertyName) {
         throw new RuntimeException("getListProperty() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public boolean isTimed() {
+        throw new RuntimeException("isTimed() NOT YET IMPLEMENTED");
     }
 
     @Override

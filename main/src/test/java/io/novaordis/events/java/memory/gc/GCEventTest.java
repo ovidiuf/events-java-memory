@@ -16,17 +16,18 @@
 
 package io.novaordis.events.java.memory.gc;
 
+import org.junit.Test;
+
 import io.novaordis.events.api.event.LongProperty;
 import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.TimedEvent;
-import io.novaordis.events.java.memory.MemoryEventTest;
-import io.novaordis.events.java.memory.gc.model.PoolType;
 import io.novaordis.events.api.measure.MemoryMeasureUnit;
 import io.novaordis.events.api.measure.TimeMeasureUnit;
+import io.novaordis.events.java.memory.MemoryEventTest;
 import io.novaordis.events.java.memory.gc.g1.G1Event;
+import io.novaordis.events.java.memory.gc.model.PoolType;
 import io.novaordis.utilities.time.Timestamp;
 import io.novaordis.utilities.time.TimestampImpl;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -268,7 +269,7 @@ public abstract class GCEventTest extends MemoryEventTest {
                         e.getProperty(GCEvent.HEAP_OCCUPANCY_AFTER).getValue();
 
         String expectedHeader =
-                TimedEvent.TIMESTAMP_PROPERTY_NAME + "@" +
+                TimedEvent.TIME_PROPERTY_NAME + "@" +
                         GCEvent.EVENT_TYPE + "@" +
                         GCEvent.HEAP_OCCUPANCY_AFTER;
 

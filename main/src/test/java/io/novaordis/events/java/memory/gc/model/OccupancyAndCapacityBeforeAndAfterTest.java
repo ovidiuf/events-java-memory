@@ -16,10 +16,11 @@
 
 package io.novaordis.events.java.memory.gc.model;
 
-import io.novaordis.events.api.parser.ParsingException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.novaordis.utilities.parsing.ParsingException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

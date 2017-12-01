@@ -16,13 +16,14 @@
 
 package io.novaordis.events.java.memory.gc.model;
 
-import io.novaordis.events.api.event.Property;
-import io.novaordis.events.api.measure.MemoryMeasureUnit;
-import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.java.memory.gc.g1.G1Event;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.measure.MemoryMeasureUnit;
+import io.novaordis.events.java.memory.gc.g1.G1Event;
+import io.novaordis.utilities.parsing.ParsingException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

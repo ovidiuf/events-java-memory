@@ -16,6 +16,15 @@
 
 package io.novaordis.events.java.memory.gc.parser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.java.memory.gc.CollectorType;
@@ -26,14 +35,6 @@ import io.novaordis.events.java.memory.gc.g1.GCEventStartMarker;
 import io.novaordis.events.java.memory.gc.g1.Time;
 import io.novaordis.utilities.Files;
 import io.novaordis.utilities.time.Timestamp;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -223,7 +224,7 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<Event> events = p.parse("irrelevant line");
+        List<Event> events = p.parse("irrelevant line", null);
 
         assertTrue(events.isEmpty());
 
@@ -243,10 +244,10 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<Event> events = p.parse("irrelevant line");
+        List<Event> events = p.parse("irrelevant line", null);
         assertTrue(events.isEmpty());
 
-        List<Event> events2 = p.parse("irrelevant line 2");
+        List<Event> events2 = p.parse("irrelevant line 2", null);
         assertTrue(events2.isEmpty());
 
         List<Event> events3 = p.close();
@@ -265,7 +266,7 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<Event> events = p.parse("irrelevant line");
+        List<Event> events = p.parse("irrelevant line", null);
 
         assertTrue(events.isEmpty());
 
@@ -277,10 +278,10 @@ public abstract class GCParserTest {
 
         GCParserBase p = (GCParserBase)getGCParserToTest();
 
-        List<Event> events = p.parse("irrelevant line");
+        List<Event> events = p.parse("irrelevant line", null);
         assertTrue(events.isEmpty());
 
-        List<Event> events2 = p.parse("irrelevant line 2");
+        List<Event> events2 = p.parse("irrelevant line 2", null);
         assertTrue(events2.isEmpty());
 
         assertEquals(2, p.getLineNumber());

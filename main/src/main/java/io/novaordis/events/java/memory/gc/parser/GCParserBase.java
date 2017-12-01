@@ -16,19 +16,6 @@
 
 package io.novaordis.events.java.memory.gc.parser;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.parser.ParserBase;
-import io.novaordis.events.api.parser.ParsingException;
-import io.novaordis.events.java.memory.gc.GCEvent;
-import io.novaordis.events.java.memory.gc.GCParsingException;
-import io.novaordis.events.java.memory.gc.g1.GCEventStartMarker;
-import io.novaordis.events.java.memory.gc.RawGCEvent;
-import io.novaordis.events.java.memory.gc.g1.Time;
-import io.novaordis.utilities.time.Timestamp;
-import io.novaordis.utilities.time.TimestampImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +24,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.parser.ParserBase;
+import io.novaordis.events.java.memory.gc.GCEvent;
+import io.novaordis.events.java.memory.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.RawGCEvent;
+import io.novaordis.events.java.memory.gc.g1.GCEventStartMarker;
+import io.novaordis.events.java.memory.gc.g1.Time;
+import io.novaordis.events.query.Query;
+import io.novaordis.utilities.parsing.ParsingException;
+import io.novaordis.utilities.time.Timestamp;
+import io.novaordis.utilities.time.TimestampImpl;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -185,7 +187,7 @@ public abstract class GCParserBase extends ParserBase implements GCParser {
     // ParserBase implementation ---------------------------------------------------------------------------------------
 
     @Override
-    protected List<Event> parse(long lineNumber, String line) throws ParsingException {
+    protected List<Event> parse(long lineNumber, String line, Query query) throws ParsingException {
 
         if (log.isDebugEnabled()) { log.debug("parsing line " + lineNumber + ": " + line); }
 

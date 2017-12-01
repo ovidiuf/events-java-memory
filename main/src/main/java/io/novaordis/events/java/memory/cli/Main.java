@@ -16,22 +16,22 @@
 
 package io.novaordis.events.java.memory.cli;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.java.memory.gc.GCParsingException;
-import io.novaordis.events.java.memory.gc.parser.GCParser;
 import io.novaordis.events.cli.Configuration;
 import io.novaordis.events.cli.ConfigurationImpl;
+import io.novaordis.events.java.memory.gc.GCParsingException;
+import io.novaordis.events.java.memory.gc.parser.GCParser;
 import io.novaordis.events.processing.Procedure;
 import io.novaordis.events.query.MatchAll;
 import io.novaordis.events.query.Query;
 import io.novaordis.utilities.UserErrorException;
 import io.novaordis.utilities.help.InLineHelp;
 import io.novaordis.utilities.logging.StderrVerboseLogging;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -75,7 +75,7 @@ public class Main {
 
             while ((line = br.readLine()) != null) {
 
-                List<Event> es = parser.parse(line);
+                List<Event> es = parser.parse(line, query);
                 es = query.filter(es);
                 procedure.process(es);
             }

@@ -16,10 +16,10 @@
 
 package io.novaordis.events.java.memory.gc.model;
 
-import io.novaordis.events.api.parser.ParsingException;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.novaordis.utilities.parsing.ParsingException;
 
 /**
  * A model of a heap undergoing a garbage collection event. It contains before/after memory statistics.

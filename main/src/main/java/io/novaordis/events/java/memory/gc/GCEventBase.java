@@ -16,24 +16,25 @@
 
 package io.novaordis.events.java.memory.gc;
 
-import io.novaordis.events.api.event.GenericTimedEvent;
-import io.novaordis.events.api.event.Property;
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.api.event.TimedEvent;
-import io.novaordis.events.java.memory.gc.model.MemoryMeasurement;
-import io.novaordis.events.java.memory.gc.model.MemoryMeasurementType;
-import io.novaordis.events.java.memory.gc.model.PoolType;
-import io.novaordis.events.api.measure.TimeMeasureUnit;
-import io.novaordis.events.java.memory.gc.g1.G1Event;
-import io.novaordis.events.java.memory.gc.g1.Time;
-import io.novaordis.utilities.time.Timestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.event.TimedEvent;
+import io.novaordis.events.api.measure.TimeMeasureUnit;
+import io.novaordis.events.java.memory.gc.g1.G1Event;
+import io.novaordis.events.java.memory.gc.g1.Time;
+import io.novaordis.events.java.memory.gc.model.MemoryMeasurement;
+import io.novaordis.events.java.memory.gc.model.MemoryMeasurementType;
+import io.novaordis.events.java.memory.gc.model.PoolType;
+import io.novaordis.utilities.time.Timestamp;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -133,7 +134,7 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
             return null;
         }
 
-        return TimedEvent.TIMESTAMP_PROPERTY_NAME + fieldSeparator +
+        return TimedEvent.TIME_PROPERTY_NAME + fieldSeparator +
                 EVENT_TYPE + fieldSeparator +
                 HEAP_OCCUPANCY_AFTER;
     }
