@@ -26,7 +26,7 @@ import io.novaordis.events.java.memory.gc.g1.G1Event;
 import io.novaordis.utilities.parsing.ParsingException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -124,7 +124,8 @@ public class MemoryMeasurementTest {
         catch(StringIndexOutOfBoundsException e) {
 
             String msg = e.getMessage();
-            assertTrue(msg.contains("out of range"));
+            // java 8 and java 9 issue different messages
+            assertNotNull(msg);
         }
     }
 
@@ -141,7 +142,8 @@ public class MemoryMeasurementTest {
         catch(StringIndexOutOfBoundsException e) {
 
             String msg = e.getMessage();
-            assertTrue(msg.contains("out of range"));
+            // java 8 and java 9 issue different messages
+            assertNotNull(msg);
         }
     }
 
@@ -158,7 +160,8 @@ public class MemoryMeasurementTest {
         catch(StringIndexOutOfBoundsException e) {
 
             String msg = e.getMessage();
-            assertTrue(msg.contains("out of range"));
+            // java 8 and java 9 issue different messages
+            assertNotNull(msg);
         }
     }
 
@@ -175,7 +178,8 @@ public class MemoryMeasurementTest {
         catch(StringIndexOutOfBoundsException e) {
 
             String msg = e.getMessage();
-            assertTrue(msg.contains("out of range"));
+            // java 8 and java 9 issue different messages
+            assertNotNull(msg);
         }
     }
 
