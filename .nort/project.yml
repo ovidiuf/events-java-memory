@@ -8,6 +8,9 @@ build:
 
 publish:
   local.artifact.repository.root: ${M2}
+  truststore:
+    file: /Users/ovidiu/.m2/maven.apps.openshift.novaordis.io.truststore
+    password: ${NOVAORDIS_NEXUS_TRUSTSTORE_PASSWORD}
 
 install:
   installation.directory: ${RUNTIME_DIR}
