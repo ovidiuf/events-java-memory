@@ -116,6 +116,13 @@ public abstract class GCEventBase extends GenericTimedEvent implements GCEvent {
             s += fieldSeparator + p.getValue();
         }
 
+        //
+        // TODO: I need to understand why I needed this to correctly display parsed GC events, while the previous
+        // versions worked without it. This is indicative of a flaw in the pipeline logic.
+        //
+
+        s += "\n";
+
         return s;
     }
 
